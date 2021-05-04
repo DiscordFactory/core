@@ -4,7 +4,7 @@
   "description": "",
   "author": "Baptiste Parmantier <baptiste.parmantier.pro@gmail.com>",
   "license": "MIT",
-  "repository": "git@github.com:LeadcodeDev/Core.git",
+  "repository": "git@github.com:DiscordFactory/Core.git",
   "keywords": [],
   "scripts": {
     "prepublishOnly": "npm run build",
