@@ -1,0 +1,14 @@
+{
+  "env": {
+    "jest": true
+  },
+  "extends": ["@antfu"],
+  "plugins": ["ava"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "off",
+    "space-before-function-paren": "off",
+    "eol-last": "off",
+    "no-trailing-spaces": "off",
+    "curly": "off"
+  }
+}
