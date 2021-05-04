@@ -9,6 +9,7 @@
     "space-before-function-paren": "off",
     "eol-last": "off",
     "no-trailing-spaces": "off",
-    "curly": "off"
+    "curly": "off",
+    "@typescript-eslint/no-inferrable-types": "off"
   }
 }

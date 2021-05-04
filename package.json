@@ -1,16 +1,17 @@
 {
-  "name": "@DiscordFactory/core",
+  "name": "@discord-factory/core",
   "version": "0.0.0",
   "description": "",
   "author": "Baptiste Parmantier <baptiste.parmantier.pro@gmail.com>",
   "license": "MIT",
   "repository": "git@github.com:DiscordFactory/Core.git",
   "keywords": [],
+  "types": "./lib/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build",
-    "dev": "npm run build -- --watch",
-    "start": "nodemon ./dist/index.js",
-    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsc --watch",
+    "start": "nodemon ./build/index.js",
+    "build": "tsc",
     "release": "git-ensure -a && bumpp --commit --push --tag",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
@@ -30,6 +31,8 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
+    "discord.js": "^12.5.3",
+    "fs-recursive": "^1.0.3",
     "nodemon": "^2.0.7",
     "ts-node": "^9.1.1"
   },
