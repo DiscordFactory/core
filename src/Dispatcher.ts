@@ -1,5 +1,8 @@
 import File from 'fs-recursive/build/File'
-import { ContainerType } from './type/Container'
+import { Constructable, ContainerType } from './type/Container'
+import Factory from "./Factory";
+import Event from "./container/Event";
+import { ClientEvents } from "discord.js";
 
 export default class Dispatcher {
   constructor (private files: Map<string, File>) {}
@@ -10,14 +13,27 @@ export default class Dispatcher {
       const res = await import(file.path)
       if (res?.default?.type) {
         return {
-          type: res.default.type as ContainerType,
-          constructable: res.default,
+          type: res.default.type,
+          default: res.default,
           path: file.path.replace('\\build', '').replace('.js', '.ts'),
-        }
+        } as Constructable
       }
     }))
-    const constructable = objects.filter(object => object !== undefined)
+    const constructableList = objects.filter(object => object !== undefined)
     
-    console.log(constructable)
+    const wrapper = {
+      event: (constructable: Constructable) => this.assignEvent(constructable),
+      unknown: () => ({}),
+    }
+    constructableList.forEach((constructable) => {
+      const containerPlacement = (wrapper[constructable!.type] || wrapper.unknown)(constructable)
+    })
+  }
+
+  private assignEvent<K extends keyof ClientEvents> (constructable: Constructable) {
+    const $container = Factory.getInstance().$container
+    const instance: Event<K> = new (constructable.default)()
+    $container.register('events', constructable)
+    $container.client.on(instance.event, async (...args: Array<any>) => await instance.run(...args))
   }
 }

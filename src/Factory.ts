@@ -21,5 +21,7 @@ export default class Factory {
 
     const dispatcher = new Dispatcher(files)
     await dispatcher.dispatch()
+
+    await Factory.$instance.$container.client.login('')
   }
 }

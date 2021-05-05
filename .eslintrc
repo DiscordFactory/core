@@ -10,6 +10,7 @@
     "eol-last": "off",
     "no-trailing-spaces": "off",
     "curly": "off",
-    "@typescript-eslint/no-inferrable-types": "off"
+    "@typescript-eslint/no-inferrable-types": "off",
+    "new-cap": "off"
   }
 }

@@ -1,3 +1,5 @@
 import Factory from './Factory'
 
-Factory.getInstance().init()
+Factory.getInstance().init().then(() => {
+  console.log(Factory.getInstance().$container.events)
+})
