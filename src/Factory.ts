@@ -14,12 +14,12 @@ export default class Factory {
     return this.$instance
   }
   
-  public async init () {
+  public async setup () {
     const root = process.env.NODE_ENV === 'production'
       ? path.join(process.cwd(), 'build', 'src')
       : path.join(process.cwd(), 'src')
 
-    const files = await fetch(root, ['ts'], 'utf-8')
+    const files = await fetch(root, [process.env.NODE_ENV === 'production' ? 'js' : 'ts'], 'utf-8')
 
     const dispatcher = new Dispatcher(files)
     await dispatcher.dispatch()
