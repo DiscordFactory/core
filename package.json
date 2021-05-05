@@ -6,7 +6,6 @@
   "license": "MIT",
   "repository": "git@github.com:DiscordFactory/Core.git",
   "keywords": [],
-  "types": "./lib/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build",
     "dev": "tsc --watch",

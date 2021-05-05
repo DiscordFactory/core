@@ -16,8 +16,8 @@ export default class Factory {
   
   public async init () {
     // const root = path.join(process.cwd(), 'build', 'src')
-    const root = 'E:\\WindowsData\\Bureau\\HelpMC\\discord-bot-helpmc\\build\\src\\'
-    const files = await fetch(root, ['js'], 'utf-8')
+    const root = 'E:\\WindowsData\\Bureau\\HelpMC\\discord-bot-helpmc\\src\\'
+    const files = await fetch(root, ['ts'], 'utf-8')
 
     const dispatcher = new Dispatcher(files)
     await dispatcher.dispatch()
