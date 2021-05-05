@@ -1,8 +1,8 @@
 import File from 'fs-recursive/build/File'
+import { ClientEvents } from 'discord.js'
 import { Constructable, ContainerType } from './type/Container'
-import Factory from "./Factory";
-import Event from "./container/Event";
-import { ClientEvents } from "discord.js";
+import Factory from './Factory'
+import Event from './container/Event'
 
 export default class Dispatcher {
   constructor (private files: Map<string, File>) {}
