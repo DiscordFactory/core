@@ -1,9 +1,9 @@
 import test from 'ava'
-import Event from '../src/container/Event'
+import BaseEvent from '../src/entities/BaseEvent'
 
 test('create event', (t) => {
-  const event = new Event('message', async () => {
+  const event = new BaseEvent('message', async () => {
     console.log('Hello World !')
   })
-  t.assert(event instanceof Event)
+  t.assert(event instanceof BaseEvent)
 })

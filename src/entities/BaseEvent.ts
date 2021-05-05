@@ -1,8 +1,8 @@
 import { ClientEvents } from 'discord.js'
 import { ContainerType } from '../type/Container'
-import Container from './'
+import Container from '../Container'
 
-export default class Event<K extends keyof ClientEvents> extends Container<K> {
+export default class BaseEvent<K extends keyof ClientEvents> extends Container<K> {
   public static type: ContainerType = 'event'
   public _path: string = ''
 

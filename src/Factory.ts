@@ -1,6 +1,6 @@
 import path from 'path'
 import { fetch } from 'fs-recursive'
-import Container from './container'
+import Container from './Container'
 import Dispatcher from './Dispatcher'
 
 export default class Factory {
@@ -15,13 +15,15 @@ export default class Factory {
   }
   
   public async init () {
-    // const root = path.join(process.cwd(), 'build', 'src')
-    const root = 'E:\\WindowsData\\Bureau\\HelpMC\\discord-bot-helpmc\\src\\'
+    const root = process.env.NODE_ENV === 'production'
+      ? path.join(process.cwd(), 'build', 'src')
+      : path.join(process.cwd(), 'src')
+
     const files = await fetch(root, ['ts'], 'utf-8')
 
     const dispatcher = new Dispatcher(files)
     await dispatcher.dispatch()
 
-    await Factory.$instance.$container.client.login('')
+    await Factory.$instance.$container.client.login('Nzg1ODgxOTk1NDc2ODYwOTc5.X8-TpA.HmGojFwoZYEZza-wNcHYo1_Hw-4')
   }
 }

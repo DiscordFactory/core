@@ -1,5 +1,12 @@
 import Factory from './Factory'
+import Event from './decorators/Event'
+import { BaseEvent } from './interface/Bases'
 
-Factory.getInstance().init().then(() => {
-  console.log(Factory.getInstance().$container.events)
-})
+export {
+  Factory,
+}
+
+export {
+  Event,
+  BaseEvent,
+}
