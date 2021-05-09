@@ -5,6 +5,12 @@ import CommandContext from './contexts/CommandContext'
 import NodeEmitter from './NodeEmitter'
 
 export default class Guard {
+  /**
+   * Performs recurring checks before an order is executed.
+   * Calls on the middleware assigned to the command used
+   * to authorise or not the execution of the command.
+   * @param message Message
+   */
   public async protect (message: Message) {
     const sender: GuildMember | null = message.member
     const args: Array<string> = message.content.split(' ')
@@ -18,8 +24,8 @@ export default class Guard {
     if (!prefix) {
       throw new Error('The prefix cannot be found, please define it in your environment file')
     }
-    const alias: string = args[0].replace(prefix, '')
 
+    const alias: string = args[0].replace(prefix, '')
     const commands = Factory.getInstance().$container.commandAlias
     const command = commands[alias]
 

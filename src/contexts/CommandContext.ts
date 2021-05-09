@@ -12,10 +12,19 @@ export default class CommandContext {
     this.setCancelled = this.setCancelled.bind(this)
   }
 
+  /**
+   * Allow or disallow the execution
+   * of the parent command.
+   * @param bool
+   */
   public setCancelled(bool: boolean): void {
     this.cancelled = bool
   }
 
+  /**
+   * Checks if the order has been
+   * executed or cancelled
+   */
   public isCancelled(): boolean {
     return this.cancelled
   }

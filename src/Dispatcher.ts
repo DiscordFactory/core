@@ -2,17 +2,20 @@ import File from 'fs-recursive/build/File'
 import { ClientEvents } from 'discord.js'
 import { ContainerType } from './type/Container'
 import Factory from './Factory'
-import EventEntity from './entities/EventEntity'
 import NodeEmitter from './NodeEmitter'
-import CommandEntity from './entities/CommandEntity'
-import { HookInterface } from './interface/HookInterface'
 import Constructable from './Constructable'
-import HookEntity from "./entities/HookEntity";
+import HookEntity from './entities/HookEntity'
 
 export default class Dispatcher {
   constructor (private files: Map<string, File>) {
   }
 
+  /**
+   * Triggers recursive retrieval
+   * of command files, middleware, hooks and events
+   * then create new Constructable.
+   * @return Promise<Array<Constructable<any>>>
+   */
   public async load<K extends keyof ClientEvents>(): Promise<Array<Constructable<any>>> {
     const files = Array.from(this.files, ([_, file]) => ({ ...file }))
     const queue = await Promise.all(files.map(async (file) => {
@@ -29,22 +32,41 @@ export default class Dispatcher {
     return queue.filter(q => q) as Array<Constructable<any>>
   }
 
-  public async dispatch<K extends keyof ClientEvents>(queue: Array<Constructable<any>>) {
+  /**
+   * Distributes files according to their
+   * module and processes them at the same time.
+   * @param queue Array<Constructable<any>>
+   */
+  public async dispatch<K extends keyof ClientEvents>(queue: Array<Constructable<any>>): Promise<void> {
     if (!queue) {
       return
     }
 
+    /**
+     * Retrieves hooks from the queue,
+     * adds them to the list of available hooks within the application,
+     * and activates the event listener.
+     */
     this.filter('hook', queue).forEach((constructable) => {
       const instance = new (constructable.model)()
       Factory.getInstance().$container.hooks.push({ ...constructable, instance })
       NodeEmitter.listen(instance)
     })
 
+    /**
+     * Retrieves middlewares from the queue,
+     * adds them to the list of available hooks within the application.
+     */
     this.filter('middleware', queue).forEach((constructable) => {
       const instance = new (constructable.model)()
       Factory.getInstance().$container.middlewares.push({ ...constructable, instance })
     })
 
+    /**
+     * Retrieves events from the queue,
+     * adds them to the list of available hooks within the application,
+     * registrations within the discord.js instance.
+     */
     this.filter('event', queue).forEach((constructable) => {
       const instance = new (constructable.model)()
       Factory.getInstance().$container.events.push({ ...constructable, instance })
@@ -53,9 +75,12 @@ export default class Dispatcher {
       )
     })
 
+    /**
+     * Retrieves commands from the queue,
+     * adds them to the list of available hooks within the application.
+     */
     this.filter('command', queue).forEach((constructable) => {
       const instance = new (constructable.model)()
-
       Factory.getInstance().$container.commands.push({ ...constructable, instance })
       Factory.getInstance().$container.commandAlias[instance.tag] = instance
       instance.alias.forEach((alias) => {
@@ -64,12 +89,22 @@ export default class Dispatcher {
     })
   }
 
-  public filter<K extends keyof ClientEvents> (key: ContainerType, fragment: Array<Constructable<any>>) {
+  /**
+   * Returns the entirety of a requested module.
+   * @param key
+   * @param fragment
+   */
+  public filter<K extends keyof ClientEvents> (key: ContainerType, fragment: Array<Constructable<any>> = []) {
     return fragment.filter((constructable) => {
       return constructable!.type === key
     })
   }
 
+  /**
+   * Registers a new hook to be executed
+   * during the application's life cycle.
+   * @param hook
+   */
   public registerHook (hook: Constructable<any>) {
     Factory.getInstance().$container.hooks.push(
       new Constructable(
@@ -79,6 +114,7 @@ export default class Dispatcher {
         hook.file,
       ),
     )
+
     if (hook.instance instanceof HookEntity) {
       NodeEmitter.listen(hook.instance)
     }

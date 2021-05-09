@@ -1,9 +1,8 @@
+import { PermissionResolvable } from 'discord.js'
 import CommandEntity from '../entities/CommandEntity'
-import { CommandInterface } from '../interface/CommandInterface'
 import Factory from '../Factory'
-import { MiddlewareInterface } from "../interface/MiddlewareInterface";
-import { PermissionResolvable } from "discord.js";
-import MiddlewareEntity from "../entities/MiddlewareEntity";
+import { MiddlewareInterface } from '../interface/MiddlewareInterface'
+import MiddlewareEntity from '../entities/MiddlewareEntity'
 
 type CommandContext = {
   label: string
@@ -45,7 +44,8 @@ export default function Command(context: CommandContext) {
           context.roles || [],
           context.permissions || [],
           middlewares,
-          target.prototype.run)
+          target.prototype.run,
+        )
       }
     }
   }

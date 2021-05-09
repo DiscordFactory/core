@@ -7,8 +7,6 @@ import MiddlewareEntity from '../entities/MiddlewareEntity'
 
 export type ContainerType = 'event' | 'command' | 'hook' | 'middleware'
 
-export type ContainerModules = 'events' | 'commands' | 'commandAlias' | 'hooks' | 'middlewares'
-
 export type Instance<K extends keyof ClientEvents> = HookEntity | EventEntity<K> | MiddlewareEntity| CommandEntity
 
 export type Constructable<K extends keyof ClientEvents> = {
