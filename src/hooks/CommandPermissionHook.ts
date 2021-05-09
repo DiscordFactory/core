@@ -4,7 +4,7 @@ import Hook from '../decorators/Hook'
 import BaseHook from '../interface/HookInterface'
 
 @Hook('app:command:preload')
-export default class CommandPermissions implements BaseHook {
+export default class CommandPermissionHook implements BaseHook {
   public async run(context: CommandContext): Promise<any> {
     const { sender, command, message } = context
     if (command.permissions) {

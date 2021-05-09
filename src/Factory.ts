@@ -7,6 +7,8 @@ import Guard from './Guard'
 import CommandHook from './hooks/CommandHook'
 import Constructable from './Constructable'
 import HookEntity from './entities/HookEntity'
+import CommandRoleHook from "./hooks/CommandRoleHook";
+import CommandPermissionHook from "./hooks/CommandPermissionHook";
 
 export default class Factory {
   private static $instance: Factory
@@ -49,6 +51,24 @@ export default class Factory {
         'hook',
         commandHook.toString(),
         commandHook as HookEntity,
+      ),
+    )
+
+    const commandRoleHook = new CommandRoleHook()
+    dispatcher.registerHook(
+      new Constructable(
+        'hook',
+        commandRoleHook.toString(),
+        commandRoleHook as HookEntity,
+      ),
+    )
+
+    const commandPermissionHook = new CommandPermissionHook()
+    dispatcher.registerHook(
+      new Constructable(
+        'hook',
+        commandPermissionHook.toString(),
+        commandPermissionHook as HookEntity,
       ),
     )
 

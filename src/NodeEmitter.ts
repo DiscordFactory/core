@@ -40,7 +40,7 @@ class NodeEmitter {
 
     if (constructableListener) {
       constructableListener.listeners.push((...args: Array<any>) => {
-        return hookEntity.run(args)
+        return hookEntity.run(...args)
       })
       return
     }
