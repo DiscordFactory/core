@@ -1,21 +1,12 @@
 import { Client, ClientEvents } from 'discord.js'
-import { CommandAlias, Constructable, ContainerModules } from './type/Container'
-import EventEntity from './entities/EventEntity'
-import MiddlewareEntity from './entities/MiddlewareEntity'
-import CommandEntity from './entities/CommandEntity'
+import { CommandAlias } from './type/Container'
+import Constructable from './Constructable'
 
 export default class Container<K extends keyof ClientEvents> {
   public client: Client = new Client()
-  public events: Array<EventEntity<any>> = []
-  public middlewares: Array<MiddlewareEntity> = []
-  public commands: Array<CommandEntity> = []
+  public events: Array<Constructable<K>> = []
+  public middlewares: Array<Constructable<any>> = []
+  public hooks: Array<Constructable<any>> = []
+  public commands: Array<Constructable<any>> = []
   public commandAlias: CommandAlias = {}
-
-  public register(module: ContainerModules, constructable: Constructable) {
-    this[module].push(constructable)
-  }
-
-  public registerAlias(alias: string, commandEntity: CommandEntity) {
-    this.commandAlias[alias] = commandEntity
-  }
 }

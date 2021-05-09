@@ -1,0 +1,1 @@
+export type Hooks = 'app:command:preload' | 'app:command:cancelled' | 'app:command:executed' | 'app:message:received'

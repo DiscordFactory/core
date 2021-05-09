@@ -4,6 +4,9 @@ import { fetch } from 'fs-recursive'
 import Container from './Container'
 import Dispatcher from './Dispatcher'
 import Guard from './Guard'
+import CommandHook from './hooks/CommandHook'
+import Constructable from "./Constructable";
+import HookEntity from "./entities/HookEntity";
 
 export default class Factory {
   private static $instance: Factory
@@ -26,7 +29,21 @@ export default class Factory {
       'utf-8')
 
     const dispatcher = new Dispatcher(files)
-    await dispatcher.dispatch()
+    const commandHook = new CommandHook()
+    dispatcher.registerHook(
+      new Constructable(
+        'hook',
+        commandHook.toString(),
+        commandHook as HookEntity,
+      ),
+    )
+    const queue = await dispatcher.load()
+
+    if (!queue) {
+      return
+    }
+
+    await dispatcher.dispatch(queue)
 
     await this.$container.client.login(Env.get('TOKEN'))
 

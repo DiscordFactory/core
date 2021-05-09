@@ -1,62 +1,86 @@
 import File from 'fs-recursive/build/File'
 import { ClientEvents } from 'discord.js'
-import { Constructable } from './type/Container'
+import { ContainerType } from './type/Container'
 import Factory from './Factory'
 import EventEntity from './entities/EventEntity'
+import NodeEmitter from './NodeEmitter'
+import CommandEntity from './entities/CommandEntity'
+import { HookInterface } from './interface/HookInterface'
+import Constructable from './Constructable'
+import HookEntity from "./entities/HookEntity";
 
 export default class Dispatcher {
   constructor (private files: Map<string, File>) {
   }
 
-  public async dispatch () {
-    const array = Array.from(this.files, ([_, file]) => ({ ...file }))
-    const objects = await Promise.all(array.map(async (file) => {
+  public async load<K extends keyof ClientEvents>(): Promise<Array<Constructable<any>>> {
+    const files = Array.from(this.files, ([_, file]) => ({ ...file }))
+    const queue = await Promise.all(files.map(async (file) => {
       const res = await import(file.path)
       if (res?.default?.type) {
-        return {
-          type: res.default.type,
-          default: res.default,
-          instance: new (res.default)(),
-          file: {
-            ...file,
-            path: file.path
-              .replace('\\build', '')
-              .replace('.js', '.ts'),
-          },
-        } as Constructable
+        return new Constructable(
+          res.default.type,
+          res.default,
+          undefined,
+          file as File,
+        )
       }
     }))
+    return queue.filter(q => q) as Array<Constructable<any>>
+  }
 
-    const constructableList = objects.filter(object => object !== undefined)
-    
-    const wrapper = {
-      event: (constructable: Constructable) => this.assignEvent(constructable),
-      middleware: (constructable: Constructable) => this.assignMiddleware(constructable),
-      command: (constructable: Constructable) => this.assignCommand(constructable),
-      unknown: () => ({}),
+  public async dispatch<K extends keyof ClientEvents>(queue: Array<Constructable<any>>) {
+    if (!queue) {
+      return
     }
-    constructableList.forEach((constructable) => {
-      const containerPlacement = (wrapper[constructable!.type] || wrapper.unknown)(constructable)
+
+    this.filter('hook', queue).forEach((constructable) => {
+      const instance = new (constructable.model)()
+      Factory.getInstance().$container.hooks.push({ ...constructable, instance })
+      NodeEmitter.listen(instance)
+    })
+
+    this.filter('middleware', queue).forEach((constructable) => {
+      const instance = new (constructable.model)()
+      Factory.getInstance().$container.middlewares.push({ ...constructable, instance })
+    })
+
+    this.filter('event', queue).forEach((constructable) => {
+      const instance = new (constructable.model)()
+      Factory.getInstance().$container.events.push({ ...constructable, instance })
+      Factory.getInstance().$container.client.on(
+        instance.event, async (...args: Array<any>) => await instance.run(...args),
+      )
+    })
+
+    this.filter('command', queue).forEach((constructable) => {
+      const instance = new (constructable.model)()
+
+      Factory.getInstance().$container.commands.push({ ...constructable, instance })
+      Factory.getInstance().$container.commandAlias[instance.tag] = instance
+      instance.alias.forEach((alias) => {
+        Factory.getInstance().$container.commandAlias[alias] = instance
+      })
     })
   }
 
-  private assignEvent<K extends keyof ClientEvents> (constructable: Constructable) {
-    const $container = Factory.getInstance().$container
-    const instance: EventEntity<K> = new (constructable.default)()
-    $container.register('events', constructable)
-    $container.client.on(instance.event, async (...args: Array<any>) => await instance.run(...args))
+  public filter<K extends keyof ClientEvents> (key: ContainerType, fragment: Array<Constructable<any>>) {
+    return fragment.filter((constructable) => {
+      return constructable!.type === key
+    })
   }
 
-  public assignMiddleware(constructable: Constructable) {
-    Factory.getInstance().$container.register('middlewares', constructable)
-  }
-  
-  public assignCommand(constructable: Constructable) {
-    const $container = Factory.getInstance().$container
-    $container.register('commands', constructable)
-    $container.registerAlias(constructable.instance.tag, constructable.instance)
-    constructable.instance.alias.forEach((alias) => {
-      $container.registerAlias(alias, constructable.instance)
-    })
+  public registerHook (hook: Constructable<any>) {
+    Factory.getInstance().$container.hooks.push(
+      new Constructable(
+        hook.type,
+        hook.model,
+        hook.instance,
+        hook.file,
+      ),
+    )
+    if (hook.instance instanceof HookEntity) {
+      NodeEmitter.listen(hook.instance)
+    }
   }
 }

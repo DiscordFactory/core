@@ -11,6 +11,7 @@
     "no-trailing-spaces": "off",
     "curly": "off",
     "@typescript-eslint/no-inferrable-types": "off",
-    "new-cap": "off"
+    "new-cap": "off",
+    "brace-style": "off"
   }
 }

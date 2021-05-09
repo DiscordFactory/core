@@ -1,4 +1,3 @@
-
 import { GuildMember, Message } from 'discord.js'
 import { CommandInterface } from '../interface/CommandInterface'
 

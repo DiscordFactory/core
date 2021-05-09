@@ -1,6 +1,6 @@
 import { GuildMember, Message } from 'discord.js'
-import { MiddlewareInterface } from '../interface/MiddlewareInterface'
 import { CommandInterface } from '../interface/CommandInterface'
+import Constructable from '../Constructable'
 
 export default class MiddlewareContext {
   private readonly groups: { [key: string]: string } | undefined
@@ -11,9 +11,9 @@ export default class MiddlewareContext {
     readonly args: Array<string>,
     readonly message: Message,
     readonly command: CommandInterface,
-    readonly middlewareInterface: MiddlewareInterface,
+    readonly middleware: Constructable<any>,
   ) {
-    this.groups = middlewareInterface.pattern.exec(name)?.groups
+    this.groups = (middleware.instance as any).pattern?.exec(name)?.groups
   }
 
   public get(group: string): string | undefined {
