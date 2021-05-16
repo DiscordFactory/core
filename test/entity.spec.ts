@@ -6,27 +6,16 @@ import MiddlewareEntity from '../build/entities/MiddlewareEntity'
 import { MiddlewareContext } from '../build'
 import HookEntity from '../build/entities/HookEntity'
 
-test('create command', async (t) => {
-  const command = new CommandEntity(
-    'Foo',
-    'Description',
-    'foo',
-    [],
-    [],
-    [],
-    [],
-    [],
-    async () => {},
-  )
+const command = new CommandEntity('Foo', 'Description', 'foo', [], [], [], [], [], async () => {})
 
+test('create command', async (t) => {
   t.assert(command instanceof CommandEntity)
   t.teardown(async () => await command.run({} as Message, []))
 })
 
 test('create event', (t) => {
-  const command = new EventEntity('ready', async () => {})
-
-  t.assert(command instanceof EventEntity)
+  const event = new EventEntity('ready', async () => {})
+  t.assert(event instanceof EventEntity)
 })
 
 test('create middleware', async (t) => {

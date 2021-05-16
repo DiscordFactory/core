@@ -48,6 +48,10 @@ export default class Guard {
         commandContext,
       )
 
+      /**
+       * Emit cancelled command event from core
+       * by middleware.
+       */
       if (commandContext.isCancelled()) {
         return await NodeEmitter.register(
           'app:command:cancelled',
@@ -55,6 +59,10 @@ export default class Guard {
         )
       }
 
+      /**
+       * Emit successfully running
+       * command event from core.
+       */
       await command.run(message, args.slice(1))
       return await NodeEmitter.register(
         'app:command:executed',
@@ -62,6 +70,10 @@ export default class Guard {
       )
     }
 
+    /**
+     * Emission of the event when
+     * the message received is not a command
+     */
     await NodeEmitter.register(
       'app:message:received',
       message,
