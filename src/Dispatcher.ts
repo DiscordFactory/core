@@ -5,6 +5,7 @@ import Factory from './Factory'
 import NodeEmitter from './NodeEmitter'
 import Constructable from './Constructable'
 import HookEntity from './entities/HookEntity'
+import { activeProvider } from './helpers/Provider'
 
 export default class Dispatcher {
   constructor (private files: Map<string, File>) {
@@ -47,46 +48,81 @@ export default class Dispatcher {
      * adds them to the list of available hooks within the application,
      * and activates the event listener.
      */
-    this.filter('hook', queue).forEach((constructable) => {
-      const instance = new (constructable.model)()
-      Factory.getInstance().$container.hooks.push({ ...constructable, instance })
-      NodeEmitter.listen(instance)
-    })
+    await Promise.all(
+      this.filter('hook', queue).map(async (constructable) => {
+        const $container = Factory.getInstance().$container
+        const instance = new (constructable.model)()
+        $container.hooks.push({ ...constructable, instance })
+        NodeEmitter.listen(instance)
+        await activeProvider(
+          $container,
+          { ...constructable, instance },
+        )
+      }),
+    )
 
     /**
      * Retrieves middlewares from the queue,
      * adds them to the list of available hooks within the application.
      */
-    this.filter('middleware', queue).forEach((constructable) => {
-      const instance = new (constructable.model)()
-      Factory.getInstance().$container.middlewares.push({ ...constructable, instance })
-    })
+    await Promise.all(
+      this.filter('middleware', queue).map(async (constructable) => {
+        const $container = Factory.getInstance().$container
+        const instance = new (constructable.model)()
+        $container.middlewares.push({ ...constructable, instance })
+        await activeProvider(
+          $container,
+          { ...constructable, instance },
+        )
+      }),
+    )
 
     /**
      * Retrieves events from the queue,
      * adds them to the list of available hooks within the application,
      * registrations within the discord.js instance.
      */
-    this.filter('event', queue).forEach((constructable) => {
-      const instance = new (constructable.model)()
-      Factory.getInstance().$container.events.push({ ...constructable, instance })
-      Factory.getInstance().$container.client.on(
-        instance.event, async (...args: Array<any>) => await instance.run(...args),
-      )
-    })
+    await Promise.all(
+      this.filter('event', queue)
+        .map(async(constructable) => {
+          const $container = Factory.getInstance().$container
+          const instance = new (constructable.model)()
+  
+          $container.events.push({ ...constructable, instance })
+          $container.client.on(instance.event, async (...args: Array<any>) => {
+            await instance.run(...args)
+          })
+  
+          await activeProvider(
+            $container,
+            { ...constructable, instance },
+          )
+        }),
+    )
 
     /**
      * Retrieves commands from the queue,
      * adds them to the list of available hooks within the application.
      */
-    this.filter('command', queue).forEach((constructable) => {
-      const instance = new (constructable.model)()
-      Factory.getInstance().$container.commands.push({ ...constructable, instance })
-      Factory.getInstance().$container.commandAlias[instance.tag] = instance
-      instance.alias.forEach((alias) => {
-        Factory.getInstance().$container.commandAlias[alias] = instance
-      })
-    })
+    await Promise.all(
+      this.filter('command', queue)
+        .map(async (constructable) => {
+          const $container = Factory.getInstance().$container
+          const instance = new (constructable.model)()
+
+          $container.commands.push({ ...constructable, instance })
+          $container.commandAlias[instance.tag] = instance
+
+          instance.alias.forEach((alias) => {
+            $container.commandAlias[alias] = instance
+          })
+
+          await activeProvider(
+            $container,
+            { ...constructable, instance },
+          )
+        }),
+    )
   }
 
   /**

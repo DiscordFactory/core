@@ -1,7 +1,7 @@
 import path from 'path'
 import Env from '@discord-factory/env'
 import { fetch } from 'fs-recursive'
-import Container from './Container'
+import { Container } from './Container'
 import Dispatcher from './Dispatcher'
 import Guard from './Guard'
 import CommandHook from './hooks/CommandHook'
@@ -22,6 +22,7 @@ export default class Factory {
   }
   
   public async setup () {
+    await this.loadProvider()
     /**
      * Defines the workspace base directory.
      * Retrieves all the files that are recursively
@@ -106,5 +107,42 @@ export default class Factory {
     this.$container.client.on('message', async (message) => {
       await guard.protect(message)
     })
+
+    /**
+     * Issued upon completion
+     * of the application start-up.
+     */
+    await Promise.all(
+      this.$container.providers.map(async (provider) => {
+        await provider.ready()
+      }),
+    )
+  }
+
+  /**
+   * Retrieves providers and adds them
+   * to the application instance.
+   * @private
+   */
+  private async loadProvider() {
+    const root = process.env.NODE_ENV === 'production'
+      ? path.join(process.cwd(), 'build', 'providers')
+      : path.join(process.cwd(), 'providers')
+
+    const files = await fetch(root,
+      [process.env.NODE_ENV === 'production' ? 'js' : 'ts'],
+      'utf-8')
+
+    const providersList = Array.from(files, ([_, file]) => ({ ...file }))
+    const providers = await Promise.all(
+      providersList.map(async (file) => {
+        const withDefault = (await import(file.path)).default
+        const provider = new withDefault()
+        await provider.boot()
+
+        return provider
+      }))
+
+    Factory.getInstance().$container.providers = providers
   }
 }
