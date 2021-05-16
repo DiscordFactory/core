@@ -271,6 +271,14 @@
   dependencies:
     arrify "^1.0.1"
 
+"@discord-factory/env@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@discord-factory/env/-/env-0.0.0.tgz#a4580fdeba63413ad03fb06604d69fa38c55ac9a"
+  integrity sha512-wIci20p+AtKoMgsUDAsuisQGtxbJc4wgYAwUXF4tMcX+mHa8R4PK1/8NLYeq8PVc1sn5NzEKyvE9Xc0jVuszbw==
+  dependencies:
+    dotenv "^9.0.0"
+    ts-node "^9.1.1"
+
 "@discordjs/collection@^0.1.6":
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.1.6.tgz#9e9a7637f4e4e0688fd8b2b5c63133c91607682c"
@@ -1380,6 +1388,11 @@ dot-prop@^5.2.0:
   integrity sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==
   dependencies:
     is-obj "^2.0.0"
+
+dotenv@^9.0.0:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-9.0.2.tgz#dacc20160935a37dea6364aa1bef819fb9b6ab05"
+  integrity sha512-I9OvvrHp4pIARv4+x9iuewrWycX6CcZtoAu1XrzPxc5UygMJXJZYmBsynku8IkrJwgypE5DGNjDPmPRhDCptUg==
 
 duplexer3@^0.1.4:
   version "0.1.4"
