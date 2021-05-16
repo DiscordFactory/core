@@ -1,10 +1,10 @@
 import test from 'ava'
 import { Message } from 'discord.js'
-import CommandEntity from '../build/entities/CommandEntity'
-import EventEntity from '../build/entities/EventEntity'
-import MiddlewareEntity from '../build/entities/MiddlewareEntity'
-import { MiddlewareContext } from '../build'
-import HookEntity from '../build/entities/HookEntity'
+import CommandEntity from '../src/entities/CommandEntity'
+import EventEntity from '../src/entities/EventEntity'
+import MiddlewareEntity from '../src/entities/MiddlewareEntity'
+import { MiddlewareContext } from '../src'
+import HookEntity from '../src/entities/HookEntity'
 
 const command = new CommandEntity('Foo', 'Description', 'foo', [], [], [], [], [], async () => {})
 
