@@ -124,7 +124,7 @@ export default class Factory {
    * to the application instance.
    * @private
    */
-  private async loadProvider() {
+  protected async loadProvider () {
     const root = process.env.NODE_ENV === 'production'
       ? path.join(process.cwd(), 'build', 'providers')
       : path.join(process.cwd(), 'providers')
@@ -143,6 +143,6 @@ export default class Factory {
         return provider
       }))
 
-    Factory.getInstance().$container.providers = providers
+    Factory.$instance.$container.providers = providers
   }
 }
