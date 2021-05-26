@@ -66,10 +66,15 @@ export default class Guard {
        * command event from core.
        */
       await command.run(message, args.slice(1))
-      return await NodeEmitter.register(
+      await NodeEmitter.register(
         'app:command:executed',
         commandContext,
       )
+
+      const presets = Environment.get('PRESETS')
+      if (presets.COMMAND_AUTO_REMOVE === 'true') {
+        await message.delete()
+      }
     }
 
     /**

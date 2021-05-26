@@ -20,8 +20,11 @@ export default class CommandRoleHook implements BaseHook {
 
       if (!hasRole(sender, command.roles)) {
         context.setCancelled(true)
+
         const messages = Environment.get('MESSAGES')
-        return await message.reply(messages.COMMAND_MISSING_ROLES || 'You are not allowed to execute this command.')
+        return await message.reply(
+          messages.COMMAND_MISSING_ROLES
+          || 'You are not allowed to execute this command.')
       }
     }
   }

@@ -24,7 +24,7 @@ export default class Environment {
 
   private filterEnvironment (identifier) {
     return Object.entries(process.env)
-      .map(([key, value]) => key.toLowerCase().startsWith(identifier) ? { [key]: value } : null)
+      .map(([key, value]) => key.toLowerCase().startsWith(identifier) ? { [key.replace(`${identifier.toUpperCase()}_`, '')]: value } : null)
       .filter(rule => rule).reduce((acc, t) => ({ ...acc, ...t }))
   }
 
