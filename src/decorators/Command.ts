@@ -20,7 +20,7 @@ export default function Command(context: CommandContext) {
     return class Command extends CommandEntity {
       constructor() {
         const middlewares = context.middlewares?.map((name) => {
-          const middleware = Factory.getInstance().$container.middlewares.find((middleware) => {
+          const middleware = Factory.getInstance().$container!.middlewares.find((middleware) => {
             const instance = middleware.instance as unknown as MiddlewareEntity
             return instance.pattern.test(name) && middleware
           })

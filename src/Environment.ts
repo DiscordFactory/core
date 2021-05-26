@@ -19,7 +19,7 @@ export default class Environment {
       yaml: () => this.$instance.getFromYAML(key),
       yml: () => this.$instance.getFromYAML(key),
     }
-    return environments[this.$instance.env!.type]()
+    return environments[this.$instance.env.type]()
   }
 
   private filterEnvironment (identifier) {

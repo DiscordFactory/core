@@ -2,6 +2,7 @@ import path from 'path'
 import Env from '@discord-factory/env'
 import { fetch } from 'fs-recursive'
 import moduleAliases from 'module-alias'
+import { Client } from 'discord.js'
 import { Container } from './Container'
 import Dispatcher from './Dispatcher'
 import Guard from './Guard'
@@ -18,10 +19,10 @@ export default class Factory {
   public $env: EnvironmentFactory = {
     type: '',
     path: '',
-    content: ''
+    content: '',
   }
 
-  public $container = new Container()
+  public $container: Container<any> | undefined
 
   public static getInstance () {
     if (!Factory.$instance) {
@@ -29,10 +30,24 @@ export default class Factory {
     }
     return this.$instance
   }
-  
+
   public async setup () {
     this.registerAliases()
+
+    /**
+     * Selects the selected environment type
+     * between .env, json and yaml.
+     */
     await this.loadEnvironment()
+
+    /**
+     * Create service container with discord client
+     * with partials if exists
+     */
+    const partials = Environment.get('PARTIALS')
+    const client = new Client({ partials })
+    this.$container = new Container(client)
+
     await this.loadProvider()
     /**
      * Defines the workspace base directory.
@@ -214,6 +229,6 @@ export default class Factory {
         return provider
       }))
 
-    Factory.$instance.$container.providers = providers
+    this.$container!.providers = providers
   }
 }

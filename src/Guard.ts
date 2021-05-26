@@ -40,7 +40,7 @@ export default class Guard {
      * to the control entity
      */
     const alias: string = args[0].trim().toLowerCase().replace(prefix, '')
-    const commands = Factory.getInstance().$container.commandAlias
+    const commands = Factory.getInstance().$container!.commandAlias
     const command = commands[alias]
 
     if (command) {

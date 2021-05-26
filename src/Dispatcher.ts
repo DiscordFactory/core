@@ -50,7 +50,7 @@ export default class Dispatcher {
      */
     await Promise.all(
       this.filter('hook', queue).map(async (constructable) => {
-        const $container = Factory.getInstance().$container
+        const $container = Factory.getInstance().$container!
         const instance = new (constructable.model)()
         $container.hooks.push({ ...constructable, instance })
         NodeEmitter.listen(instance)
@@ -67,7 +67,7 @@ export default class Dispatcher {
      */
     await Promise.all(
       this.filter('middleware', queue).map(async (constructable) => {
-        const $container = Factory.getInstance().$container
+        const $container = Factory.getInstance().$container!
         const instance = new (constructable.model)()
         $container.middlewares.push({ ...constructable, instance })
         await activeProvider(
@@ -85,7 +85,7 @@ export default class Dispatcher {
     await Promise.all(
       this.filter('event', queue)
         .map(async(constructable) => {
-          const $container = Factory.getInstance().$container
+          const $container = Factory.getInstance().$container!
           const instance = new (constructable.model)()
   
           $container.events.push({ ...constructable, instance })
@@ -107,7 +107,7 @@ export default class Dispatcher {
     await Promise.all(
       this.filter('command', queue)
         .map(async (constructable) => {
-          const $container = Factory.getInstance().$container
+          const $container = Factory.getInstance().$container!
           const instance = new (constructable.model)()
 
           $container.commands.push({ ...constructable, instance })
@@ -142,7 +142,7 @@ export default class Dispatcher {
    * @param hook
    */
   public registerHook (hook: Constructable<any>) {
-    Factory.getInstance().$container.hooks.push(
+    Factory.getInstance().$container!.hooks.push(
       new Constructable(
         hook.type,
         hook.model,
