@@ -2,6 +2,7 @@ import { GuildMember, PermissionResolvable } from 'discord.js'
 import CommandContext from '../contexts/CommandContext'
 import Hook from '../decorators/Hook'
 import { BaseHook } from '../interface/HookInterface'
+import Environment from '../Environment'
 
 @Hook('app:command:preload')
 export default class CommandPermissionHook implements BaseHook {
@@ -19,7 +20,9 @@ export default class CommandPermissionHook implements BaseHook {
 
       if (!hasPermissions(sender, command.permissions)) {
         context.setCancelled(true)
-        return await message.reply('You are not allowed to execute this command.111')
+
+        const messages = Environment.get('MESSAGES')
+        return await message.reply(messages.COMMAND_MISSING_PERMISSION || 'You are not allowed to execute this command.')
       }
     }
   }

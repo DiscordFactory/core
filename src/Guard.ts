@@ -3,6 +3,7 @@ import Env from '@discord-factory/env'
 import Factory from './Factory'
 import CommandContext from './contexts/CommandContext'
 import NodeEmitter from './NodeEmitter'
+import Environment from "./Environment";
 
 export default class Guard {
   /**
@@ -27,10 +28,11 @@ export default class Guard {
      * We check the presence of a token within
      * the application environment else cancel process
      */
-    const prefix: string | undefined = Env.get('PREFIX')
+    const prefix = Environment.get('APP_PREFIX')
+    const messages = Environment.get('MESSAGES')
 
     if (!prefix) {
-      throw new Error('The prefix cannot be found, please define it in your environment file')
+      throw new Error(messages.ENVIRONMENT_FILE_PREFIX_MISSING || 'The prefix cannot be found, please define it in your environment file')
     }
 
     /**

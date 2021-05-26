@@ -5,7 +5,7 @@ import HookEntity from '../entities/HookEntity'
 import EventEntity from '../entities/EventEntity'
 import MiddlewareEntity from '../entities/MiddlewareEntity'
 
-export type ContainerType = 'event' | 'command' | 'hook' | 'middleware' | 'plugin' | null
+export type ContainerType = 'event' | 'command' | 'hook' | 'middleware' | null
 
 export type Instance<K extends keyof ClientEvents> = HookEntity | EventEntity<K> | MiddlewareEntity | CommandEntity
 
