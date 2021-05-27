@@ -7,6 +7,7 @@ import Event from './decorators/Event'
 import Middleware from './decorators/Middleware'
 import Command from './decorators/Command'
 import Hook from './decorators/Hook'
+import Disabled from './decorators/Disabled'
 
 import { BaseEvent } from './interface/EventInterface'
 import { BaseMiddleware } from './interface/MiddlewareInterface'
@@ -30,6 +31,10 @@ export {
 
 export {
   Provider,
+}
+
+export {
+  Disabled,
 }
 
 export {

@@ -19,17 +19,23 @@ export default class Dispatcher {
    */
   public async load<K extends keyof ClientEvents>(): Promise<Array<Constructable<any>>> {
     const files = Array.from(this.files, ([_, file]) => ({ ...file }))
-    const queue = await Promise.all(files.map(async (file) => {
-      const res = await import(file.path)
-      if (res?.default?.type) {
-        return new Constructable(
-          res.default.type,
-          res.default,
-          undefined,
-          file as File,
-        )
-      }
-    }))
+    const queue = await Promise.all(
+      files.map(async (file) => {
+        const res = await import(file.path)
+
+        if (new (res.default)().disabled) {
+          return
+        }
+
+        if (res?.default?.type) {
+          return new Constructable(
+            res.default.type,
+            res.default,
+            undefined,
+            file as File,
+          )
+        }
+      }))
     return queue.filter(q => q) as Array<Constructable<any>>
   }
 
