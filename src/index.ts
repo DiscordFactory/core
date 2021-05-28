@@ -16,10 +16,10 @@ import { BaseHook } from './interface/HookInterface'
 import MiddlewareContext from './contexts/MiddlewareContext'
 import Provider from './interface/ProviderInterface'
 
-import { Constructable } from './type/Container'
+import { Context } from './type/Container'
 
 export {
-  Constructable,
+  Context,
   CommandInterface,
 }
 
