@@ -3,7 +3,7 @@ import Env from '@discord-factory/env'
 import Factory from './Factory'
 import CommandContext from './contexts/CommandContext'
 import NodeEmitter from './NodeEmitter'
-import Environment from "./Environment";
+import Environment from './Environment'
 
 export default class Guard {
   /**
@@ -33,6 +33,21 @@ export default class Guard {
 
     if (!prefix) {
       throw new Error(messages.ENVIRONMENT_FILE_PREFIX_MISSING || 'The prefix cannot be found, please define it in your environment file')
+    }
+
+    /**
+     * Checks that the content of the message
+     * starts with the prefix, if not, the process is stopped
+     */
+    if (!message.content.startsWith(prefix)) {
+      /**
+       * Emission of the event when
+       * the message received is not a command
+       */
+      return await NodeEmitter.register(
+        'app:message:received',
+        message,
+      )
     }
 
     /**
@@ -76,14 +91,5 @@ export default class Guard {
         await message.delete()
       }
     }
-
-    /**
-     * Emission of the event when
-     * the message received is not a command
-     */
-    await NodeEmitter.register(
-      'app:message:received',
-      message,
-    )
   }
 }
