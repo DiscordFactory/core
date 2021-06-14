@@ -60,7 +60,8 @@ export default class Factory {
 
     const files = await fetch(root,
       [process.env.NODE_ENV === 'production' ? 'js' : 'ts'],
-      'utf-8')
+      'utf-8',
+      ['node_modules'])
 
     /**
      * Creation of a new dispatcher whose role

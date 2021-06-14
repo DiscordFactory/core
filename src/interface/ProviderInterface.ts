@@ -1,7 +1,7 @@
-import Constructable from '../Constructable'
+import { Context } from '../type/Container'
 
 export default interface Provider {
   boot: () => Promise<void>
-  loadFile: (file: Constructable<any>) => Promise<void>
+  loadFile: (context: Context) => Promise<void>
   ready: () => Promise<void>
 }

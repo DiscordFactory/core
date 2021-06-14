@@ -1,6 +1,6 @@
 {
   "name": "@discord-factory/core",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "",
   "author": "Baptiste Parmantier <baptiste.parmantier.pro@gmail.com>",
   "license": "MIT",
@@ -36,7 +36,7 @@
     "cross-env": "^7.0.3",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
-    "fs-recursive": "^1.0.6",
+    "fs-recursive": "1.1.0",
     "js-yaml": "^4.1.0",
     "mock-fs": "^4.14.0",
     "module-alias": "^2.2.2",
