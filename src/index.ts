@@ -9,6 +9,11 @@ import Command from './decorators/Command'
 import Hook from './decorators/Hook'
 import Disabled from './decorators/Disabled'
 
+import CommandEntity from './entities/CommandEntity'
+import EventEntity from './entities/EventEntity'
+import MiddlewareEntity from './entities/MiddlewareEntity'
+import HookEntity from './entities/HookEntity'
+
 import { BaseEvent } from './interface/EventInterface'
 import { BaseMiddleware } from './interface/MiddlewareInterface'
 import { BaseCommand, CommandInterface } from './interface/CommandInterface'
@@ -40,21 +45,25 @@ export {
 export {
   Event,
   BaseEvent,
+  EventEntity,
 }
 
 export {
   Middleware,
   MiddlewareContext,
   BaseMiddleware,
+  MiddlewareEntity,
 }
 
 export {
   Command,
   BaseCommand,
   CommandContext,
+  CommandEntity,
 }
 
 export {
   Hook,
   BaseHook,
+  HookEntity,
 }
