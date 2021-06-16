@@ -1,11 +1,13 @@
 import File from 'fs-recursive/build/File'
 import { ClientEvents } from 'discord.js'
-import { ContainerType } from './type/Container'
+import { ContainerType, QueueItem } from './type/Container'
 import Factory from './Factory'
 import NodeEmitter from './NodeEmitter'
-import Constructable from './Constructable'
 import HookEntity from './entities/HookEntity'
 import { activeProvider } from './helpers/Provider'
+import CommandEntity from './entities/CommandEntity'
+import EventEntity from './entities/EventEntity'
+import MiddlewareEntity from './entities/MiddlewareEntity'
 
 export default class Dispatcher {
   constructor (private files: Map<string, File>) {
@@ -17,26 +19,26 @@ export default class Dispatcher {
    * then create new Constructable.
    * @return Promise<Array<Constructable<any>>>
    */
-  public async load<K extends keyof ClientEvents>(): Promise<Array<Constructable<any>>> {
+  public async load<K extends keyof ClientEvents> (): Promise<Array<QueueItem>> {
     const files = Array.from(this.files, ([_, file]) => ({ ...file }))
-    const queue = await Promise.all(
+    const queue: Array<any> = await Promise.all(
       files.map(async (file) => {
         const res = await import(file.path)
 
-        if (new (res.default)().disabled) {
+        if (res.default.disabled) {
           return
         }
 
         if (res?.default?.type) {
-          return new Constructable(
-            res.default.type,
-            res.default,
-            undefined,
-            file as File,
-          )
+          return {
+            type: res.default.type,
+            default: res.default,
+            file,
+          } as QueueItem
         }
       }))
-    return queue.filter(q => q) as Array<Constructable<any>>
+
+    return queue.filter(q => q)
   }
 
   /**
@@ -44,7 +46,7 @@ export default class Dispatcher {
    * module and processes them at the same time.
    * @param queue Array<Constructable<any>>
    */
-  public async dispatch<K extends keyof ClientEvents>(queue: Array<Constructable<any>>): Promise<void> {
+  public async dispatch<K extends keyof ClientEvents> (queue: Array<QueueItem>): Promise<void> {
     if (!queue) {
       return
     }
@@ -55,14 +57,17 @@ export default class Dispatcher {
      * and activates the event listener.
      */
     await Promise.all(
-      this.filter('hook', queue).map(async (constructable) => {
+      this.filter('hook', queue).map(async (item) => {
         const $container = Factory.getInstance().$container!
-        const instance = new (constructable.model)()
-        $container.hooks.push({ ...constructable, instance })
+        const instance = new item.default()
+        const hook = new HookEntity(instance.hook, instance.run, item.file)
+
+        $container.hooks.push(hook)
         NodeEmitter.listen(instance)
+
         await activeProvider(
           $container,
-          { ...constructable, instance },
+          hook,
         )
       }),
     )
@@ -72,13 +77,15 @@ export default class Dispatcher {
      * adds them to the list of available hooks within the application.
      */
     await Promise.all(
-      this.filter('middleware', queue).map(async (constructable) => {
+      this.filter('middleware', queue).map(async (item) => {
         const $container = Factory.getInstance().$container!
-        const instance = new (constructable.model)()
-        $container.middlewares.push({ ...constructable, instance })
+        const instance = new item.default()
+        const middleware = new MiddlewareEntity(instance.basePattern, instance.run, item.file)
+        $container.middlewares.push(middleware)
+
         await activeProvider(
           $container,
-          { ...constructable, instance },
+          middleware,
         )
       }),
     )
@@ -90,18 +97,19 @@ export default class Dispatcher {
      */
     await Promise.all(
       this.filter('event', queue)
-        .map(async(constructable) => {
+        .map(async (item) => {
           const $container = Factory.getInstance().$container!
-          const instance = new (constructable.model)()
-  
-          $container.events.push({ ...constructable, instance })
+          const instance = new item.default()
+          const event = new EventEntity(instance.event, instance.run, item.file)
+
+          $container.events.push(event)
           $container.client.on(instance.event, async (...args: Array<any>) => {
             await instance.run(...args)
           })
-  
+
           await activeProvider(
             $container,
-            { ...constructable, instance },
+            event,
           )
         }),
     )
@@ -112,20 +120,21 @@ export default class Dispatcher {
      */
     await Promise.all(
       this.filter('command', queue)
-        .map(async (constructable) => {
+        .map(async (item) => {
           const $container = Factory.getInstance().$container!
-          const instance = new (constructable.model)()
+          const { label, description, tag, usages, alias, roles, permissions, middlewares, run } = new item.default()
 
-          $container.commands.push({ ...constructable, instance })
-          $container.commandAlias[instance.tag] = instance
+          const command = new CommandEntity(label, description, tag, usages, alias, roles, permissions, middlewares, run, item.file as any)
+          $container.commands.push(command)
+          $container.commandAlias[command.tag] = command
 
-          instance.alias.forEach((alias) => {
-            $container.commandAlias[alias] = instance
+          command.alias.forEach((alias) => {
+            $container.commandAlias[alias] = command
           })
 
           await activeProvider(
             $container,
-            { ...constructable, instance },
+            command,
           )
         }),
     )
@@ -136,9 +145,9 @@ export default class Dispatcher {
    * @param key
    * @param fragment
    */
-  public filter<K extends keyof ClientEvents> (key: ContainerType, fragment: Array<Constructable<any>> = []) {
-    return fragment.filter((constructable) => {
-      return constructable!.type === key
+  public filter<K extends keyof ClientEvents> (key: ContainerType, fragment: Array<QueueItem> = []) {
+    return fragment.filter((item) => {
+      return item.type === key
     })
   }
 
@@ -147,18 +156,17 @@ export default class Dispatcher {
    * during the application's life cycle.
    * @param hook
    */
-  public registerHook (hook: Constructable<any>) {
+  public registerHook (entity: HookEntity) {
     Factory.getInstance().$container!.hooks.push(
-      new Constructable(
-        hook.type,
-        hook.model,
-        hook.instance,
-        hook.file,
+      new HookEntity(
+        entity.hook,
+        entity.run,
+        entity.file as any,
       ),
     )
 
-    if (hook.instance instanceof HookEntity) {
-      NodeEmitter.listen(hook.instance)
+    if (entity instanceof HookEntity) {
+      NodeEmitter.listen(entity)
     }
   }
 }

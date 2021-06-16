@@ -2,7 +2,7 @@ import { Message, PermissionResolvable } from 'discord.js'
 import { MiddlewareInterface } from './MiddlewareInterface'
 
 export interface BaseCommand {
-  run(message: Message, args: Array<string>): Promise<void>
+  run (message: Message, args: Array<string>): Promise<void>
 }
 
 export interface CommandInterface {

@@ -2,6 +2,7 @@ import YAML from 'js-yaml'
 import { config } from 'dotenv'
 import { EnvironmentFactory } from './type/Factory'
 import Factory from './Factory'
+
 config()
 
 export default class Environment {

@@ -1,22 +1,22 @@
 import { GuildMember, Message } from 'discord.js'
-import { CommandInterface } from '../interface/CommandInterface'
-import Constructable from '../Constructable'
+import MiddlewareEntity from '../entities/MiddlewareEntity'
+import CommandEntity from '../entities/CommandEntity'
 
 export default class MiddlewareContext {
   private readonly groups: { [key: string]: string } | undefined
 
-  constructor(
+  constructor (
     readonly name: string,
     readonly sender: GuildMember | null,
     readonly args: Array<string>,
     readonly message: Message,
-    readonly command: CommandInterface,
-    readonly middleware: Constructable<any>,
+    readonly command: CommandEntity,
+    readonly middleware: MiddlewareEntity,
   ) {
-    this.groups = (middleware.instance as any).pattern?.exec(name)?.groups
+    this.groups = middleware.pattern?.exec(name)?.groups
   }
 
-  public get(group: string): string | undefined {
+  public get (group: string): string | undefined {
     return this.groups ? this.groups[group] : undefined
   }
 }

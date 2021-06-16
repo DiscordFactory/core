@@ -6,13 +6,14 @@ import Environment from '../Environment'
 
 @Hook('app:command:preload')
 export default class CommandPermissionHook implements BaseHook {
-  public async run(context: CommandContext): Promise<any> {
+  public async run (context: CommandContext): Promise<any> {
     const { sender, command, message } = context
     if (command.permissions?.length) {
       const hasPermissions = (sender: GuildMember | null, permissions: Array<PermissionResolvable>) => {
         if (!sender) {
           return false
         }
+
         return permissions.some((permission: PermissionResolvable) => {
           return sender.permissions.has(permission)
         })

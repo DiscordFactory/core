@@ -1,5 +1,4 @@
 import { GuildMember, Message } from 'discord.js'
-import Env from '@discord-factory/env'
 import Factory from './Factory'
 import CommandContext from './contexts/CommandContext'
 import NodeEmitter from './NodeEmitter'

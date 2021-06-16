@@ -2,7 +2,6 @@ import { PermissionResolvable } from 'discord.js'
 import CommandEntity from '../entities/CommandEntity'
 import Factory from '../Factory'
 import { MiddlewareInterface } from '../interface/MiddlewareInterface'
-import MiddlewareEntity from '../entities/MiddlewareEntity'
 
 type CommandContext = {
   label: string
@@ -15,14 +14,13 @@ type CommandContext = {
   middlewares?: Array<string>
 }
 
-export default function Command(context: CommandContext) {
+export default function Command (context: CommandContext) {
   return (target: Function) => {
     return class Command extends CommandEntity {
-      constructor() {
+      constructor () {
         const middlewares = context.middlewares?.map((name) => {
-          const middleware = Factory.getInstance().$container!.middlewares.find((middleware) => {
-            const instance = middleware.instance as unknown as MiddlewareEntity
-            return instance.pattern.test(name) && middleware
+          const middleware = Factory.getInstance().$container?.middlewares.find((middleware) => {
+            return middleware.pattern.test(name) && middleware
           })
 
           if (!middleware) {
@@ -45,6 +43,7 @@ export default function Command(context: CommandContext) {
           context.permissions || [],
           middlewares,
           target.prototype.run,
+          undefined,
         )
       }
     }

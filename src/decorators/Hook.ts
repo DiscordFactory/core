@@ -1,10 +1,10 @@
 import HookEntity from '../entities/HookEntity'
 import { Hooks } from '../type/Hooks'
 
-export default function Hook(hook: Hooks) {
+export default function Hook (hook: Hooks) {
   return (target: Function) => {
     return class Hook extends HookEntity {
-      constructor() {
+      constructor () {
         super(hook, target.prototype.run)
       }
     }

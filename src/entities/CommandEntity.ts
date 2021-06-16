@@ -1,10 +1,12 @@
 import { Message, PermissionResolvable } from 'discord.js'
-import { MiddlewareInterface } from '../interface/MiddlewareInterface'
+import { ContainerType } from '../type/Container'
+import ConstructableEntity from './ConstructableEntity'
+import MiddlewareEntity from './MiddlewareEntity'
 
-export default class CommandEntity {
-  public static type: string = 'command'
+export default class CommandEntity extends ConstructableEntity {
+  public static type: ContainerType = 'command'
 
-  constructor(
+  constructor (
     public label: string,
     public description: string,
     public tag: string,
@@ -12,7 +14,10 @@ export default class CommandEntity {
     public alias: Array<string> = [],
     public roles: Array<string> = [],
     public permissions: Array<PermissionResolvable> = [],
-    public middlewares: Array<{ name: string; pointer: MiddlewareInterface }> = [],
+    public middlewares: Array<{ name: string; pointer: MiddlewareEntity }> = [],
     public run: (message: Message, args: Array<string>) => Promise<void>,
-  ) {}
+    file?: File,
+  ) {
+    super(CommandEntity.type, file)
+  }
 }

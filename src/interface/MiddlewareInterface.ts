@@ -5,9 +5,10 @@ export interface MiddlewareInterface extends MiddlewareEntity {
   name: string
   pattern: RegExp
   path: string
-  run(context: MiddlewareContext): Promise<boolean>
+
+  run (context: MiddlewareContext): Promise<boolean>
 }
 
 export interface BaseMiddleware {
-  run(context: MiddlewareContext): Promise<boolean>
+  run (context: MiddlewareContext): Promise<boolean>
 }

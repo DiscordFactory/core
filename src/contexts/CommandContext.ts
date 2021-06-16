@@ -1,12 +1,12 @@
 import { GuildMember, Message } from 'discord.js'
-import { CommandInterface } from '../interface/CommandInterface'
+import CommandEntity from '../entities/CommandEntity'
 
 export default class CommandContext {
-  constructor(
+  constructor (
     readonly sender: GuildMember | null,
     readonly args: Array<string>,
     readonly message: Message,
-    readonly command: CommandInterface,
+    readonly command: CommandEntity,
     private cancelled: boolean = false,
   ) {
     this.setCancelled = this.setCancelled.bind(this)
@@ -17,7 +17,7 @@ export default class CommandContext {
    * of the parent command.
    * @param bool
    */
-  public setCancelled(bool: boolean): void {
+  public setCancelled (bool: boolean): void {
     this.cancelled = bool
   }
 
@@ -25,7 +25,7 @@ export default class CommandContext {
    * Checks if the order has been
    * executed or cancelled
    */
-  public isCancelled(): boolean {
+  public isCancelled (): boolean {
     return this.cancelled
   }
 }

@@ -1,5 +1,4 @@
 import path from 'path'
-import Env from '@discord-factory/env'
 import { fetch } from 'fs-recursive'
 import moduleAliases from 'module-alias'
 import { Client } from 'discord.js'
@@ -7,7 +6,6 @@ import { Container } from './Container'
 import Dispatcher from './Dispatcher'
 import Guard from './Guard'
 import CommandHook from './hooks/CommandHook'
-import Constructable from './Constructable'
 import HookEntity from './entities/HookEntity'
 import CommandRoleHook from './hooks/CommandRoleHook'
 import CommandPermissionHook from './hooks/CommandPermissionHook'
@@ -22,7 +20,7 @@ export default class Factory {
     content: '',
   }
 
-  public $container: Container<any> | undefined
+  public $container: Container | undefined
 
   public static getInstance () {
     if (!Factory.$instance) {
@@ -73,30 +71,27 @@ export default class Factory {
      * Registration of hooks to be executed during the runtime.
      * @Todo Allow developers to extend this configuration through plugins.
      */
-    const commandHook = new CommandHook()
+    const commandHook = new CommandHook() as any
     dispatcher.registerHook(
-      new Constructable(
-        'hook',
-        commandHook.toString(),
-        commandHook as HookEntity,
+      new HookEntity(
+        commandHook.hook,
+        commandHook.run,
       ),
     )
 
-    const commandRoleHook = new CommandRoleHook()
+    const commandRoleHook = new CommandRoleHook() as any
     dispatcher.registerHook(
-      new Constructable(
-        'hook',
-        commandRoleHook.toString(),
-        commandRoleHook as HookEntity,
+      new HookEntity(
+        commandRoleHook.hook,
+        commandRoleHook.run,
       ),
     )
 
-    const commandPermissionHook = new CommandPermissionHook()
+    const commandPermissionHook = new CommandPermissionHook() as any
     dispatcher.registerHook(
-      new Constructable(
-        'hook',
-        commandPermissionHook.toString(),
-        commandPermissionHook as HookEntity,
+      new HookEntity(
+        commandPermissionHook.hook,
+        commandPermissionHook.run,
       ),
     )
 
@@ -164,6 +159,33 @@ export default class Factory {
     })
   }
 
+  /**
+   * Retrieves providers and adds them
+   * to the application instance.
+   * @private
+   */
+  protected async loadProvider () {
+    const root = process.env.NODE_ENV === 'production'
+      ? path.join(process.cwd(), 'build', 'providers')
+      : path.join(process.cwd(), 'providers')
+
+    const files = await fetch(root,
+      [process.env.NODE_ENV === 'production' ? 'js' : 'ts'],
+      'utf-8')
+
+    const providersList = Array.from(files, ([_, file]) => ({ ...file }))
+    const providers = await Promise.all(
+      providersList.map(async (file) => {
+        const withDefault = (await import(file.path)).default
+        const provider = new withDefault()
+        await provider.boot()
+
+        return provider
+      }))
+
+    this.$container!.providers = providers
+  }
+
   private async loadEnvironment () {
     const environment = await fetch(process.cwd(),
       ['env', 'json', 'yaml', 'yml'],
@@ -173,7 +195,7 @@ export default class Factory {
     const environments = Array.from(environment.entries())
       .filter(([_, file]) => file.filename === 'environment' || file.extension === 'env')
       .map(([_, file]) => file)
-    
+
     const env = environments.find(file => file.extension === 'env')
     if (env) {
       return this.$env = {
@@ -204,32 +226,5 @@ export default class Factory {
     }
 
     throw new Error('Environment file is missing, please create one.')
-  }
-
-  /**
-   * Retrieves providers and adds them
-   * to the application instance.
-   * @private
-   */
-  protected async loadProvider () {
-    const root = process.env.NODE_ENV === 'production'
-      ? path.join(process.cwd(), 'build', 'providers')
-      : path.join(process.cwd(), 'providers')
-
-    const files = await fetch(root,
-      [process.env.NODE_ENV === 'production' ? 'js' : 'ts'],
-      'utf-8')
-
-    const providersList = Array.from(files, ([_, file]) => ({ ...file }))
-    const providers = await Promise.all(
-      providersList.map(async (file) => {
-        const withDefault = (await import(file.path)).default
-        const provider = new withDefault()
-        await provider.boot()
-
-        return provider
-      }))
-
-    this.$container!.providers = providers
   }
 }
