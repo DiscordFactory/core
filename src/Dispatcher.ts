@@ -25,10 +25,6 @@ export default class Dispatcher {
       files.map(async (file) => {
         const res = await import(file.path)
 
-        if (res.default.disabled) {
-          return
-        }
-
         if (res?.default?.type) {
           return {
             type: res.default.type,

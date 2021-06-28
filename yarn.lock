@@ -1985,10 +1985,10 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.1.1.tgz#c4b489e80096d9df1dfc97c79871aea7c617c469"
   integrity sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==
 
-fs-recursive@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/fs-recursive/-/fs-recursive-1.1.0.tgz#3c63323237c3c2b632c20075a5a1b69a510224c3"
-  integrity sha512-3xMz4vNh35QabXwpjSPKDNuM+O2FRSjQ9ZIpojvYB+TMrlgCVv4bfQkZehUrhKXUnF8mY3rXwFATqW46tZS2UA==
+fs-recursive@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/fs-recursive/-/fs-recursive-1.1.1.tgz#223bc4e7653d2da0d71e56495577937ebb9d0ceb"
+  integrity sha512-9kKKukfDHMotVyXT3eG4jwRVZ7tqf/FR/5po1vWa0rKxaZQJMDTgnX4eT4HIYGn2PXbQbslewKMfA2zkuPcK7Q==
   dependencies:
     "@types/node" "^14.14.32"
     "@types/uuid" "^8.3.0"

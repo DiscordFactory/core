@@ -16,12 +16,7 @@ export type QueueItem = {
   file: File
 }
 
-export type Context = {
-  type: ContainerType
-  default: any
-  instance: HookEntity | EventEntity<any> | MiddlewareEntity | CommandEntity
-  file: File
-}
+export type Context = HookEntity | EventEntity<any> | MiddlewareEntity | CommandEntity
 
 export type Constructable<K extends keyof ClientEvents> = {
   type: ContainerType

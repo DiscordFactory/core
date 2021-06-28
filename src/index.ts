@@ -7,7 +7,6 @@ import Event from './decorators/Event'
 import Middleware from './decorators/Middleware'
 import Command from './decorators/Command'
 import Hook from './decorators/Hook'
-import Disabled from './decorators/Disabled'
 
 import CommandEntity from './entities/CommandEntity'
 import EventEntity from './entities/EventEntity'
@@ -36,10 +35,6 @@ export {
 
 export {
   Provider,
-}
-
-export {
-  Disabled,
 }
 
 export {
