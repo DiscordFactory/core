@@ -1,3 +1,4 @@
+import Application from './Application'
 import CommandContext from './contexts/CommandContext'
 import Factory from './Factory'
 import Environment from './Environment'
@@ -28,6 +29,7 @@ export {
 }
 
 export {
+  Application,
   Factory,
   Container,
   Environment,
