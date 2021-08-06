@@ -34,7 +34,7 @@
     "@discord-factory/env": "^0.0.0",
     "@types/mock-fs": "^4.13.0",
     "cross-env": "^7.0.3",
-    "discord.js": "^12.5.3",
+    "discord.js": "^13.0.0",
     "dotenv": "^10.0.0",
     "fs-recursive": "1.1.1",
     "js-yaml": "^4.1.0",

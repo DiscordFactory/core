@@ -1,7 +1,7 @@
 import path from 'path'
 import { fetch } from 'fs-recursive'
 import moduleAliases from 'module-alias'
-import { Client } from 'discord.js'
+import { Client, Intents } from 'discord.js'
 import { Container } from './Container'
 import Dispatcher from './Dispatcher'
 import Guard from './Guard'
@@ -43,7 +43,7 @@ export default class Factory {
      * with partials if exists
      */
     const partials = Environment.get('PARTIALS')
-    const client = new Client({ partials })
+    const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES], partials })
     this.$container = new Container(client)
 
     await this.loadProvider()
@@ -174,7 +174,7 @@ export default class Factory {
       'utf-8')
 
     const providersList = Array.from(files, ([_, file]) => ({ ...file }))
-    const providers = await Promise.all(
+    this.$container!.providers = await Promise.all(
       providersList.map(async (file) => {
         const withDefault = (await import(file.path)).default
         const provider = new withDefault()
@@ -182,8 +182,6 @@ export default class Factory {
 
         return provider
       }))
-
-    this.$container!.providers = providers
   }
 
   private async loadEnvironment () {
