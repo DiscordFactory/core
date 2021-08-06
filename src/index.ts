@@ -14,6 +14,9 @@ import EventEntity from './entities/EventEntity'
 import MiddlewareEntity from './entities/MiddlewareEntity'
 import HookEntity from './entities/HookEntity'
 
+import SlashCommand from './decorators/SlashCommand'
+import { BaseSlashCommand } from './interface/SlashCommandInterface'
+
 import { BaseEvent } from './interface/EventInterface'
 import { BaseMiddleware } from './interface/MiddlewareInterface'
 import { BaseCommand, CommandInterface } from './interface/CommandInterface'
@@ -57,6 +60,11 @@ export {
   BaseCommand,
   CommandContext,
   CommandEntity,
+}
+
+export {
+  SlashCommand,
+  BaseSlashCommand,
 }
 
 export {

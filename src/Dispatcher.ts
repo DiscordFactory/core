@@ -8,6 +8,7 @@ import { activeProvider } from './helpers/Provider'
 import CommandEntity from './entities/CommandEntity'
 import EventEntity from './entities/EventEntity'
 import MiddlewareEntity from './entities/MiddlewareEntity'
+import SlashCommandEntity from './entities/SlashCommandEntity'
 
 export default class Dispatcher {
   constructor (private files: Map<string, File>) {
@@ -111,6 +112,27 @@ export default class Dispatcher {
     )
 
     /**
+     * Retrieves events from the queue,
+     * adds them to the list of available hooks within the application,
+     * registrations within the discord.js instance.
+     */
+    await Promise.all(
+      this.filter('slash-command', queue)
+        .map(async (item) => {
+          const $container = Factory.getInstance().$container!
+          const instance = new item.default()
+          const slashCommand = new SlashCommandEntity(instance.scope, instance.context, instance.run, item.file)
+
+          $container.slashCommands.push(slashCommand)
+
+          await activeProvider(
+            $container,
+            slashCommand,
+          )
+        }),
+    )
+
+    /**
      * Retrieves commands from the queue,
      * adds them to the list of available hooks within the application.
      */
@@ -150,8 +172,8 @@ export default class Dispatcher {
   /**
    * Registers a new hook to be executed
    * during the application's life cycle.
-   * @param hook
-   */
+   * @param entity
+  */
   public registerHook (entity: HookEntity) {
     Factory.getInstance().$container!.hooks.push(
       new HookEntity(
@@ -161,8 +183,6 @@ export default class Dispatcher {
       ),
     )
 
-    if (entity instanceof HookEntity) {
-      NodeEmitter.listen(entity)
-    }
+    NodeEmitter.listen(entity)
   }
 }

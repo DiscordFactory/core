@@ -406,10 +406,15 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-15.0.2.tgz#51e9c0920d1b45936ea04341aa3e2e58d339fb67"
   integrity sha512-p68+a+KoxpoB47015IeYZYRrdqMUcpbK8re/zpFB8Ld46LHC1lPEbp3EXgkEhAYEcPvjJF6ZO+869SQ0aH1dcA==
 
-"@types/node@^14.14.32", "@types/node@^14.14.37":
+"@types/node@^14.14.37":
   version "14.14.43"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.43.tgz#26bcbb0595b305400e8ceaf9a127a7f905ae49c8"
   integrity sha512-3pwDJjp1PWacPTpH0LcfhgjvurQvrZFBrC6xxjaUEZ7ifUtT32jtjPxEMMblpqd2Mvx+k8haqQJLQxolyGN/cQ==
+
+"@types/node@^16.3.3":
+  version "16.4.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.4.13.tgz#7dfd9c14661edc65cccd43a29eb454174642370d"
+  integrity sha512-bLL69sKtd25w7p1nvg9pigE4gtKVpGTPojBFLMkGHXuUgap2sLqQt2qUnqmVCDfzGUL0DRNZP+1prIZJbMeAXg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -2013,12 +2018,12 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.1.1.tgz#c4b489e80096d9df1dfc97c79871aea7c617c469"
   integrity sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==
 
-fs-recursive@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/fs-recursive/-/fs-recursive-1.1.1.tgz#223bc4e7653d2da0d71e56495577937ebb9d0ceb"
-  integrity sha512-9kKKukfDHMotVyXT3eG4jwRVZ7tqf/FR/5po1vWa0rKxaZQJMDTgnX4eT4HIYGn2PXbQbslewKMfA2zkuPcK7Q==
+fs-recursive@1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/fs-recursive/-/fs-recursive-1.1.4.tgz#93aab143c46b8b34f4a6e551adbf4c6939eba4bf"
+  integrity sha512-j3IHI8S9ady04a/r8VmAP5hjgQ+PbY3QWiJjQKgaSIxdyiKnSrGRbO6sewfy3OGVJLI37wi4wYRh7Kwj5r6X0w==
   dependencies:
-    "@types/node" "^14.14.32"
+    "@types/node" "^16.3.3"
     "@types/uuid" "^8.3.0"
     fs "^0.0.1-security"
     ts-node "^9.1.1"

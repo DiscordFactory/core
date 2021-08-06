@@ -1,3 +1,4 @@
+import { File } from 'fs-recursive'
 import { ContainerType } from '../type/Container'
 
 export default class ConstructableEntity {

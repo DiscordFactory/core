@@ -1,7 +1,7 @@
 import path from 'path'
 import { fetch } from 'fs-recursive'
 import moduleAliases from 'module-alias'
-import { Client, Intents, PartialTypes } from 'discord.js'
+import { ApplicationCommandData, Client, Intents, Interaction, PartialTypes } from 'discord.js'
 import { Container } from './Container'
 import Dispatcher from './Dispatcher'
 import Guard from './Guard'
@@ -11,7 +11,8 @@ import CommandRoleHook from './hooks/CommandRoleHook'
 import CommandPermissionHook from './hooks/CommandPermissionHook'
 import { EnvironmentFactory } from './type/Factory'
 import Environment from './Environment'
-
+import SlashCommandEntity from './entities/SlashCommandEntity'
+import { SlashContext } from './interface/SlashCommandInterface'
 export default class Factory {
   private static $instance: Factory
   public $env: EnvironmentFactory = {
@@ -128,6 +129,20 @@ export default class Factory {
 
     await this.$container.client.login(token)
 
+    const globalCommands = this.$container.slashCommands
+      .map((command: SlashCommandEntity) => command.scope === 'GLOBAL' && command.context)
+      .filter(a => a) as SlashContext[]
+
+    this.$container!.client.application?.commands.set(globalCommands as unknown as ApplicationCommandData[])
+
+    const guildCommandEntities = this.$container.slashCommands
+      .map((command: SlashCommandEntity) => command.scope !== 'GLOBAL' && command)
+      .filter(a => a) as SlashCommandEntity[]
+
+    guildCommandEntities.forEach((command: SlashCommandEntity) => {
+      this.$container?.client.guilds.cache.get(command.scope)?.commands.create(command.context)
+    })
+
     /**
      * Initialize a Guard.
      * It performs the checks before the execution of the commands.
@@ -140,6 +155,20 @@ export default class Factory {
      */
     this.$container.client.on('messageCreate', async (message) => {
       await guard.protect(message)
+    })
+
+    this.$container.client.on('interactionCreate', async (interaction: Interaction) => {
+      if (!interaction.isCommand()) {
+        return
+      }
+
+      const command = this.$container?.slashCommands.find((command) => {
+        return command.context.name === interaction.commandName.toLowerCase()
+      })
+
+      if (command) {
+        await command.run(interaction)
+      }
     })
 
     /**

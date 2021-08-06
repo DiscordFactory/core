@@ -36,7 +36,7 @@
     "cross-env": "^7.0.3",
     "discord.js": "^13.0.0",
     "dotenv": "^10.0.0",
-    "fs-recursive": "1.1.1",
+    "fs-recursive": "1.1.4",
     "js-yaml": "^4.1.0",
     "mock-fs": "^4.14.0",
     "module-alias": "^2.2.2",
