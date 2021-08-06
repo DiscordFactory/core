@@ -1,7 +1,7 @@
 import path from 'path'
 import { fetch } from 'fs-recursive'
 import moduleAliases from 'module-alias'
-import { Client, Intents } from 'discord.js'
+import { Client, Intents, PartialTypes } from 'discord.js'
 import { Container } from './Container'
 import Dispatcher from './Dispatcher'
 import Guard from './Guard'
@@ -42,8 +42,13 @@ export default class Factory {
      * Create service container with discord client
      * with partials if exists
      */
-    const partials = Environment.get('PARTIALS')
-    const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES], partials })
+    const partials: PartialTypes[] = Environment.get('PARTIALS')
+    const intents: string[] = Environment.get('INTENTS')
+
+    const client = new Client({
+      intents: intents.map((intent: string) => Intents.FLAGS[intent]),
+      partials,
+    })
     this.$container = new Container(client)
 
     await this.loadProvider()
@@ -133,7 +138,7 @@ export default class Factory {
      * Applies guard to messages received
      * from the discord.js 'message' event.
      */
-    this.$container.client.on('message', async (message) => {
+    this.$container.client.on('messageCreate', async (message) => {
       await guard.protect(message)
     })
 
