@@ -1,9 +1,9 @@
 import Factory from '../Factory'
-import { QueueItem } from '../type/Container'
+import { QueueItem } from '../types'
 import { activeProvider } from '../helpers/Provider'
 import HookEntity from '../entities/HookEntity'
 import NodeEmitter from '../NodeEmitter'
-import { BaseHook, HookInterface } from '../interface/HookInterface'
+import { BaseHook, HookInterface } from '../types/Hook'
 import Manager from './Manager'
 
 export default class HookManager extends Manager {

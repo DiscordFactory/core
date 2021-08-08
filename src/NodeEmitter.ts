@@ -1,9 +1,9 @@
-import { Hooks } from './type/Hooks'
-import HookEntity from "./entities/HookEntity";
+import { Hook } from './types/Hook'
+import HookEntity from './entities/HookEntity'
 
 type Listener = (...args: Array<any>) => Promise<void>
 type ConstructableListener = {
-  identifier: Hooks
+  identifier: Hook
   listeners: Array<Listener>
 }
 
@@ -16,7 +16,7 @@ class NodeEmitter {
    * @param target Hook
    * @param args ...args
    */
-  public async register (target: Hooks, ...args: Array<any>): Promise<void> {
+  public async register (target: Hook, ...args: Array<any>): Promise<void> {
     const listenerList = this.listeners.find((constructable) => {
       return constructable.identifier === target
     })
@@ -31,7 +31,7 @@ class NodeEmitter {
   /**
    * Activates the event listener
    * on the key passed in parameter.
-   * @param hookEntity
+   * @param entity
    */
   public listen (entity: HookEntity): void {
     const constructableListener = this.listeners.find((listener) => {

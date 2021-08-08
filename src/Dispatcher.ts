@@ -1,6 +1,6 @@
 import File from 'fs-recursive/build/File'
 import { ClientEvents } from 'discord.js'
-import { ContainerType, QueueItem } from './type/Container'
+import { ContainerType, QueueItem } from './types'
 import Factory from './Factory'
 import NodeEmitter from './NodeEmitter'
 import HookEntity from './entities/HookEntity'

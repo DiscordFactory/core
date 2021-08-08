@@ -1,6 +1,6 @@
 import { ClientEvents } from 'discord.js'
-import File from 'fs-recursive/build/File'
-import { ContainerType } from '../type/Container'
+import { File } from 'fs-recursive'
+import { ContainerType } from '../types'
 import ConstructableEntity from './ConstructableEntity'
 
 export default class EventEntity<K extends keyof ClientEvents> extends ConstructableEntity {

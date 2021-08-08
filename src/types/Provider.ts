@@ -1,4 +1,4 @@
-import { Context } from '../type/Container'
+import { Context } from './'
 
 export default interface Provider {
   boot: () => Promise<void>

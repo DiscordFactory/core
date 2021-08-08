@@ -1,6 +1,6 @@
 import { File } from 'fs-recursive'
-import { ContainerType } from '../type/Container'
-import { ScopeContext, SlashOption } from '../interface/SlashCommandInterface'
+import { ContainerType } from '../types'
+import { ScopeContext, SlashOption } from '../types/SlashCommand'
 import ConstructableEntity from './ConstructableEntity'
 
 export default class SlashCommandEntity extends ConstructableEntity {

@@ -1,7 +1,7 @@
 import YAML from 'js-yaml'
 import { config } from 'dotenv'
 import { fetch } from 'fs-recursive'
-import { EnvironmentFactory } from '../type/Factory'
+import { EnvironmentFactory } from '../types/Factory'
 
 config()
 

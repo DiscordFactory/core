@@ -1,5 +1,5 @@
 import Hook from '../decorators/Hook'
-import { BaseHook } from '../interface/HookInterface'
+import { BaseHook } from '../types/Hook'
 import CommandContext from '../contexts/CommandContext'
 import MiddlewareContext from '../contexts/MiddlewareContext'
 

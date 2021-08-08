@@ -1,5 +1,5 @@
 import Factory from '../Factory'
-import { QueueItem } from '../type/Container'
+import { QueueItem } from '../types'
 import { activeProvider } from '../helpers/Provider'
 import CommandEntity from '../entities/CommandEntity'
 import Guard from '../Guard'

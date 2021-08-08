@@ -1,7 +1,6 @@
 import Application from './Application'
 import CommandContext from './contexts/CommandContext'
 import Factory from './Factory'
-import { Container } from './interface/ContainerInterface'
 
 import Event from './decorators/Event'
 import Middleware from './decorators/Middleware'
@@ -14,26 +13,24 @@ import MiddlewareEntity from './entities/MiddlewareEntity'
 import HookEntity from './entities/HookEntity'
 
 import SlashCommand from './decorators/SlashCommand'
-import { BaseSlashCommand } from './interface/SlashCommandInterface'
+import { BaseSlashCommand } from './types/SlashCommand'
 
-import { BaseEvent } from './interface/EventInterface'
-import { BaseMiddleware } from './interface/MiddlewareInterface'
-import { BaseCommand, CommandInterface } from './interface/CommandInterface'
-import { BaseHook } from './interface/HookInterface'
+import { BaseEvent } from './types/Event'
+import { BaseMiddleware } from './types/Middleware'
+import { BaseCommand } from './types/Command'
+import { BaseHook } from './types/Hook'
 import MiddlewareContext from './contexts/MiddlewareContext'
-import Provider from './interface/ProviderInterface'
+import Provider from './types/Provider'
 
-import { Context } from './type/Container'
+import { Context } from './types'
 
 export {
   Context,
-  CommandInterface,
 }
 
 export {
   Application,
   Factory,
-  Container,
 }
 
 export {

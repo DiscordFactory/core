@@ -1,6 +1,6 @@
 import { Message, PermissionResolvable } from 'discord.js'
 import { File } from 'fs-recursive'
-import { ContainerType } from '../type/Container'
+import { ContainerType } from '../types'
 import ConstructableEntity from './ConstructableEntity'
 import MiddlewareEntity from './MiddlewareEntity'
 

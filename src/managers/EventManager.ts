@@ -1,6 +1,6 @@
 import EventEntity from '../entities/EventEntity'
 import Factory from '../Factory'
-import { QueueItem } from '../type/Container'
+import { QueueItem } from '../types'
 import { activeProvider } from '../helpers/Provider'
 import Manager from './Manager'
 

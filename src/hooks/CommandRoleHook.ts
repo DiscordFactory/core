@@ -1,6 +1,6 @@
 import { GuildMember } from 'discord.js'
 import Hook from '../decorators/Hook'
-import { BaseHook } from '../interface/HookInterface'
+import { BaseHook } from '../types/Hook'
 import CommandContext from '../contexts/CommandContext'
 import Application from '../Application'
 

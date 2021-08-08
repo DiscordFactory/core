@@ -1,5 +1,5 @@
 import BaseMiddleware from '../entities/MiddlewareEntity'
-import { MiddlewareContext } from '../type/Middleware'
+import { MiddlewareContext } from '../types/Middleware'
 
 export default function Middleware (context: MiddlewareContext) {
   return (target: Function) => {

@@ -1,5 +1,5 @@
 import SlashCommandEntity from '../entities/SlashCommandEntity'
-import { Context } from '../interface/SlashCommandInterface'
+import { Context } from '../types/SlashCommand'
 
 export default function SlashCommand (context: Context) {
   return (target: Function) => {

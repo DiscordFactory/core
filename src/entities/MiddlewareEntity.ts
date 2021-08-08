@@ -1,6 +1,6 @@
-import File from 'fs-recursive/build/File'
+import { File } from 'fs-recursive'
 import MiddlewareContext from '../contexts/MiddlewareContext'
-import { ContainerType } from '../type/Container'
+import { ContainerType } from '../types'
 import ConstructableEntity from './ConstructableEntity'
 
 export default class MiddlewareEntity extends ConstructableEntity {

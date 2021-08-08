@@ -38,7 +38,7 @@ export default class Factory {
     this.registerAliases()
 
     /**
-     * Selects the selected environment type
+     * Selects the selected environment types
      * between .env, json and yaml.
      */
     await this.environmentManager.load()

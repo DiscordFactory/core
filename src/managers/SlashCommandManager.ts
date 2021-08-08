@@ -1,9 +1,9 @@
 import { ApplicationCommand, ApplicationCommandData, Collection, Interaction } from 'discord.js'
 import Factory from '../Factory'
-import { QueueItem } from '../type/Container'
+import { QueueItem } from '../types'
 import { activeProvider } from '../helpers/Provider'
 import SlashCommandEntity from '../entities/SlashCommandEntity'
-import { SlashOption } from '../interface/SlashCommandInterface'
+import { SlashOption } from '../types/SlashCommand'
 import Manager from './Manager'
 
 export default class SlashCommandManager extends Manager {

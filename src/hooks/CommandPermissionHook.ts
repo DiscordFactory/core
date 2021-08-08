@@ -1,7 +1,7 @@
 import { GuildMember, PermissionResolvable } from 'discord.js'
 import CommandContext from '../contexts/CommandContext'
 import Hook from '../decorators/Hook'
-import { BaseHook } from '../interface/HookInterface'
+import { BaseHook } from '../types/Hook'
 import Application from '../Application'
 
 @Hook('app:command:preload')

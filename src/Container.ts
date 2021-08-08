@@ -1,6 +1,6 @@
 import { Client, ClientEvents } from 'discord.js'
-import { CommandAlias } from './type/Container'
-import Provider from './interface/ProviderInterface'
+import { CommandAlias } from './types'
+import Provider from './types/Provider'
 import CommandEntity from './entities/CommandEntity'
 import EventEntity from './entities/EventEntity'
 import MiddlewareEntity from './entities/MiddlewareEntity'

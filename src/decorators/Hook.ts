@@ -1,7 +1,7 @@
 import HookEntity from '../entities/HookEntity'
-import { Hooks } from '../type/Hooks'
+import { HookType } from '../types/Hook'
 
-export default function Hook (hook: Hooks) {
+export default function Hook (hook: HookType) {
   return (target: Function) => {
     return class Hook extends HookEntity {
       constructor () {
