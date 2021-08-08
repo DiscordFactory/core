@@ -1,3 +1,5 @@
+import { QueueItem } from '../type/Container'
+
 export default abstract class Manager {
-  public abstract dispatch (): Promise<void>
+  public abstract register (item: QueueItem): Promise<void>
 }

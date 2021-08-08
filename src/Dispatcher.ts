@@ -6,7 +6,6 @@ import NodeEmitter from './NodeEmitter'
 import HookEntity from './entities/HookEntity'
 import { activeProvider } from './helpers/Provider'
 import CommandEntity from './entities/CommandEntity'
-import EventEntity from './entities/EventEntity'
 import MiddlewareEntity from './entities/MiddlewareEntity'
 import SlashCommandEntity from './entities/SlashCommandEntity'
 
@@ -95,19 +94,8 @@ export default class Dispatcher {
     await Promise.all(
       this.filter('event', queue)
         .map(async (item) => {
-          const $container = Factory.getInstance().$container!
-          const instance = new item.default()
-          const event = new EventEntity(instance.event, instance.run, item.file)
-
-          $container.events.push(event)
-          $container.client.on(instance.event, async (...args: Array<any>) => {
-            await instance.run(...args)
-          })
-
-          await activeProvider(
-            $container,
-            event,
-          )
+          const eventManager = Factory.getInstance().eventManager
+          await eventManager.register(item)
         }),
     )
 

@@ -20,11 +20,14 @@ import CommandPermissionHook from './hooks/CommandPermissionHook'
 import SlashCommandEntity from './entities/SlashCommandEntity'
 import { SlashOption } from './interface/SlashCommandInterface'
 import EnvironmentManager from './managers/EnvironmentManager'
+import { root } from './helpers'
+import EventManager from './managers/EventManager'
 
 export default class Factory {
   private static $instance: Factory
 
   public environmentManager: EnvironmentManager = new EnvironmentManager()
+  public eventManager: EventManager = new EventManager()
 
   public $container: Container | undefined
 
@@ -63,10 +66,6 @@ export default class Factory {
      * Retrieves all the files that are recursively
      * available in this directory
      */
-    const root = process.env.NODE_ENV === 'production'
-      ? path.join(process.cwd(), 'build', 'src')
-      : path.join(process.cwd(), 'src')
-
     const files = await fetch(root,
       [process.env.NODE_ENV === 'production' ? 'js' : 'ts'],
       'utf-8',
