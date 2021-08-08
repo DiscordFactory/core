@@ -22,12 +22,14 @@ import { SlashOption } from './interface/SlashCommandInterface'
 import EnvironmentManager from './managers/EnvironmentManager'
 import { root } from './helpers'
 import EventManager from './managers/EventManager'
+import CommandManager from './managers/CommandManager'
 
 export default class Factory {
   private static $instance: Factory
 
   public environmentManager: EnvironmentManager = new EnvironmentManager()
   public eventManager: EventManager = new EventManager()
+  public commandManager: CommandManager = new CommandManager()
 
   public $container: Container | undefined
 

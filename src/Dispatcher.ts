@@ -5,7 +5,6 @@ import Factory from './Factory'
 import NodeEmitter from './NodeEmitter'
 import HookEntity from './entities/HookEntity'
 import { activeProvider } from './helpers/Provider'
-import CommandEntity from './entities/CommandEntity'
 import MiddlewareEntity from './entities/MiddlewareEntity'
 import SlashCommandEntity from './entities/SlashCommandEntity'
 
@@ -127,21 +126,8 @@ export default class Dispatcher {
     await Promise.all(
       this.filter('command', queue)
         .map(async (item) => {
-          const $container = Factory.getInstance().$container!
-          const { label, description, tag, usages, alias, roles, permissions, middlewares, run } = new item.default()
-
-          const command = new CommandEntity(label, description, tag, usages, alias, roles, permissions, middlewares, run, item.file as any)
-          $container.commands.push(command)
-          $container.commandAlias[command.tag] = command
-
-          command.alias.forEach((alias) => {
-            $container.commandAlias[alias] = command
-          })
-
-          await activeProvider(
-            $container,
-            command,
-          )
+          const commandManager = Factory.getInstance().commandManager
+          await commandManager.register(item)
         }),
     )
   }
