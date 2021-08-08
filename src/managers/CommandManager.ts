@@ -6,14 +6,16 @@ import Manager from './Manager'
 
 export default class CommandManager extends Manager {
   public async register (item: QueueItem) {
-    const { label, description, tag, usages, alias, roles, permissions, middlewares, run } = new item.default()
+    const $container = Factory.getInstance().$container
 
+    const { label, description, tag, usages, alias, roles, permissions, middlewares, run } = new item.default()
     const command = new CommandEntity(label, description, tag, usages, alias, roles, permissions, middlewares, run, item.file as any)
-    Factory.getInstance().$container!.commands.push(command)
-    Factory.getInstance().$container!.commandAlias[command.tag] = command
+
+    $container?.commands.push(command)
+    $container!.commandAlias[command.tag] = command
 
     command.alias.forEach((alias) => {
-      Factory.getInstance().$container!.commandAlias[alias] = command
+      $container!.commandAlias[alias] = command
     })
 
     await this.activeProvider(command)
