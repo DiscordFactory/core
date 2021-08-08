@@ -24,6 +24,7 @@ import { root } from './helpers'
 import EventManager from './managers/EventManager'
 import CommandManager from './managers/CommandManager'
 import HookManager from './managers/HookManager'
+import SlashCommandManager from './managers/SlashCommandManager'
 
 export default class Factory {
   private static $instance: Factory
@@ -32,6 +33,7 @@ export default class Factory {
   public eventManager: EventManager = new EventManager()
   public commandManager: CommandManager = new CommandManager()
   public hookManager: HookManager = new HookManager()
+  public slashCommandManager: SlashCommandManager = new SlashCommandManager()
 
   public $container: Container | undefined
 

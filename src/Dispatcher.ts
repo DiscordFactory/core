@@ -6,7 +6,6 @@ import NodeEmitter from './NodeEmitter'
 import HookEntity from './entities/HookEntity'
 import { activeProvider } from './helpers/Provider'
 import MiddlewareEntity from './entities/MiddlewareEntity'
-import SlashCommandEntity from './entities/SlashCommandEntity'
 
 export default class Dispatcher {
   constructor (private files: Map<string, File>) {
@@ -97,16 +96,8 @@ export default class Dispatcher {
     await Promise.all(
       this.filter('slash-command', queue)
         .map(async (item) => {
-          const $container = Factory.getInstance().$container!
-          const instance = new item.default()
-          const slashCommand = new SlashCommandEntity(instance.scope, instance.roles, instance.context, instance.run, item.file)
-
-          $container.slashCommands.push(slashCommand)
-
-          await activeProvider(
-            $container,
-            slashCommand,
-          )
+          const slashCommandManager = Factory.getInstance().slashCommandManager
+          await slashCommandManager.register(item)
         }),
     )
 
