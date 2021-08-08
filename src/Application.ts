@@ -5,6 +5,10 @@ export default class Application {
     return Factory.getInstance().$container
   }
 
+  public static getEnvironment (key: string) {
+    return Factory.getInstance().environmentManager.get(key)
+  }
+
   /**
    * Returns the instance
    * of the Discord Client linked to the bot.

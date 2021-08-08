@@ -2,7 +2,7 @@ import { GuildMember, Message } from 'discord.js'
 import Factory from './Factory'
 import CommandContext from './contexts/CommandContext'
 import NodeEmitter from './NodeEmitter'
-import Environment from './Environment'
+import Application from './Application'
 
 export default class Guard {
   /**
@@ -27,8 +27,8 @@ export default class Guard {
      * We check the presence of a token within
      * the application environment else cancel process
      */
-    const prefix = Environment.get('APP_PREFIX')
-    const messages = Environment.get('MESSAGES')
+    const prefix = Application.getEnvironment('APP_PREFIX')
+    const messages = Application.getEnvironment('MESSAGES')
 
     if (!prefix) {
       throw new Error(messages.ENVIRONMENT_FILE_PREFIX_MISSING || 'The prefix cannot be found, please define it in your environment file')
@@ -85,7 +85,7 @@ export default class Guard {
         commandContext,
       )
 
-      const presets = Environment.get('PRESETS')
+      const presets = Application.getEnvironment('PRESETS')
       if (presets.COMMAND_AUTO_REMOVE === 'true') {
         await message.delete()
       }

@@ -1,24 +1,29 @@
 import path from 'path'
 import { fetch } from 'fs-recursive'
 import moduleAliases from 'module-alias'
-import { Client } from 'discord.js'
+import { Client, Intents, PartialTypes } from 'discord.js'
 import { Container } from './Container'
 import Dispatcher from './Dispatcher'
-import Guard from './Guard'
 import CommandHook from './hooks/CommandHook'
-import HookEntity from './entities/HookEntity'
 import CommandRoleHook from './hooks/CommandRoleHook'
 import CommandPermissionHook from './hooks/CommandPermissionHook'
-import { EnvironmentFactory } from './type/Factory'
-import Environment from './Environment'
+import EnvironmentManager from './managers/EnvironmentManager'
+import { root } from './helpers'
+import EventManager from './managers/EventManager'
+import CommandManager from './managers/CommandManager'
+import HookManager from './managers/HookManager'
+import SlashCommandManager from './managers/SlashCommandManager'
+import MiddlewareManager from './managers/MiddlewareManager'
 
 export default class Factory {
   private static $instance: Factory
-  public $env: EnvironmentFactory = {
-    type: '',
-    path: '',
-    content: '',
-  }
+
+  public environmentManager: EnvironmentManager = new EnvironmentManager()
+  public eventManager: EventManager = new EventManager()
+  public commandManager: CommandManager = new CommandManager()
+  public hookManager: HookManager = new HookManager()
+  public slashCommandManager: SlashCommandManager = new SlashCommandManager()
+  public middlewareManager: MiddlewareManager = new MiddlewareManager()
 
   public $container: Container | undefined
 
@@ -33,17 +38,22 @@ export default class Factory {
     this.registerAliases()
 
     /**
-     * Selects the selected environment type
+     * Selects the selected environment types
      * between .env, json and yaml.
      */
-    await this.loadEnvironment()
+    await this.environmentManager.load()
 
     /**
      * Create service container with discord client
      * with partials if exists
      */
-    const partials = Environment.get('PARTIALS')
-    const client = new Client({ partials })
+    const partials: PartialTypes[] = this.environmentManager.get('PARTIALS')
+    const intents: string[] = this.environmentManager.get('INTENTS')
+
+    const client = new Client({
+      intents: intents.map((intent: string) => Intents.FLAGS[intent]),
+      partials,
+    })
     this.$container = new Container(client)
 
     await this.loadProvider()
@@ -52,10 +62,6 @@ export default class Factory {
      * Retrieves all the files that are recursively
      * available in this directory
      */
-    const root = process.env.NODE_ENV === 'production'
-      ? path.join(process.cwd(), 'build', 'src')
-      : path.join(process.cwd(), 'src')
-
     const files = await fetch(root,
       [process.env.NODE_ENV === 'production' ? 'js' : 'ts'],
       'utf-8',
@@ -71,28 +77,10 @@ export default class Factory {
      * Registration of hooks to be executed during the runtime.
      * @Todo Allow developers to extend this configuration through plugins.
      */
-    const commandHook = new CommandHook() as any
-    dispatcher.registerHook(
-      new HookEntity(
-        commandHook.hook,
-        commandHook.run,
-      ),
-    )
-
-    const commandRoleHook = new CommandRoleHook() as any
-    dispatcher.registerHook(
-      new HookEntity(
-        commandRoleHook.hook,
-        commandRoleHook.run,
-      ),
-    )
-
-    const commandPermissionHook = new CommandPermissionHook() as any
-    dispatcher.registerHook(
-      new HookEntity(
-        commandPermissionHook.hook,
-        commandPermissionHook.run,
-      ),
+    Factory.getInstance().hookManager.registerHook(
+      new CommandHook(),
+      new CommandRoleHook(),
+      new CommandPermissionHook(),
     )
 
     /**
@@ -114,8 +102,8 @@ export default class Factory {
      * Creation and connection of the bot instance
      * within the Discord service as a bot application.
      */
-    const token = Environment.get('APP_TOKEN')
-    const messages = Environment.get('MESSAGES')
+    const token = this.environmentManager.get('APP_TOKEN')
+    const messages = this.environmentManager.get('MESSAGES')
 
     if (!token) {
       throw new Error(messages.ENVIRONMENT_FILE_TOKEN_MISSING || 'The prefix is missing in the environment file.')
@@ -124,18 +112,19 @@ export default class Factory {
     await this.$container.client.login(token)
 
     /**
-     * Initialize a Guard.
-     * It performs the checks before the execution of the commands.
+     * Instantiation of the new slashCommands (discord.js 13).
+     * Registration of the listener associated with each command.
      */
-    const guard = new Guard()
+    const slashCommandManager = Factory.getInstance().slashCommandManager
+    await slashCommandManager.registerSlashInstance()
+    await slashCommandManager.initializeSlashCommands()
 
     /**
-     * Applies guard to messages received
-     * from the discord.js 'message' event.
+     * Initialization of the application's commands through the MessageCreate event
+     * then activation of the Guard.
      */
-    this.$container.client.on('message', async (message) => {
-      await guard.protect(message)
-    })
+    const commandManager = Factory.getInstance().commandManager
+    await commandManager.initializeCommands()
 
     /**
      * Issued upon completion
@@ -174,7 +163,7 @@ export default class Factory {
       'utf-8')
 
     const providersList = Array.from(files, ([_, file]) => ({ ...file }))
-    const providers = await Promise.all(
+    this.$container!.providers = await Promise.all(
       providersList.map(async (file) => {
         const withDefault = (await import(file.path)).default
         const provider = new withDefault()
@@ -182,49 +171,5 @@ export default class Factory {
 
         return provider
       }))
-
-    this.$container!.providers = providers
-  }
-
-  private async loadEnvironment () {
-    const environment = await fetch(process.cwd(),
-      ['env', 'json', 'yaml', 'yml'],
-      'utf-8',
-      ['node_modules'])
-
-    const environments = Array.from(environment.entries())
-      .filter(([_, file]) => file.filename === 'environment' || file.extension === 'env')
-      .map(([_, file]) => file)
-
-    const env = environments.find(file => file.extension === 'env')
-    if (env) {
-      return this.$env = {
-        type: env.extension,
-        path: env.path,
-        content: '',
-      }
-    }
-
-    const json = environments.find(file => file.extension === 'json')
-    if (json) {
-      const content = await json.getContent('utf-8')
-      return this.$env = {
-        type: json.extension,
-        path: json.path,
-        content: content!.toString(),
-      }
-    }
-
-    const yaml = environments.find(file => file.extension === 'yaml' || file.extension === 'yml')
-    if (yaml) {
-      const content = await yaml.getContent('utf-8')
-      return this.$env = {
-        type: yaml.extension,
-        path: yaml.path,
-        content: content!.toString(),
-      }
-    }
-
-    throw new Error('Environment file is missing, please create one.')
   }
 }

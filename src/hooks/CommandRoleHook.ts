@@ -1,8 +1,8 @@
 import { GuildMember } from 'discord.js'
 import Hook from '../decorators/Hook'
-import { BaseHook } from '../interface/HookInterface'
+import { BaseHook } from '../types/Hook'
 import CommandContext from '../contexts/CommandContext'
-import Environment from '../Environment'
+import Application from '../Application'
 
 @Hook('app:command:preload')
 export default class CommandRoleHook implements BaseHook {
@@ -22,7 +22,7 @@ export default class CommandRoleHook implements BaseHook {
       if (!hasRole(sender, command.roles)) {
         context.setCancelled(true)
 
-        const messages = Environment.get('MESSAGES')
+        const messages = Application.getEnvironment('MESSAGES')
         return await message.reply(
           messages.COMMAND_MISSING_ROLES
           || 'You are not allowed to execute this command.')

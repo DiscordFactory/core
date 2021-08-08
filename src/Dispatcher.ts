@@ -1,13 +1,9 @@
 import File from 'fs-recursive/build/File'
 import { ClientEvents } from 'discord.js'
-import { ContainerType, QueueItem } from './type/Container'
+import { ContainerType, QueueItem } from './types'
 import Factory from './Factory'
 import NodeEmitter from './NodeEmitter'
 import HookEntity from './entities/HookEntity'
-import { activeProvider } from './helpers/Provider'
-import CommandEntity from './entities/CommandEntity'
-import EventEntity from './entities/EventEntity'
-import MiddlewareEntity from './entities/MiddlewareEntity'
 
 export default class Dispatcher {
   constructor (private files: Map<string, File>) {
@@ -54,17 +50,8 @@ export default class Dispatcher {
      */
     await Promise.all(
       this.filter('hook', queue).map(async (item) => {
-        const $container = Factory.getInstance().$container!
-        const instance = new item.default()
-        const hook = new HookEntity(instance.hook, instance.run, item.file)
-
-        $container.hooks.push(hook)
-        NodeEmitter.listen(instance)
-
-        await activeProvider(
-          $container,
-          hook,
-        )
+        const hookManager = Factory.getInstance().hookManager
+        await hookManager.register(item)
       }),
     )
 
@@ -73,17 +60,11 @@ export default class Dispatcher {
      * adds them to the list of available hooks within the application.
      */
     await Promise.all(
-      this.filter('middleware', queue).map(async (item) => {
-        const $container = Factory.getInstance().$container!
-        const instance = new item.default()
-        const middleware = new MiddlewareEntity(instance.basePattern, instance.run, item.file)
-        $container.middlewares.push(middleware)
-
-        await activeProvider(
-          $container,
-          middleware,
-        )
-      }),
+      this.filter('middleware', queue)
+        .map(async (item) => {
+          const middlewareManager = Factory.getInstance().middlewareManager
+          await middlewareManager.register(item)
+        }),
     )
 
     /**
@@ -94,19 +75,21 @@ export default class Dispatcher {
     await Promise.all(
       this.filter('event', queue)
         .map(async (item) => {
-          const $container = Factory.getInstance().$container!
-          const instance = new item.default()
-          const event = new EventEntity(instance.event, instance.run, item.file)
+          const eventManager = Factory.getInstance().eventManager
+          await eventManager.register(item)
+        }),
+    )
 
-          $container.events.push(event)
-          $container.client.on(instance.event, async (...args: Array<any>) => {
-            await instance.run(...args)
-          })
-
-          await activeProvider(
-            $container,
-            event,
-          )
+    /**
+     * Retrieves events from the queue,
+     * adds them to the list of available hooks within the application,
+     * registrations within the discord.js instance.
+     */
+    await Promise.all(
+      this.filter('slash-command', queue)
+        .map(async (item) => {
+          const slashCommandManager = Factory.getInstance().slashCommandManager
+          await slashCommandManager.register(item)
         }),
     )
 
@@ -117,21 +100,8 @@ export default class Dispatcher {
     await Promise.all(
       this.filter('command', queue)
         .map(async (item) => {
-          const $container = Factory.getInstance().$container!
-          const { label, description, tag, usages, alias, roles, permissions, middlewares, run } = new item.default()
-
-          const command = new CommandEntity(label, description, tag, usages, alias, roles, permissions, middlewares, run, item.file as any)
-          $container.commands.push(command)
-          $container.commandAlias[command.tag] = command
-
-          command.alias.forEach((alias) => {
-            $container.commandAlias[alias] = command
-          })
-
-          await activeProvider(
-            $container,
-            command,
-          )
+          const commandManager = Factory.getInstance().commandManager
+          await commandManager.register(item)
         }),
     )
   }
@@ -150,7 +120,7 @@ export default class Dispatcher {
   /**
    * Registers a new hook to be executed
    * during the application's life cycle.
-   * @param hook
+   * @param entity
    */
   public registerHook (entity: HookEntity) {
     Factory.getInstance().$container!.hooks.push(
@@ -161,8 +131,6 @@ export default class Dispatcher {
       ),
     )
 
-    if (entity instanceof HookEntity) {
-      NodeEmitter.listen(entity)
-    }
+    NodeEmitter.listen(entity)
   }
 }

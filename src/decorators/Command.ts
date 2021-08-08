@@ -1,7 +1,7 @@
 import { PermissionResolvable } from 'discord.js'
 import CommandEntity from '../entities/CommandEntity'
 import Factory from '../Factory'
-import { MiddlewareInterface } from '../interface/MiddlewareInterface'
+import { MiddlewareInterface } from '../types/Middleware'
 
 type CommandContext = {
   label: string
@@ -41,7 +41,7 @@ export default function Command (context: CommandContext) {
           context.alias || [],
           context.roles || [],
           context.permissions || [],
-          middlewares,
+          middlewares as any,
           target.prototype.run,
           undefined,
         )
