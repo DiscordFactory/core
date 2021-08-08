@@ -4,8 +4,6 @@ import { ContainerType, QueueItem } from './type/Container'
 import Factory from './Factory'
 import NodeEmitter from './NodeEmitter'
 import HookEntity from './entities/HookEntity'
-import { activeProvider } from './helpers/Provider'
-import MiddlewareEntity from './entities/MiddlewareEntity'
 
 export default class Dispatcher {
   constructor (private files: Map<string, File>) {
@@ -62,17 +60,11 @@ export default class Dispatcher {
      * adds them to the list of available hooks within the application.
      */
     await Promise.all(
-      this.filter('middleware', queue).map(async (item) => {
-        const $container = Factory.getInstance().$container!
-        const instance = new item.default()
-        const middleware = new MiddlewareEntity(instance.basePattern, instance.run, item.file)
-        $container.middlewares.push(middleware)
-
-        await activeProvider(
-          $container,
-          middleware,
-        )
-      }),
+      this.filter('middleware', queue)
+        .map(async (item) => {
+          const middlewareManager = Factory.getInstance().middlewareManager
+          await middlewareManager.register(item)
+        }),
     )
 
     /**

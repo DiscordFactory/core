@@ -14,7 +14,6 @@ import { Container } from './Container'
 import Dispatcher from './Dispatcher'
 import Guard from './Guard'
 import CommandHook from './hooks/CommandHook'
-import HookEntity from './entities/HookEntity'
 import CommandRoleHook from './hooks/CommandRoleHook'
 import CommandPermissionHook from './hooks/CommandPermissionHook'
 import SlashCommandEntity from './entities/SlashCommandEntity'
@@ -25,6 +24,7 @@ import EventManager from './managers/EventManager'
 import CommandManager from './managers/CommandManager'
 import HookManager from './managers/HookManager'
 import SlashCommandManager from './managers/SlashCommandManager'
+import MiddlewareManager from './managers/MiddlewareManager'
 
 export default class Factory {
   private static $instance: Factory
@@ -34,6 +34,7 @@ export default class Factory {
   public commandManager: CommandManager = new CommandManager()
   public hookManager: HookManager = new HookManager()
   public slashCommandManager: SlashCommandManager = new SlashCommandManager()
+  public middlewareManager: MiddlewareManager = new MiddlewareManager()
 
   public $container: Container | undefined
 
@@ -87,28 +88,10 @@ export default class Factory {
      * Registration of hooks to be executed during the runtime.
      * @Todo Allow developers to extend this configuration through plugins.
      */
-    const commandHook = new CommandHook() as any
-    dispatcher.registerHook(
-      new HookEntity(
-        commandHook.hook,
-        commandHook.run,
-      ),
-    )
-
-    const commandRoleHook = new CommandRoleHook() as any
-    dispatcher.registerHook(
-      new HookEntity(
-        commandRoleHook.hook,
-        commandRoleHook.run,
-      ),
-    )
-
-    const commandPermissionHook = new CommandPermissionHook() as any
-    dispatcher.registerHook(
-      new HookEntity(
-        commandPermissionHook.hook,
-        commandPermissionHook.run,
-      ),
+    Factory.getInstance().hookManager.registerHook(
+      new CommandHook(),
+      new CommandRoleHook(),
+      new CommandPermissionHook(),
     )
 
     /**

@@ -3,6 +3,7 @@ import { QueueItem } from '../type/Container'
 import { activeProvider } from '../helpers/Provider'
 import HookEntity from '../entities/HookEntity'
 import NodeEmitter from '../NodeEmitter'
+import { BaseHook, HookInterface } from '../interface/HookInterface'
 import Manager from './Manager'
 
 export default class HookManager extends Manager {
@@ -16,6 +17,13 @@ export default class HookManager extends Manager {
     NodeEmitter.listen(instance)
 
     await this.activeProvider(hook)
+  }
+
+  public registerHook (...hooks: BaseHook[]) {
+    // @ts-ignore
+    hooks.forEach((item: HookInterface) => {
+      Factory.getInstance().$container?.hooks.push(new HookEntity(item.hook, item.run))
+    })
   }
 
   public async activeProvider (hookEntity: HookEntity) {
