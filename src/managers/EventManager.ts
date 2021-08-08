@@ -1,4 +1,3 @@
-import { ClientEvents } from 'discord.js'
 import EventEntity from '../entities/EventEntity'
 import Factory from '../Factory'
 import { QueueItem } from '../type/Container'
@@ -6,8 +5,6 @@ import { activeProvider } from '../helpers/Provider'
 import Manager from './Manager'
 
 export default class EventManager extends Manager {
-  public events: Array<EventEntity<keyof ClientEvents>> = []
-
   public async register (item: QueueItem) {
     const instance = new item.default()
     const event = new EventEntity(instance.event, instance.run, item.file)
