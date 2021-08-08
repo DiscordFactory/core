@@ -121,7 +121,7 @@ export default class Dispatcher {
         .map(async (item) => {
           const $container = Factory.getInstance().$container!
           const instance = new item.default()
-          const slashCommand = new SlashCommandEntity(instance.scope, instance.context, instance.run, item.file)
+          const slashCommand = new SlashCommandEntity(instance.scope, instance.roles, instance.context, instance.run, item.file)
 
           $container.slashCommands.push(slashCommand)
 
@@ -173,7 +173,7 @@ export default class Dispatcher {
    * Registers a new hook to be executed
    * during the application's life cycle.
    * @param entity
-  */
+   */
   public registerHook (entity: HookEntity) {
     Factory.getInstance().$container!.hooks.push(
       new HookEntity(

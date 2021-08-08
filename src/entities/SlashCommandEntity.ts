@@ -1,6 +1,6 @@
 import { File } from 'fs-recursive'
 import { ContainerType } from '../type/Container'
-import { ScopeContext, SlashContext } from '../interface/SlashCommandInterface'
+import { ScopeContext, SlashOption } from '../interface/SlashCommandInterface'
 import ConstructableEntity from './ConstructableEntity'
 
 export default class SlashCommandEntity extends ConstructableEntity {
@@ -8,7 +8,8 @@ export default class SlashCommandEntity extends ConstructableEntity {
 
   constructor (
     public scope: ScopeContext,
-    public context: SlashContext,
+    public roles: string[] = [],
+    public context: SlashOption,
     public run: (...args: Array<any>) => Promise<void>,
     file?: File,
   ) {

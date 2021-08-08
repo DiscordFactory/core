@@ -1,7 +1,15 @@
 import path from 'path'
 import { fetch } from 'fs-recursive'
 import moduleAliases from 'module-alias'
-import { ApplicationCommandData, Client, Intents, Interaction, PartialTypes } from 'discord.js'
+import {
+  ApplicationCommand,
+  ApplicationCommandData,
+  Client,
+  Collection,
+  Intents,
+  Interaction,
+  PartialTypes,
+} from 'discord.js'
 import { Container } from './Container'
 import Dispatcher from './Dispatcher'
 import Guard from './Guard'
@@ -12,7 +20,8 @@ import CommandPermissionHook from './hooks/CommandPermissionHook'
 import { EnvironmentFactory } from './type/Factory'
 import Environment from './Environment'
 import SlashCommandEntity from './entities/SlashCommandEntity'
-import { SlashContext } from './interface/SlashCommandInterface'
+import { SlashOption } from './interface/SlashCommandInterface'
+
 export default class Factory {
   private static $instance: Factory
   public $env: EnvironmentFactory = {
@@ -130,17 +139,55 @@ export default class Factory {
     await this.$container.client.login(token)
 
     const globalCommands = this.$container.slashCommands
-      .map((command: SlashCommandEntity) => command.scope === 'GLOBAL' && command.context)
-      .filter(a => a) as SlashContext[]
+      .map((command: SlashCommandEntity) => command.scope === 'GLOBAL' && {
+        ...command.context,
+        permissions: command.roles.map((role: string) => ({ id: role, type: 'ROLE', permission: true })),
+      })
+      .filter(a => a) as SlashOption[]
 
-    this.$container!.client.application?.commands.set(globalCommands as unknown as ApplicationCommandData[])
+    await this.$container!.client.application?.commands.set(globalCommands as unknown as ApplicationCommandData[])
 
     const guildCommandEntities = this.$container.slashCommands
       .map((command: SlashCommandEntity) => command.scope !== 'GLOBAL' && command)
       .filter(a => a) as SlashCommandEntity[]
 
-    guildCommandEntities.forEach((command: SlashCommandEntity) => {
-      this.$container?.client.guilds.cache.get(command.scope)?.commands.create(command.context)
+    const collection = new Collection<string, SlashCommandEntity[]>()
+    guildCommandEntities.forEach((command) => {
+      const scopes = command.scope as string[]
+      scopes.forEach((scope: string) => {
+        const guild = collection.get(scope)
+        if (!guild) {
+          collection.set(scope, [command])
+          return
+        }
+        guild?.push(command)
+      })
+    })
+
+    collection.map(async (commands, key) => {
+      const guild = client.guilds.cache.get(key)
+
+      const cacheCommands = await guild?.commands.set(commands.map((command: SlashCommandEntity) => ({
+        ...command.context,
+        ...command.roles.length && { defaultPermission: false },
+      })))
+
+      await guild?.commands.permissions.set({
+        fullPermissions: await Promise.all(commands.map(async (command: SlashCommandEntity) => {
+          const registeredCommand: ApplicationCommand | undefined = cacheCommands?.find((applicationCommand: ApplicationCommand) => (
+            applicationCommand.name === command.context.name
+          ))
+
+          return {
+            id: registeredCommand!.id,
+            permissions: command.roles.map((role: string) => ({
+              id: role,
+              type: 'ROLE' as any,
+              permission: true,
+            })),
+          }
+        })),
+      })
     })
 
     /**
@@ -166,9 +213,11 @@ export default class Factory {
         return command.context.name === interaction.commandName.toLowerCase()
       })
 
-      if (command) {
-        await command.run(interaction)
+      if (!command) {
+        return
       }
+
+      await command.run(interaction)
     })
 
     /**
