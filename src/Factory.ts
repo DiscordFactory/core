@@ -17,18 +17,14 @@ import CommandHook from './hooks/CommandHook'
 import HookEntity from './entities/HookEntity'
 import CommandRoleHook from './hooks/CommandRoleHook'
 import CommandPermissionHook from './hooks/CommandPermissionHook'
-import { EnvironmentFactory } from './type/Factory'
-import Environment from './Environment'
 import SlashCommandEntity from './entities/SlashCommandEntity'
 import { SlashOption } from './interface/SlashCommandInterface'
+import EnvironmentManager from './managers/EnvironmentManager'
 
 export default class Factory {
   private static $instance: Factory
-  public $env: EnvironmentFactory = {
-    type: '',
-    path: '',
-    content: '',
-  }
+
+  public environmentManager: EnvironmentManager = new EnvironmentManager()
 
   public $container: Container | undefined
 
@@ -46,14 +42,14 @@ export default class Factory {
      * Selects the selected environment type
      * between .env, json and yaml.
      */
-    await this.loadEnvironment()
+    await this.environmentManager.load()
 
     /**
      * Create service container with discord client
      * with partials if exists
      */
-    const partials: PartialTypes[] = Environment.get('PARTIALS')
-    const intents: string[] = Environment.get('INTENTS')
+    const partials: PartialTypes[] = this.environmentManager.get('PARTIALS')
+    const intents: string[] = this.environmentManager.get('INTENTS')
 
     const client = new Client({
       intents: intents.map((intent: string) => Intents.FLAGS[intent]),
@@ -129,8 +125,8 @@ export default class Factory {
      * Creation and connection of the bot instance
      * within the Discord service as a bot application.
      */
-    const token = Environment.get('APP_TOKEN')
-    const messages = Environment.get('MESSAGES')
+    const token = this.environmentManager.get('APP_TOKEN')
+    const messages = this.environmentManager.get('MESSAGES')
 
     if (!token) {
       throw new Error(messages.ENVIRONMENT_FILE_TOKEN_MISSING || 'The prefix is missing in the environment file.')
@@ -267,45 +263,45 @@ export default class Factory {
       }))
   }
 
-  private async loadEnvironment () {
-    const environment = await fetch(process.cwd(),
-      ['env', 'json', 'yaml', 'yml'],
-      'utf-8',
-      ['node_modules'])
-
-    const environments = Array.from(environment.entries())
-      .filter(([_, file]) => file.filename === 'environment' || file.extension === 'env')
-      .map(([_, file]) => file)
-
-    const env = environments.find(file => file.extension === 'env')
-    if (env) {
-      return this.$env = {
-        type: env.extension,
-        path: env.path,
-        content: '',
-      }
-    }
-
-    const json = environments.find(file => file.extension === 'json')
-    if (json) {
-      const content = await json.getContent('utf-8')
-      return this.$env = {
-        type: json.extension,
-        path: json.path,
-        content: content!.toString(),
-      }
-    }
-
-    const yaml = environments.find(file => file.extension === 'yaml' || file.extension === 'yml')
-    if (yaml) {
-      const content = await yaml.getContent('utf-8')
-      return this.$env = {
-        type: yaml.extension,
-        path: yaml.path,
-        content: content!.toString(),
-      }
-    }
-
-    throw new Error('Environment file is missing, please create one.')
-  }
+  // private async loadEnvironment () {
+  //   const environment = await fetch(process.cwd(),
+  //     ['env', 'json', 'yaml', 'yml'],
+  //     'utf-8',
+  //     ['node_modules'])
+  //
+  //   const environments = Array.from(environment.entries())
+  //     .filter(([_, file]) => file.filename === 'environment' || file.extension === 'env')
+  //     .map(([_, file]) => file)
+  //
+  //   const env = environments.find(file => file.extension === 'env')
+  //   if (env) {
+  //     return this.$env = {
+  //       type: env.extension,
+  //       path: env.path,
+  //       content: '',
+  //     }
+  //   }
+  //
+  //   const json = environments.find(file => file.extension === 'json')
+  //   if (json) {
+  //     const content = await json.getContent('utf-8')
+  //     return this.$env = {
+  //       type: json.extension,
+  //       path: json.path,
+  //       content: content!.toString(),
+  //     }
+  //   }
+  //
+  //   const yaml = environments.find(file => file.extension === 'yaml' || file.extension === 'yml')
+  //   if (yaml) {
+  //     const content = await yaml.getContent('utf-8')
+  //     return this.$env = {
+  //       type: yaml.extension,
+  //       path: yaml.path,
+  //       content: content!.toString(),
+  //     }
+  //   }
+  //
+  //   throw new Error('Environment file is missing, please create one.')
+  // }
 }
