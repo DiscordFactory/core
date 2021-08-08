@@ -23,6 +23,7 @@ import EnvironmentManager from './managers/EnvironmentManager'
 import { root } from './helpers'
 import EventManager from './managers/EventManager'
 import CommandManager from './managers/CommandManager'
+import HookManager from './managers/HookManager'
 
 export default class Factory {
   private static $instance: Factory
@@ -30,6 +31,7 @@ export default class Factory {
   public environmentManager: EnvironmentManager = new EnvironmentManager()
   public eventManager: EventManager = new EventManager()
   public commandManager: CommandManager = new CommandManager()
+  public hookManager: HookManager = new HookManager()
 
   public $container: Container | undefined
 

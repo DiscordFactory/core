@@ -53,17 +53,8 @@ export default class Dispatcher {
      */
     await Promise.all(
       this.filter('hook', queue).map(async (item) => {
-        const $container = Factory.getInstance().$container!
-        const instance = new item.default()
-        const hook = new HookEntity(instance.hook, instance.run, item.file)
-
-        $container.hooks.push(hook)
-        NodeEmitter.listen(instance)
-
-        await activeProvider(
-          $container,
-          hook,
-        )
+        const hookManager = Factory.getInstance().hookManager
+        await hookManager.register(item)
       }),
     )
 
