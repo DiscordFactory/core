@@ -1,7 +1,9 @@
+import { ApplicationCommand, ApplicationCommandData, Collection, Interaction } from 'discord.js'
 import Factory from '../Factory'
 import { QueueItem } from '../type/Container'
 import { activeProvider } from '../helpers/Provider'
 import SlashCommandEntity from '../entities/SlashCommandEntity'
+import { SlashOption } from '../interface/SlashCommandInterface'
 import Manager from './Manager'
 
 export default class SlashCommandManager extends Manager {
@@ -21,5 +23,81 @@ export default class SlashCommandManager extends Manager {
       Factory.getInstance().$container!,
       slashCommandEntity,
     )
+  }
+  
+  public async registerSlashInstance () {
+    const container = Factory.getInstance().$container
+    
+    const globalCommands = container?.slashCommands
+      .map((command: SlashCommandEntity) => command.scope === 'GLOBAL' && {
+        ...command.context,
+        permissions: command.roles.map((role: string) => ({ id: role, type: 'ROLE', permission: true })),
+      })
+      .filter(a => a) as SlashOption[]
+
+    await container!.client.application?.commands.set(globalCommands as unknown as ApplicationCommandData[])
+
+    const guildCommandEntities = container?.slashCommands
+      .map((command: SlashCommandEntity) => command.scope !== 'GLOBAL' && command)
+      .filter(a => a) as SlashCommandEntity[]
+
+    const collection = new Collection<string, SlashCommandEntity[]>()
+    guildCommandEntities.forEach((command) => {
+      const scopes = command.scope as string[]
+      scopes.forEach((scope: string) => {
+        const guild = collection.get(scope)
+        if (!guild) {
+          collection.set(scope, [command])
+          return
+        }
+        guild?.push(command)
+      })
+    })
+
+    collection.map(async (commands, key) => {
+      const guild = container?.client.guilds.cache.get(key)
+
+      const cacheCommands = await guild?.commands.set(commands.map((command: SlashCommandEntity) => ({
+        ...command.context,
+        ...command.roles.length && { defaultPermission: false },
+      })))
+
+      await guild?.commands.permissions.set({
+        fullPermissions: await Promise.all(commands.map(async (command: SlashCommandEntity) => {
+          const registeredCommand: ApplicationCommand | undefined = cacheCommands?.find((applicationCommand: ApplicationCommand) => (
+            applicationCommand.name === command.context.name
+          ))
+
+          return {
+            id: registeredCommand!.id,
+            permissions: command.roles.map((role: string) => ({
+              id: role,
+              type: 'ROLE' as any,
+              permission: true,
+            })),
+          }
+        })),
+      })
+    })
+  }
+
+  public async initializeSlashCommands () {
+    const container = Factory.getInstance().$container
+
+    container?.client.on('interactionCreate', async (interaction: Interaction) => {
+      if (!interaction.isCommand()) {
+        return
+      }
+
+      const command = container?.slashCommands.find((command) => {
+        return command.context.name === interaction.commandName.toLowerCase()
+      })
+
+      if (!command) {
+        return
+      }
+
+      await command.run(interaction)
+    })
   }
 }

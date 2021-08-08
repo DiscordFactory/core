@@ -1,23 +1,12 @@
 import path from 'path'
 import { fetch } from 'fs-recursive'
 import moduleAliases from 'module-alias'
-import {
-  ApplicationCommand,
-  ApplicationCommandData,
-  Client,
-  Collection,
-  Intents,
-  Interaction,
-  PartialTypes,
-} from 'discord.js'
+import { Client, Intents, PartialTypes } from 'discord.js'
 import { Container } from './Container'
 import Dispatcher from './Dispatcher'
-import Guard from './Guard'
 import CommandHook from './hooks/CommandHook'
 import CommandRoleHook from './hooks/CommandRoleHook'
 import CommandPermissionHook from './hooks/CommandPermissionHook'
-import SlashCommandEntity from './entities/SlashCommandEntity'
-import { SlashOption } from './interface/SlashCommandInterface'
 import EnvironmentManager from './managers/EnvironmentManager'
 import { root } from './helpers'
 import EventManager from './managers/EventManager'
@@ -122,87 +111,20 @@ export default class Factory {
 
     await this.$container.client.login(token)
 
-    const globalCommands = this.$container.slashCommands
-      .map((command: SlashCommandEntity) => command.scope === 'GLOBAL' && {
-        ...command.context,
-        permissions: command.roles.map((role: string) => ({ id: role, type: 'ROLE', permission: true })),
-      })
-      .filter(a => a) as SlashOption[]
-
-    await this.$container!.client.application?.commands.set(globalCommands as unknown as ApplicationCommandData[])
-
-    const guildCommandEntities = this.$container.slashCommands
-      .map((command: SlashCommandEntity) => command.scope !== 'GLOBAL' && command)
-      .filter(a => a) as SlashCommandEntity[]
-
-    const collection = new Collection<string, SlashCommandEntity[]>()
-    guildCommandEntities.forEach((command) => {
-      const scopes = command.scope as string[]
-      scopes.forEach((scope: string) => {
-        const guild = collection.get(scope)
-        if (!guild) {
-          collection.set(scope, [command])
-          return
-        }
-        guild?.push(command)
-      })
-    })
-
-    collection.map(async (commands, key) => {
-      const guild = client.guilds.cache.get(key)
-
-      const cacheCommands = await guild?.commands.set(commands.map((command: SlashCommandEntity) => ({
-        ...command.context,
-        ...command.roles.length && { defaultPermission: false },
-      })))
-
-      await guild?.commands.permissions.set({
-        fullPermissions: await Promise.all(commands.map(async (command: SlashCommandEntity) => {
-          const registeredCommand: ApplicationCommand | undefined = cacheCommands?.find((applicationCommand: ApplicationCommand) => (
-            applicationCommand.name === command.context.name
-          ))
-
-          return {
-            id: registeredCommand!.id,
-            permissions: command.roles.map((role: string) => ({
-              id: role,
-              type: 'ROLE' as any,
-              permission: true,
-            })),
-          }
-        })),
-      })
-    })
+    /**
+     * Instantiation of the new slashCommands (discord.js 13).
+     * Registration of the listener associated with each command.
+     */
+    const slashCommandManager = Factory.getInstance().slashCommandManager
+    await slashCommandManager.registerSlashInstance()
+    await slashCommandManager.initializeSlashCommands()
 
     /**
-     * Initialize a Guard.
-     * It performs the checks before the execution of the commands.
+     * Initialization of the application's commands through the MessageCreate event
+     * then activation of the Guard.
      */
-    const guard = new Guard()
-
-    /**
-     * Applies guard to messages received
-     * from the discord.js 'message' event.
-     */
-    this.$container.client.on('messageCreate', async (message) => {
-      await guard.protect(message)
-    })
-
-    this.$container.client.on('interactionCreate', async (interaction: Interaction) => {
-      if (!interaction.isCommand()) {
-        return
-      }
-
-      const command = this.$container?.slashCommands.find((command) => {
-        return command.context.name === interaction.commandName.toLowerCase()
-      })
-
-      if (!command) {
-        return
-      }
-
-      await command.run(interaction)
-    })
+    const commandManager = Factory.getInstance().commandManager
+    await commandManager.initializeCommands()
 
     /**
      * Issued upon completion
@@ -250,46 +172,4 @@ export default class Factory {
         return provider
       }))
   }
-
-  // private async loadEnvironment () {
-  //   const environment = await fetch(process.cwd(),
-  //     ['env', 'json', 'yaml', 'yml'],
-  //     'utf-8',
-  //     ['node_modules'])
-  //
-  //   const environments = Array.from(environment.entries())
-  //     .filter(([_, file]) => file.filename === 'environment' || file.extension === 'env')
-  //     .map(([_, file]) => file)
-  //
-  //   const env = environments.find(file => file.extension === 'env')
-  //   if (env) {
-  //     return this.$env = {
-  //       type: env.extension,
-  //       path: env.path,
-  //       content: '',
-  //     }
-  //   }
-  //
-  //   const json = environments.find(file => file.extension === 'json')
-  //   if (json) {
-  //     const content = await json.getContent('utf-8')
-  //     return this.$env = {
-  //       type: json.extension,
-  //       path: json.path,
-  //       content: content!.toString(),
-  //     }
-  //   }
-  //
-  //   const yaml = environments.find(file => file.extension === 'yaml' || file.extension === 'yml')
-  //   if (yaml) {
-  //     const content = await yaml.getContent('utf-8')
-  //     return this.$env = {
-  //       type: yaml.extension,
-  //       path: yaml.path,
-  //       content: content!.toString(),
-  //     }
-  //   }
-  //
-  //   throw new Error('Environment file is missing, please create one.')
-  // }
 }

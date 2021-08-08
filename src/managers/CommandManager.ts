@@ -2,6 +2,7 @@ import Factory from '../Factory'
 import { QueueItem } from '../type/Container'
 import { activeProvider } from '../helpers/Provider'
 import CommandEntity from '../entities/CommandEntity'
+import Guard from '../Guard'
 import Manager from './Manager'
 
 export default class CommandManager extends Manager {
@@ -26,5 +27,14 @@ export default class CommandManager extends Manager {
       Factory.getInstance().$container!,
       commandEntity,
     )
+  }
+
+  public async initializeCommands () {
+    const container = Factory.getInstance().$container
+    const guard = new Guard()
+
+    container?.client.on('messageCreate', async (message) => {
+      await guard.protect(message)
+    })
   }
 }
