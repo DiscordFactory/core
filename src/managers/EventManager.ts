@@ -6,11 +6,13 @@ import Manager from './Manager'
 
 export default class EventManager extends Manager {
   public async register (item: QueueItem) {
+    const $container = Factory.getInstance().$container
+
     const instance = new item.default()
     const event = new EventEntity(instance.event, instance.run, item.file)
 
-    Factory.getInstance().$container?.events.push(event)
-    Factory.getInstance().$container?.client.on(instance.event, async (...args: Array<any>) => {
+    $container?.events.push(event)
+    $container?.client.on(instance.event, async (...args: Array<any>) => {
       await instance.run(...args)
     })
 
