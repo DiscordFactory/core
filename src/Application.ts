@@ -1,3 +1,4 @@
+import { Client } from 'discord.js'
 import Factory from './Factory'
 
 export default class Application {
@@ -13,8 +14,8 @@ export default class Application {
    * Returns the instance
    * of the Discord Client linked to the bot.
    */
-  public static getClient () {
-    return Application.getContainer()?.client
+  public static getClient (): Client {
+    return Application.getContainer()!.client
   }
 
   /**
@@ -22,7 +23,7 @@ export default class Application {
    * within the application instance
    */
   public static getCommands () {
-    return Application.getContainer()?.commands
+    return Application.getContainer()!.commands
   }
 
   /**
@@ -30,7 +31,7 @@ export default class Application {
    * within the application instance
    */
   public static getEvents () {
-    return Application.getContainer()?.events
+    return Application.getContainer()!.events
   }
 
   /**
@@ -38,7 +39,7 @@ export default class Application {
    * within the application instance
    */
   public static getHooks () {
-    return Application.getContainer()?.hooks
+    return Application.getContainer()!.hooks
   }
 
   /**
@@ -46,7 +47,7 @@ export default class Application {
    * within the application instance
    */
   public static getMiddlewares () {
-    return Application.getContainer()?.middlewares
+    return Application.getContainer()!.middlewares
   }
 
   /**
@@ -54,6 +55,6 @@ export default class Application {
    * within the application instance
    */
   public static getProviders () {
-    return Application.getContainer()?.providers
+    return Application.getContainer()!.providers
   }
 }
