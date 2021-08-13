@@ -14,9 +14,9 @@ export default class EnvironmentManager {
 
 	public async load() {
 		const environment = await fetchSortedExpression(process.cwd(), /^environment\.(json|yml|yaml)|\.env$/, ['env', 'json', 'yml', 'yaml'], 'utf-8', ['node_modules'])
-		
+
 		if (!environment.length) throw new Error('Environment file is missing, please create one.')
-		
+
 		const types: EnvironmentFactory = {
 			env: this.getFromEnv,
 			json: this.getFromJSON,
