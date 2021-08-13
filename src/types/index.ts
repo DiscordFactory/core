@@ -5,9 +5,19 @@ import EventEntity from '../entities/EventEntity'
 import MiddlewareEntity from '../entities/MiddlewareEntity'
 import CommandEntity from '../entities/CommandEntity'
 
-export type ContainerType = 'event' | 'command' | 'hook' | 'middleware' | 'slash-command' | null
+export type ContainerType =
+  | 'event'
+  | 'command'
+  | 'hook'
+  | 'middleware'
+  | 'slash-command'
+  | null
 
-export type Instance<K extends keyof ClientEvents> = HookEntity | EventEntity<K> | MiddlewareEntity | CommandEntity
+export type Instance<K extends keyof ClientEvents> =
+  | HookEntity
+  | EventEntity<K>
+  | MiddlewareEntity
+  | CommandEntity
 
 export type QueueItem = {
   type: ContainerType
@@ -16,7 +26,11 @@ export type QueueItem = {
   file: File
 }
 
-export type Context = HookEntity | EventEntity<any> | MiddlewareEntity | CommandEntity
+export type Context =
+  | HookEntity
+  | EventEntity<any>
+  | MiddlewareEntity
+  | CommandEntity
 
 export type Constructable<K extends keyof ClientEvents> = {
   type: ContainerType

@@ -1,7 +1,7 @@
-import { File } from "fs-recursive"
+import { File } from 'fs-recursive'
 
 export type EnvironmentElement = {
-	[key: string]: string | string[] | EnvironmentElement
+  [key: string]: string | string[] | EnvironmentElement
 }
 
 export type Environment = {
@@ -13,8 +13,8 @@ export type Environment = {
 export type EnvironmentType = 'env' | 'json' | 'yml' | 'yaml'
 
 export interface EnvironmentFactory {
-	env: (file: File) => Promise<EnvironmentElement>,
-	json: (file: File) => Promise<EnvironmentElement>,
-	yml: (file: File) => Promise<EnvironmentElement>,
-	yaml: (file: File) => Promise<EnvironmentElement>,
+  env: (file: File) => Promise<EnvironmentElement>
+  json: (file: File) => Promise<EnvironmentElement>
+  yml: (file: File) => Promise<EnvironmentElement>
+  yaml: (file: File) => Promise<EnvironmentElement>
 }
