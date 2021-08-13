@@ -1,5 +1,5 @@
 import { ClientEvents } from 'discord.js'
-import File from 'fs-recursive/build/File'
+import { File } from 'fs-recursive'
 import HookEntity from '../entities/HookEntity'
 import EventEntity from '../entities/EventEntity'
 import MiddlewareEntity from '../entities/MiddlewareEntity'
@@ -28,11 +28,3 @@ export type Constructable<K extends keyof ClientEvents> = {
 export type CommandAlias = {
   [key: string]: CommandEntity
 }
-
-export type EnvironmentFactory = {
-  type: string
-  path: string
-  content: string
-}
-
-export type EnvironmentType = 'env' | 'json' | 'yaml'
