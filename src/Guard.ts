@@ -86,7 +86,7 @@ export default class Guard {
       )
 
       const presets = Application.getEnvironment('PRESETS')
-      if (presets.COMMAND_AUTO_REMOVE === 'true') {
+      if (presets.COMMAND_AUTO_REMOVE || presets.COMMAND_AUTO_REMOVE === 'true') {
         await message.delete()
       }
     }
