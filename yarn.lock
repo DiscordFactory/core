@@ -271,14 +271,6 @@
   dependencies:
     arrify "^1.0.1"
 
-"@discord-factory/env@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@discord-factory/env/-/env-0.0.0.tgz#a4580fdeba63413ad03fb06604d69fa38c55ac9a"
-  integrity sha512-wIci20p+AtKoMgsUDAsuisQGtxbJc4wgYAwUXF4tMcX+mHa8R4PK1/8NLYeq8PVc1sn5NzEKyvE9Xc0jVuszbw==
-  dependencies:
-    dotenv "^9.0.0"
-    ts-node "^9.1.1"
-
 "@discordjs/builders@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@discordjs/builders/-/builders-0.4.0.tgz#bb41573ce4824aa9194a53b52c29c5219b610010"
@@ -412,9 +404,9 @@
   integrity sha512-3pwDJjp1PWacPTpH0LcfhgjvurQvrZFBrC6xxjaUEZ7ifUtT32jtjPxEMMblpqd2Mvx+k8haqQJLQxolyGN/cQ==
 
 "@types/node@^16.3.3":
-  version "16.4.13"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.4.13.tgz#7dfd9c14661edc65cccd43a29eb454174642370d"
-  integrity sha512-bLL69sKtd25w7p1nvg9pigE4gtKVpGTPojBFLMkGHXuUgap2sLqQt2qUnqmVCDfzGUL0DRNZP+1prIZJbMeAXg==
+  version "16.6.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.6.1.tgz#aee62c7b966f55fc66c7b6dfa1d58db2a616da61"
+  integrity sha512-Sr7BhXEAer9xyGuCN3Ek9eg9xPviCF2gfu9kTfuU2HkTVAMYSDeX40fvpmo72n5nansg3nsBjuQBrsS28r+NUw==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -427,9 +419,9 @@
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
 "@types/uuid@^8.3.0":
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.0.tgz#215c231dff736d5ba92410e6d602050cce7e273f"
-  integrity sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ==
+  version "8.3.1"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.1.tgz#1a32969cf8f0364b3d8c8af9cc3555b7805df14f"
+  integrity sha512-Y2mHTRAbqfFkpjldbkHGY8JIzRN6XqYRliG8/24FcHm2D2PwW24fl5xMRTVGdrb7iMrwCaIEbLWerGIkXuFWVg==
 
 "@types/ws@^7.4.7":
   version "7.4.7"
@@ -1437,11 +1429,6 @@ dotenv@^10.0.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
   integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
 
-dotenv@^9.0.0:
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-9.0.2.tgz#dacc20160935a37dea6364aa1bef819fb9b6ab05"
-  integrity sha512-I9OvvrHp4pIARv4+x9iuewrWycX6CcZtoAu1XrzPxc5UygMJXJZYmBsynku8IkrJwgypE5DGNjDPmPRhDCptUg==
-
 duplexer3@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
@@ -2018,10 +2005,10 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.1.1.tgz#c4b489e80096d9df1dfc97c79871aea7c617c469"
   integrity sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==
 
-fs-recursive@1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/fs-recursive/-/fs-recursive-1.1.4.tgz#93aab143c46b8b34f4a6e551adbf4c6939eba4bf"
-  integrity sha512-j3IHI8S9ady04a/r8VmAP5hjgQ+PbY3QWiJjQKgaSIxdyiKnSrGRbO6sewfy3OGVJLI37wi4wYRh7Kwj5r6X0w==
+fs-recursive@1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/fs-recursive/-/fs-recursive-1.1.7.tgz#598c956ead67acbb460f67b16a31dc0f7a62ca97"
+  integrity sha512-sJ6ic4Pg5+52LBcRImb8V5bvhlw4wfU2m95yvBU1SP3i79THLL9kJj6GEesRZuCUGPxS5LpncS+6hu25ZwIs5Q==
   dependencies:
     "@types/node" "^16.3.3"
     "@types/uuid" "^8.3.0"
