@@ -54,7 +54,7 @@ export default class SlashCommandManager extends Manager {
       })
     })
 
-    collection.map(async (commands, key) => {
+    collection.map(async (commands: SlashCommandEntity[], key: string) => {
       const guild = container?.client.guilds.cache.get(key)
 
       const cacheCommands = await guild?.commands.set(commands.map((command: SlashCommandEntity) => ({
@@ -89,9 +89,9 @@ export default class SlashCommandManager extends Manager {
         return
       }
 
-      const command = container?.slashCommands.find((command) => {
-        return command.context.name === interaction.commandName.toLowerCase()
-      })
+      const command = container?.slashCommands.find((command: SlashCommandEntity) => (
+        command.context.name === interaction.commandName.toLowerCase()
+      ))
 
       if (!command) {
         return
