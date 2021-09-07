@@ -1,5 +1,5 @@
 {
-  "name": "@discord-factory/core",
+  "name": "@discord-factory/core-next",
   "version": "1.2.1",
   "description": "",
   "author": "Baptiste Parmantier <baptiste.parmantier.pro@gmail.com>",
@@ -36,7 +36,7 @@
     "cross-env": "^7.0.3",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
-    "fs-recursive": "1.1.4",
+    "fs-recursive": "^1.1.7",
     "js-yaml": "^4.1.0",
     "mock-fs": "^4.14.0",
     "module-alias": "^2.2.2",

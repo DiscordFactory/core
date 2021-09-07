@@ -16,8 +16,9 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "experimentalDecorators": true
   },
-  "include": ["oldsrc"],
+  "include": ["src"],
   "exclude": [
+    "oldsrc",
     "build",
     "tests"
   ]

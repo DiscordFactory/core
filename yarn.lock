@@ -2018,10 +2018,10 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.1.1.tgz#c4b489e80096d9df1dfc97c79871aea7c617c469"
   integrity sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==
 
-fs-recursive@1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/fs-recursive/-/fs-recursive-1.1.4.tgz#93aab143c46b8b34f4a6e551adbf4c6939eba4bf"
-  integrity sha512-j3IHI8S9ady04a/r8VmAP5hjgQ+PbY3QWiJjQKgaSIxdyiKnSrGRbO6sewfy3OGVJLI37wi4wYRh7Kwj5r6X0w==
+fs-recursive@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/fs-recursive/-/fs-recursive-1.1.7.tgz#598c956ead67acbb460f67b16a31dc0f7a62ca97"
+  integrity sha512-sJ6ic4Pg5+52LBcRImb8V5bvhlw4wfU2m95yvBU1SP3i79THLL9kJj6GEesRZuCUGPxS5LpncS+6hu25ZwIs5Q==
   dependencies:
     "@types/node" "^16.3.3"
     "@types/uuid" "^8.3.0"
