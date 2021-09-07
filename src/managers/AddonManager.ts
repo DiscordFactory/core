@@ -1,6 +1,6 @@
-import BaseAddon from '../addons/BaseAddon'
-import { AddonCommand, BaseAddonCommand } from '../addons/AddonCommand'
+import { AddonCommand, BaseAddonCommand, BaseAddon } from '../entities/Addon'
 import Ignitor from '../Ignitor'
+import { BaseEvent, EventEntity } from '../entities/Event'
 
 export default class AddonManager {
   constructor (public ignitor: Ignitor) {
@@ -11,14 +11,28 @@ export default class AddonManager {
 
     addons.forEach((item: Function) => {
       const addon: BaseAddon = item()
+
       const commands = addon.registerCLI()
       commands.forEach((command: BaseAddonCommand) => {
-        this.registerCommand(command as AddonCommand)
+        this.registerCLI(command as AddonCommand)
+      })
+
+      const events = addon.registerEvents()
+      events.forEach((event: BaseEvent) => {
+        this.registerEvent(event as EventEntity<any>)
       })
     })
   }
 
-  private registerCommand (command: AddonCommand) {
-    this.ignitor.container.cli.set(command.prefix, command)
+  private registerCLI (Class: AddonCommand) {
+    this.ignitor.container.cli.set(Class.prefix, Class)
+  }
+
+  private registerEvent (Class: EventEntity<any>) {
+    this.ignitor.container.events.push(Class)
+    this.ignitor.factory?.client?.on(
+      Class.event,
+      async (...args) => await Class.run(...args)
+    )
   }
 }

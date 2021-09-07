@@ -38,7 +38,6 @@ export default class EventManager {
     this.factory.client!.on(
       instance.event,
       async (...args: any[]) => {
-        console.log(true)
         await instance.run(...args)
       }
     )
