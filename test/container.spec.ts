@@ -1,6 +1,6 @@
 import test from 'ava'
 import { Client, Intents } from 'discord.js'
-import { Container } from '../src/Container'
+import { Container } from '../oldsrc/Container'
 
 test('create container', (t) => {
   const client = new Client({ intents: [Intents.FLAGS.GUILDS] })

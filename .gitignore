@@ -42,7 +42,7 @@ node_modules/
 jspm_packages/
 
 # TypeScript v1 declaration files
-src/typing/
+oldsrc/typing/
 
 # Optional npm cache directory
 .npm
@@ -74,6 +74,7 @@ src/typing/
 # Nuxt generate
 dist
 build
+oldsrc
 
 # vuepress build output
 .vuepress/dist
