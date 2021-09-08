@@ -1,12 +1,13 @@
 import EventManager from './managers/EventManager'
-import { Client, Collection } from 'discord.js'
-import AddonManager from './managers/AddonManager'
+import { Client } from 'discord.js'
 import Ignitor from './Ignitor'
+import CommandManager from './managers/CommandManager'
 
 export default class Factory {
   public client: Client | undefined
 
   public readonly eventManager: EventManager = new EventManager(this)
+  public readonly commandManager: CommandManager = new CommandManager(this)
 
   constructor (public ignitor: Ignitor) {
     this.client = new Client({
@@ -16,12 +17,13 @@ export default class Factory {
   }
 
   public async init () {
-    await this.client?.login('Nzg1ODgxOTk1NDc2ODYwOTc5.X8-TpA.cYGqnporjwOBgpalYIs7vQ7sCOo')
-    await this.ignitor.addonManager.registerAddons()
-    await this.eventManager.register()
-    return this
-  }
+    await this.client?.login('Nzg1ODgxOTk1NDc2ODYwOTc5.X8-TpA.B60iiI3uKRVTDLc2JJPBDhUSwQ4')
 
-  public async registerEvents () {
+    await this.ignitor.addonManager.registerAddons()
+
+    await this.eventManager.register()
+    await this.commandManager.register()
+
+    return this
   }
 }

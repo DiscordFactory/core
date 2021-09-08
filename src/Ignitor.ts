@@ -1,9 +1,10 @@
 import Factory from './Factory'
-import { fetch, File } from 'fs-recursive'
+import { fetch } from 'fs-recursive'
 import { Collection } from 'discord.js'
 import AddonManager from './managers/AddonManager'
 import Container from './Container'
 import path from 'path'
+import ModuleAlias from 'module-alias'
 
 export default class Ignitor {
   public files: Collection<string, any> = new Collection()
@@ -14,9 +15,12 @@ export default class Ignitor {
   public readonly addonManager: AddonManager = new AddonManager(this)
 
   public async createFactory () {
+    this.registerAlias()
+
     await this.loadFiles('src')
     await this.loadFiles('providers')
     await this.loadKernel()
+
     this.factory = new Factory(this)
     await this.factory.init()
 
@@ -24,7 +28,8 @@ export default class Ignitor {
   }
 
   public async createCommand () {
-    await this.loadFiles('src')
+    this.registerAlias()
+
     await this.loadKernel()
     await this.addonManager.registerAddons()
 
@@ -59,5 +64,14 @@ export default class Ignitor {
     const kernelPath = path.join(process.cwd(), 'start', 'Kernel.ts')
     const item = await import(kernelPath)
     this.kernel = new item.default()
+  }
+
+  private registerAlias () {
+    ModuleAlias.addAlias('ioc:factory/Core', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
+    ModuleAlias.addAlias('ioc:factory/Core/Event', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
+    ModuleAlias.addAlias('ioc:factory/Core/Command', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
+    ModuleAlias.addAlias('ioc:factory/Core/Hook', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
+    ModuleAlias.addAlias('ioc:factory/Core/Middleware', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
+    ModuleAlias.addAlias('ioc:factory/Discord/Event', () => path.join(process.cwd(), 'node_modules', 'discord.js'))
   }
 }
