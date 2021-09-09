@@ -5,6 +5,7 @@ import AddonManager from './managers/AddonManager'
 import Container from './Container'
 import path from 'path'
 import ModuleAlias from 'module-alias'
+import NodeEmitter from './utils/NodeEmitter'
 
 export default class Ignitor {
   public files: Collection<string, any> = new Collection()
@@ -16,6 +17,7 @@ export default class Ignitor {
 
   public async createFactory () {
     this.registerAlias()
+    NodeEmitter.emit('application::starting')
 
     await this.loadFiles('src')
     await this.loadFiles('providers')
@@ -71,7 +73,6 @@ export default class Ignitor {
     ModuleAlias.addAlias('ioc:factory/Core/Event', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
     ModuleAlias.addAlias('ioc:factory/Core/Command', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
     ModuleAlias.addAlias('ioc:factory/Core/Hook', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
-    ModuleAlias.addAlias('ioc:factory/Core/Middleware', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
-    ModuleAlias.addAlias('ioc:factory/Discord/Event', () => path.join(process.cwd(), 'node_modules', 'discord.js'))
+    ModuleAlias.addAlias('ioc:factory/Core/Container', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
   }
 }

@@ -341,6 +341,13 @@
   resolved "https://registry.yarnpkg.com/@kwsites/promise-deferred/-/promise-deferred-1.1.1.tgz#8ace5259254426ccef57f3175bc64ed7095ed919"
   integrity sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==
 
+"@leadcodedev/logger@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@leadcodedev/logger/-/logger-1.0.0.tgz#1d820011796d13037a4684c89f6e7d8cef22a730"
+  integrity sha512-kZjpLdCSt8XxPhql7FdNNM3ajGs11JCF6u9ZHCRlwKmoWetHqe7mjpRsXaqTEM4rt9ec+P6jhWiB8Xou9yQzJg==
+  dependencies:
+    luxon "^2.0.1"
+
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.4.tgz#d4b3549a5db5de2683e0c1071ab4f140904bbf69"
@@ -2825,6 +2832,11 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
+
+luxon@^2.0.1:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-2.0.2.tgz#11f2cd4a11655fdf92e076b5782d7ede5bcdd133"
+  integrity sha512-ZRioYLCgRHrtTORaZX1mx+jtxKtKuI5ZDvHNAmqpUzGqSrR+tL4FVLn/CUGMA3h0+AKD1MAxGI5GnCqR5txNqg==
 
 make-dir@^3.0.0:
   version "3.1.0"

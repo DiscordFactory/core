@@ -1,8 +1,17 @@
-import { ClientEvents } from 'discord.js'
+import { ApplicationCommandOption, ClientEvents } from 'discord.js'
 import { EventEntity } from '../entities/Event'
 import { File } from 'fs-recursive'
+import { CommandEntity } from '../entities/Command'
+import { HookEntity } from '../entities/Hook'
 
-export type ContainerType = 'event' | 'command' | 'hook' | 'middleware' | 'slash-command' | null
+export type ContainerType = 'event' | 'command' | 'hook' | 'middleware'
+
+export type HookType = 'application::starting'
+  | 'application::ok'
+  | 'application::client::login'
+  | 'application::commands::registered'
+  | 'application::events::registered'
+  | 'application::hooks::registered'
 
 export type Instance<K extends keyof ClientEvents> = EventEntity<K>
 
@@ -13,16 +22,12 @@ export type QueueItem = {
   file: File
 }
 
-// export type Context = HookEntity | EventEntity<any> | MiddlewareEntity | CommandEntity | SlashCommandEntity
-
 export type Constructable<K extends keyof ClientEvents> = {
   type: ContainerType
   default: any
-  instance: 'HookEntity' | EventEntity<K> | 'MiddlewareEntity' | 'CommandEntity'
+  instance: HookEntity | EventEntity<K> | CommandEntity
   file: File
 }
-
-import { ApplicationCommandOption, CommandInteraction } from 'discord.js'
 
 export type ScopeContext = 'GLOBAL' | string[]
 
@@ -38,6 +43,8 @@ export type Context = {
   options: SlashOption
 }
 
-export interface BaseSlashCommand {
-  run (interaction: CommandInteraction): Promise<void>
-}
+export type CommandContainer = CommandEntity[]
+
+export type EventContainer = EventEntity<any>[]
+
+export type HookContainer = HookEntity[]

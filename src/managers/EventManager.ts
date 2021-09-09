@@ -1,18 +1,13 @@
 import Factory from '../Factory'
 import { EventEntity } from '../entities/Event'
-import { QueueItem } from '../types'
 import { activeProvider } from '../utils'
-import { File } from 'fs-recursive'
-import { Collection } from 'discord.js'
+import NodeEmitter from '../utils/NodeEmitter'
 
 export default class EventManager {
-  private events: Collection<string, any> = new Collection()
-
   constructor (public factory: Factory) {
   }
 
   public async register () {
-    const container = this.factory.ignitor.container.events
     const files = this.factory.ignitor.files.filter((file: any) => file.type === 'event')
 
     await Promise.all(
@@ -31,6 +26,11 @@ export default class EventManager {
           event
         )
       })
+    )
+
+    NodeEmitter.emit(
+      'application::events::registered',
+      this.factory.ignitor.container.commands
     )
   }
 

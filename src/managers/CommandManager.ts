@@ -1,6 +1,7 @@
 import Factory from '../Factory'
 import { ApplicationCommand, ApplicationCommandData, Collection, Interaction } from 'discord.js'
 import { CommandEntity } from '../entities/Command'
+import NodeEmitter from '../utils/NodeEmitter'
 
 export default class CommandManager {
   constructor (public factory: Factory) {
@@ -10,29 +11,20 @@ export default class CommandManager {
     const container = this.factory.ignitor.container.commands
     const files = this.factory.ignitor.files.filter((file: any) => file.type === 'command')
 
-    files.map(async (item) => {
-      const instance = new item.default()
-      const command = new CommandEntity(
-        instance.scope,
-        instance.roles,
-        instance.context,
-        instance.run,
-        item.file
-      )
+    await Promise.all(
+      files.map(async (item) => {
+        const instance = new item.default()
+        const command = new CommandEntity(
+          instance.scope,
+          instance.roles,
+          instance.context,
+          instance.run,
+          item.file
+        )
 
-      container.push(command)
-      this.emit(command)
-
-      this.factory.client?.on('interactionCreate', async (interaction: Interaction) => {
-        if (!interaction.isCommand()) {
-          return
-        }
-
-        if (interaction.commandName.toLowerCase() === command.context.name.toLowerCase()) {
-          await command.run(interaction)
-        }
+        container.push(command)
       })
-    })
+    )
 
     await this.insertCommands()
   }
@@ -90,15 +82,23 @@ export default class CommandManager {
           }
         })),
       })
-    })
-  }
 
-  private emit (instance) {
-    this.factory.client!.on(
-      instance.event,
-      async (...args: any[]) => {
-        await instance.run(...args)
-      }
-    )
+      NodeEmitter.emit(
+        'application::commands::registered',
+        this.factory.ignitor.container.commands
+      )
+
+      commands.forEach((command: CommandEntity) => {
+        this.factory.client?.on('interactionCreate', async (interaction: Interaction) => {
+          if (!interaction.isCommand()) {
+            return
+          }
+
+          if (interaction.commandName.toLowerCase() === command.context.name.toLowerCase()) {
+            await command.run(interaction)
+          }
+        })
+      })
+    })
   }
 }

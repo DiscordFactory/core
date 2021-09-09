@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@discord-factory/env": "^0.0.0",
+    "@leadcodedev/logger": "^1.0.0",
     "@types/mock-fs": "^4.13.0",
     "cross-env": "^7.0.3",
     "discord.js": "^13.1.0",
