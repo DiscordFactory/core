@@ -5,6 +5,7 @@ import { Event, BaseEvent } from './entities/Event'
 import { Command, BaseCommand } from './entities/Command'
 import { Hook, BaseHook } from './entities/Hook'
 import { CommandContainer, EventContainer, HookContainer } from './types'
+import { BaseProvider } from './entities/Provider'
 
 export {
   Ignitor,
@@ -27,4 +28,6 @@ export {
   CommandContainer,
   EventContainer,
   HookContainer,
+
+  BaseProvider,
 }

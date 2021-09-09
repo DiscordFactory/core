@@ -4,6 +4,7 @@ import Ignitor from './Ignitor'
 import CommandManager from './managers/CommandManager'
 import HookManager from './managers/HookManager'
 import NodeEmitter from './utils/NodeEmitter'
+import ProviderManager from './managers/ProviderManager'
 
 export default class Factory {
   public client: Client | undefined
@@ -11,6 +12,7 @@ export default class Factory {
   public readonly eventManager: EventManager = new EventManager(this)
   public readonly commandManager: CommandManager = new CommandManager(this)
   public readonly hookManager: HookManager = new HookManager(this)
+  public readonly providerManager: ProviderManager = new ProviderManager(this)
 
   constructor (public ignitor: Ignitor) {
     this.client = new Client({
@@ -22,6 +24,8 @@ export default class Factory {
   public async init () {
     await this.client?.login('Nzg1ODgxOTk1NDc2ODYwOTc5.X8-TpA.B60iiI3uKRVTDLc2JJPBDhUSwQ4')
     NodeEmitter.emit('application::client::login')
+
+    await this.providerManager.register()
 
     await this.ignitor.addonManager.registerAddons()
 
