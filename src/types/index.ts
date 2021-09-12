@@ -14,15 +14,6 @@ export type HookType = 'application::starting'
   | 'application::events::registered'
   | 'application::hooks::registered'
 
-export type Instance<K extends keyof ClientEvents> = EventEntity<K>
-
-export type QueueItem = {
-  type: ContainerType
-  default: any
-  instance: Instance<any>
-  file: File
-}
-
 export type Constructable<K extends keyof ClientEvents> = {
   type: ContainerType
   default: any
@@ -55,3 +46,8 @@ export type ProviderContainer = ProviderEntity[]
 export type EntityResolvable = EventEntity<keyof ClientEvents> | CommandEntity | HookEntity
 
 export type EnvironmentType = 'yaml' | 'yml' | 'json'
+
+export interface Factory {
+  getModuleEnvironment (module: string, key: string): string
+  getEnvironment (key: string): any | undefined
+}

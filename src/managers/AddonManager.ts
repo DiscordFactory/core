@@ -4,6 +4,7 @@ import { EventEntity } from '../entities/Event'
 import { CommandEntity } from '../entities/Command'
 import { HookEntity } from '../entities/Hook'
 import NodeEmitter from '../utils/NodeEmitter'
+import { Factory } from '../types'
 
 export default class AddonManager {
   constructor (public ignitor: Ignitor) {
@@ -15,7 +16,7 @@ export default class AddonManager {
     addons.forEach((item: Function) => {
       const addon: BaseAddon = item()
 
-      addon.setFactory(this.ignitor.factory!)
+      addon.setFactory(this.ignitor.factory! as unknown as Factory)
 
       const environmentKeys = this.ignitor.environment?.content[addon.addonName.toUpperCase()]
 

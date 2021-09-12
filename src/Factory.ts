@@ -39,4 +39,13 @@ export default class Factory {
     NodeEmitter.emit('application::ok', this.client)
     return this
   }
+
+  public getModuleEnvironment (module: string, key: string) {
+    const element = this.getEnvironment(module.toUpperCase())
+    return element[key]
+  }
+
+  public getEnvironment (key: string): any | undefined {
+    return this.ignitor.environment?.content[key]
+  }
 }

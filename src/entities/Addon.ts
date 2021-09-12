@@ -1,4 +1,4 @@
-import Factory from '../Factory'
+import { Factory } from '../types'
 
 export function CLICommand (options: { name: string, prefix: string, params: string[] }) {
   return (target: Function) => {
