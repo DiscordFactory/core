@@ -4,15 +4,15 @@ import Constructable from '../utils/Constructable'
 import { CommandInteraction } from 'discord.js'
 import Factory from '../Factory'
 
-export function Command (context: Context) {
+export function Command (ctx: Context) {
   return (target: Function) => {
     return class SlashCommand extends CommandEntity {
-      constructor (factory: Factory) {
+      constructor (context: Factory) {
         super(
-          factory,
-          context.scope,
-          context.roles,
-          { ...context.options, name: context.options.name.toLowerCase() },
+          context,
+          ctx.scope,
+          ctx.roles,
+          { ...ctx.options, name: ctx.options.name.toLowerCase() },
           target.prototype.run
         )
       }
@@ -24,10 +24,10 @@ export class CommandEntity extends Constructable<any> {
   public static type: ContainerType = 'command'
 
   constructor (
-    public factory: Factory,
+    public context: Factory,
     public scope: ScopeContext,
     public roles: string[] = [],
-    public context: SlashOption,
+    public ctx: SlashOption,
     public run: (...args: Array<any>) => Promise<void>,
     public file?: File,
   ) {

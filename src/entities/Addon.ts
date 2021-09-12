@@ -1,4 +1,4 @@
-import { Factory } from '../types'
+import { AddonContext } from '../types'
 
 export function CLICommand (options: { name: string, prefix: string, params: string[] }) {
   return (target: Function) => {
@@ -9,7 +9,7 @@ export function CLICommand (options: { name: string, prefix: string, params: str
 }
 
 export abstract class BaseAddonCommand {
-  public factory: Factory | undefined
+  public context: AddonContext | undefined
   public abstract run (): Promise<void>
 }
 
@@ -21,17 +21,17 @@ export interface AddonCommand {
 }
 
 export abstract class BaseAddonHook {
-  public factory: Factory | undefined
+  public context: AddonContext | undefined
   public abstract run (...props: any[]): Promise<void>
 }
 
 export abstract class BaseAddonEvent {
-  public factory: Factory | undefined
+  public context: AddonContext | undefined
   public abstract run (): Promise<void>
 }
 
 export abstract class BaseAddon {
-  private factory: Factory | undefined
+  private context: AddonContext | undefined
   public abstract addonName: string
   public abstract registerCLI (): any[]
   public abstract registerEvents (): any[]
@@ -39,11 +39,11 @@ export abstract class BaseAddon {
   public abstract registerHooks (): any[]
   public abstract defineKeys (): string[]
 
-  public setFactory (factory: Factory) {
-    this.factory = factory
+  public setContext (context: AddonContext) {
+    this.context = context
   }
 
-  public getFactory () {
-    return this.factory
+  public getContext () {
+    return this.context
   }
 }

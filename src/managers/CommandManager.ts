@@ -19,7 +19,7 @@ export default class CommandManager {
           this.factory,
           instance.scope,
           instance.roles,
-          instance.context,
+          instance.ctx,
           instance.run,
           item.file
         )
@@ -68,14 +68,14 @@ export default class CommandManager {
       const guild = this.factory.client!.guilds.cache.get(key)
 
       const cacheCommands = await guild?.commands.set(commands.map((command: CommandEntity) => ({
-        ...command.context,
+        ...command.ctx,
         ...command.roles.length && { defaultPermission: false },
       })))
 
       await guild?.commands.permissions.set({
         fullPermissions: await Promise.all(commands.map(async (command: CommandEntity) => {
           const registeredCommand: ApplicationCommand | undefined = cacheCommands?.find((applicationCommand: ApplicationCommand) => (
-            applicationCommand.name === command.context.name
+            applicationCommand.name === command.ctx.name
           ))
 
           return {
@@ -100,7 +100,7 @@ export default class CommandManager {
             return
           }
 
-          if (interaction.commandName.toLowerCase() === command.context.name.toLowerCase()) {
+          if (interaction.commandName.toLowerCase() === command.ctx.name.toLowerCase()) {
             await command.run(interaction)
           }
         })

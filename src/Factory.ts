@@ -1,11 +1,13 @@
 import EventManager from './managers/EventManager'
-import { Client } from 'discord.js'
+import { Client, Collection } from 'discord.js'
 import Ignitor from './Ignitor'
 import CommandManager from './managers/CommandManager'
 import HookManager from './managers/HookManager'
 import NodeEmitter from './utils/NodeEmitter'
 import ProviderManager from './managers/ProviderManager'
 import { ProviderEntity } from './entities/Provider'
+import Container from './Container'
+import { EnvironmentType } from './types'
 
 export default class Factory {
   public client: Client | undefined
@@ -47,5 +49,17 @@ export default class Factory {
 
   public getEnvironment (key: string): any | undefined {
     return this.ignitor.environment?.content[key]
+  }
+
+  public getContainer (): Container {
+    return this.ignitor.container
+  }
+
+  public getFiles (): Collection<string, unknown> {
+    return this.ignitor.files
+  }
+
+  public getSelectEnvironment (): EnvironmentType {
+    return this.ignitor.environment!.type
   }
 }

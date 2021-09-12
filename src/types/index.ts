@@ -1,9 +1,10 @@
-import { ApplicationCommandOption, ClientEvents } from 'discord.js'
+import { ApplicationCommandOption, Client, ClientEvents, Collection } from 'discord.js'
 import { EventEntity } from '../entities/Event'
 import { File } from 'fs-recursive'
 import { CommandEntity } from '../entities/Command'
 import { HookEntity } from '../entities/Hook'
 import { ProviderEntity } from '../entities/Provider'
+import Container from '../Container'
 
 export type ContainerType = 'event' | 'command' | 'hook' | 'middleware'
 
@@ -47,7 +48,11 @@ export type EntityResolvable = EventEntity<keyof ClientEvents> | CommandEntity |
 
 export type EnvironmentType = 'yaml' | 'yml' | 'json'
 
-export interface Factory {
+export interface AddonContext {
+  client: Client
   getModuleEnvironment (module: string, key: string): string
+  getSelectEnvironment (): EnvironmentType
   getEnvironment (key: string): any | undefined
+  getContainer (): Container
+  getFiles (): Collection<string, unknown>
 }
