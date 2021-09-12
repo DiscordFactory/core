@@ -1,7 +1,7 @@
 import Factory from '../Factory'
 import { EventEntity } from '../entities/Event'
-import { activeProvider } from '../utils'
 import NodeEmitter from '../utils/NodeEmitter'
+import { ProviderEntity } from '../entities/Provider'
 
 export default class EventManager {
   constructor (public factory: Factory) {
@@ -14,6 +14,7 @@ export default class EventManager {
       files.map(async (item: any) => {
         const instance = new item.default()
         const event = new EventEntity(
+          this.factory,
           instance.event,
           instance.run,
           item.file
@@ -21,10 +22,9 @@ export default class EventManager {
 
         this.emit(instance)
 
-        await activeProvider(
-          this.factory.ignitor.container,
-          event
-        )
+        this.factory.ignitor.container.providers.forEach((provider: ProviderEntity) => {
+          provider.load(event)
+        })
       })
     )
 

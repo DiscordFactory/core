@@ -1,14 +1,15 @@
 import { File } from 'fs-recursive'
 import Constructable from '../utils/Constructable'
 import { HookType } from '../types'
+import Factory from '../Factory'
 
 export function Hook (identifier: HookType) {
   return (target: Function) => {
     return class Hook extends HookEntity {
-      constructor () {
-        super(identifier, target.prototype.run, null)
+      constructor (factory: Factory) {
+        super(factory, identifier, target.prototype.run, null)
       }
-    }
+    } as any
   }
 }
 
@@ -16,9 +17,10 @@ export class HookEntity extends Constructable<any> {
   public static type: string = 'hook'
 
   constructor (
+    public factory: Factory,
     public type: HookType,
-    public run: (...args: Array<any>) => Promise<void>,
-    public file: File | null
+    public run: (...args: any[]) => Promise<void>,
+    public file: File | null,
   ) {
     super(file)
   }

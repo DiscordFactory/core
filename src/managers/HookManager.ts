@@ -1,7 +1,7 @@
 import Factory from '../Factory'
-import { activeProvider } from '../utils'
 import { HookEntity } from '../entities/Hook'
 import NodeEmitter from '../utils/NodeEmitter'
+import { ProviderEntity } from '../entities/Provider'
 
 export default class HookManager {
 
@@ -15,19 +15,19 @@ export default class HookManager {
       files.map(async (item: any) => {
         const instance = new item.default()
         const hook = new HookEntity(
+          this.factory,
           instance.type,
           instance.run,
-          item.file
+          item.file,
         )
 
         NodeEmitter.on(hook.type, async (...props: any[]) => {
           await hook.run(...props)
         })
 
-        await activeProvider(
-          this.factory.ignitor.container,
-          hook
-        )
+        this.factory.ignitor.container.providers.forEach((provider: ProviderEntity) => {
+          provider.load(hook)
+        })
       })
     )
   }

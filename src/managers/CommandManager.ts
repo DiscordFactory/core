@@ -2,6 +2,7 @@ import Factory from '../Factory'
 import { ApplicationCommand, ApplicationCommandData, Collection, Interaction } from 'discord.js'
 import { CommandEntity } from '../entities/Command'
 import NodeEmitter from '../utils/NodeEmitter'
+import { ProviderEntity } from '../entities/Provider'
 
 export default class CommandManager {
   constructor (public factory: Factory) {
@@ -15,6 +16,7 @@ export default class CommandManager {
       files.map(async (item) => {
         const instance = new item.default()
         const command = new CommandEntity(
+          this.factory,
           instance.scope,
           instance.roles,
           instance.context,
@@ -23,6 +25,10 @@ export default class CommandManager {
         )
 
         container.push(command)
+
+        this.factory.ignitor.container.providers.forEach((provider: ProviderEntity) => {
+          provider.load(command)
+        })
       })
     )
 

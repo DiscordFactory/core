@@ -1,7 +1,4 @@
 import Factory from '../Factory'
-import { BaseEvent } from '../entities/Event'
-import { BaseCommand } from './Command'
-import { BaseHook } from './Hook'
 
 export function CLICommand (options: { name: string, prefix: string, params: string[] }) {
   return (target: Function) => {
@@ -12,6 +9,7 @@ export function CLICommand (options: { name: string, prefix: string, params: str
 }
 
 export abstract class BaseAddonCommand {
+  public factory: Factory | undefined
   public abstract run (): Promise<void>
 }
 
@@ -22,14 +20,26 @@ export interface AddonCommand {
   run (): Promise<void>
 }
 
+export abstract class BaseAddonHook {
+  public factory: Factory | undefined
+  public abstract run (...props: any[]): Promise<void>
+}
+
+export abstract class BaseAddonEvent {
+  public factory: Factory | undefined
+  public abstract run (): Promise<void>
+}
+
 export abstract class BaseAddon {
   private factory: Factory | undefined
-  public abstract registerCLI (): BaseAddonCommand[]
-  public abstract registerEvents (): BaseEvent[]
-  public abstract registerCommands (): BaseCommand[]
-  public abstract registerHooks (): BaseHook[]
+  public abstract addonName: string
+  public abstract registerCLI (): any[]
+  public abstract registerEvents (): any[]
+  public abstract registerCommands (): any[]
+  public abstract registerHooks (): any[]
+  public abstract defineKeys (): string[]
 
-  private setFactory (factory: Factory) {
+  public setFactory (factory: Factory) {
     this.factory = factory
   }
 

@@ -16,14 +16,13 @@ export default class ProviderManager {
       ['node_modules']
     )
 
-    console.log(fetchedFiles)
     const files = Array.from(fetchedFiles, ([key, file]) => ({ key, ...file }))
 
     await Promise.all(
       files.map(async (item: any) => {
         const Class = await import(item.path)
         const instance = new Class.default()
-        console.log(instance.boot, item)
+
         const provider = new ProviderEntity(
           instance.boot,
           instance.load,
@@ -31,29 +30,8 @@ export default class ProviderManager {
           item,
         )
 
-        console.log(provider)
+        this.factory.ignitor.container.providers.push(provider)
       })
     )
-
-    //
-    // const files = this.factory.ignitor.files.filter((file: any) => file.type === 'provider')
-    //
-    // await Promise.all(
-    //   files.map(async (item: any) => {
-    //     const instance = new item.default()
-    //     const event = new EventEntity(
-    //       instance.event,
-    //       instance.run,
-    //       item.file
-    //     )
-    //
-    //     this.emit(instance)
-    //
-    //     await activeProvider(
-    //       this.factory.ignitor.container,
-    //       event
-    //     )
-    //   })
-    // )
   }
 }

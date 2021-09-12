@@ -3,6 +3,7 @@ import { EventEntity } from '../entities/Event'
 import { File } from 'fs-recursive'
 import { CommandEntity } from '../entities/Command'
 import { HookEntity } from '../entities/Hook'
+import { ProviderEntity } from '../entities/Provider'
 
 export type ContainerType = 'event' | 'command' | 'hook' | 'middleware'
 
@@ -48,3 +49,9 @@ export type CommandContainer = CommandEntity[]
 export type EventContainer = EventEntity<any>[]
 
 export type HookContainer = HookEntity[]
+
+export type ProviderContainer = ProviderEntity[]
+
+export type EntityResolvable = EventEntity<keyof ClientEvents> | CommandEntity | HookEntity
+
+export type EnvironmentType = 'yaml' | 'yml' | 'json'

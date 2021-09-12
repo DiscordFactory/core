@@ -5,6 +5,7 @@ import CommandManager from './managers/CommandManager'
 import HookManager from './managers/HookManager'
 import NodeEmitter from './utils/NodeEmitter'
 import ProviderManager from './managers/ProviderManager'
+import { ProviderEntity } from './entities/Provider'
 
 export default class Factory {
   public client: Client | undefined
@@ -22,10 +23,11 @@ export default class Factory {
   }
 
   public async init () {
+    await this.providerManager.register()
+    this.ignitor.container.providers.forEach((provider: ProviderEntity) => provider.boot())
+
     await this.client?.login('Nzg1ODgxOTk1NDc2ODYwOTc5.X8-TpA.B60iiI3uKRVTDLc2JJPBDhUSwQ4')
     NodeEmitter.emit('application::client::login')
-
-    await this.providerManager.register()
 
     await this.ignitor.addonManager.registerAddons()
 
@@ -33,6 +35,7 @@ export default class Factory {
     await this.eventManager.register()
     await this.commandManager.register()
 
+    this.ignitor.container.providers.forEach((provider: ProviderEntity) => provider.ok())
     NodeEmitter.emit('application::ok', this.client)
     return this
   }

@@ -1,11 +1,11 @@
 import Ignitor from './Ignitor'
 import Factory from './Factory'
-import { AddonCommand, BaseAddonCommand, BaseAddon, CLICommand } from './entities/Addon'
-import { Event, BaseEvent } from './entities/Event'
-import { Command, BaseCommand } from './entities/Command'
-import { Hook, BaseHook } from './entities/Hook'
-import { CommandContainer, EventContainer, HookContainer } from './types'
-import { BaseProvider } from './entities/Provider'
+import { AddonCommand, BaseAddonCommand, BaseAddon, CLICommand, BaseAddonHook, BaseAddonEvent } from './entities/Addon'
+import { Event, BaseEvent, EventEntity } from './entities/Event'
+import { Command, BaseCommand, CommandEntity } from './entities/Command'
+import { Hook, BaseHook, HookEntity } from './entities/Hook'
+import { CommandContainer, EventContainer, HookContainer, ProviderContainer, EntityResolvable } from './types'
+import { BaseProvider, ProviderEntity } from './entities/Provider'
 
 export {
   Ignitor,
@@ -28,6 +28,16 @@ export {
   CommandContainer,
   EventContainer,
   HookContainer,
+  ProviderContainer,
 
   BaseProvider,
+
+  EntityResolvable,
+  EventEntity,
+  CommandEntity,
+  HookEntity,
+  ProviderEntity,
+
+  BaseAddonHook,
+  BaseAddonEvent,
 }

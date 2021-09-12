@@ -1,15 +1,15 @@
-import { ClientEvents } from 'discord.js'
 import { File } from 'fs-recursive'
 import Constructable from '../utils/Constructable'
+import { EntityResolvable } from '../types'
 
-export class ProviderEntity<K extends keyof ClientEvents> extends Constructable<any> {
+export class ProviderEntity extends Constructable<any> {
   public static type: string = 'provider'
 
   constructor (
     public boot: () => Promise<void>,
-    public load: () => Promise<void>,
+    public load: (file: EntityResolvable) => Promise<void>,
     public ok: () => Promise<void>,
-    public file: File | null
+    public file: File | null,
   ) {
     super(file)
   }
@@ -17,6 +17,6 @@ export class ProviderEntity<K extends keyof ClientEvents> extends Constructable<
 
 export abstract class BaseProvider {
   public abstract boot: () => Promise<void>
-  public abstract load: () => Promise<void>
+  public abstract load: (file: EntityResolvable) => Promise<void>
   public abstract ok: () => Promise<void>
 }
