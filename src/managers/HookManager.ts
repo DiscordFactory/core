@@ -15,7 +15,7 @@ export default class HookManager {
       files.map(async (item: any) => {
         const instance = new item.default()
         const hook = new HookEntity(
-          this.factory,
+          undefined,
           instance.type,
           instance.run,
           item.file,

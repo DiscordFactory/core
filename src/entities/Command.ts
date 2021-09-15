@@ -1,13 +1,12 @@
 import { File } from 'fs-recursive'
-import { ContainerType, Context, ScopeContext, SlashOption } from '../types'
+import { AddonContext, ContainerType, Context, ScopeContext, SlashOption } from '../types'
 import Constructable from '../utils/Constructable'
 import { CommandInteraction } from 'discord.js'
-import Factory from '../Factory'
 
 export function Command (ctx: Context) {
   return (target: Function) => {
     return class SlashCommand extends CommandEntity {
-      constructor (context: Factory) {
+      constructor (context: any) {
         super(
           context,
           ctx.scope,
@@ -24,7 +23,7 @@ export class CommandEntity extends Constructable<any> {
   public static type: ContainerType = 'command'
 
   constructor (
-    public context: Factory,
+    public context: AddonContext<any> | undefined,
     public scope: ScopeContext,
     public roles: string[] = [],
     public ctx: SlashOption,

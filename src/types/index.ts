@@ -48,7 +48,8 @@ export type EntityResolvable = EventEntity<keyof ClientEvents> | CommandEntity |
 
 export type EnvironmentType = 'yaml' | 'yml' | 'json'
 
-export interface AddonContext {
+export interface AddonContext<Addon> {
+  addon: Addon
   client: Client
   getModuleEnvironment (module: string, key: string): string
   getSelectEnvironment (): EnvironmentType

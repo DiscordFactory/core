@@ -14,7 +14,7 @@ export default class EventManager {
       files.map(async (item: any) => {
         const instance = new item.default()
         const event = new EventEntity(
-          this.factory,
+          undefined,
           instance.event,
           instance.run,
           item.file

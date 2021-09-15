@@ -10,6 +10,8 @@ import Container from './Container'
 import { EnvironmentType } from './types'
 
 export default class Factory {
+  private static $instance: Factory
+
   public client: Client | undefined
 
   public readonly eventManager: EventManager = new EventManager(this)
@@ -19,16 +21,25 @@ export default class Factory {
 
   constructor (public ignitor: Ignitor) {
     this.client = new Client({
-      intents: ['GUILD_MEMBERS', 'GUILDS', 'GUILD_MESSAGES'],
-      partials: ['MESSAGE', 'REACTION', 'CHANNEL']
+      intents: this.ignitor.environment?.content.INTENTS,
+      partials: this.ignitor.environment?.content.PARTIALS
     })
+  }
+
+  public static getInstance (ignitor?: Ignitor) {
+    if (!this.$instance) {
+      if (ignitor) {
+        this.$instance = new Factory(ignitor)
+      }
+    }
+    return this.$instance
   }
 
   public async init () {
     await this.providerManager.register()
     this.ignitor.container.providers.forEach((provider: ProviderEntity) => provider.boot())
 
-    await this.client?.login('Nzg1ODgxOTk1NDc2ODYwOTc5.X8-TpA.B60iiI3uKRVTDLc2JJPBDhUSwQ4')
+    await this.client?.login(this.ignitor.environment?.content.APP_TOKEN)
     NodeEmitter.emit('application::client::login')
 
     await this.ignitor.addonManager.registerAddons()

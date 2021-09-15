@@ -1,16 +1,16 @@
 import { AddonContext } from '../types'
 
-export function CLICommand (options: { name: string, prefix: string, params: string[] }) {
+export function CLICommand (options: { name: string, prefix: string, usages: string[] }) {
   return (target: Function) => {
     target.prototype.name = options.name
     target.prototype.prefix = options.prefix
-    target.prototype.params = options.params
+    target.prototype.usages = options.usages
   }
 }
 
-export abstract class BaseAddonCommand {
-  public context: AddonContext | undefined
-  public abstract run (): Promise<void>
+export abstract class BaseAddonCommand<Addon> {
+  public context: AddonContext<Addon> | undefined
+  public abstract run (...params: string[]): Promise<void>
 }
 
 export interface AddonCommand {
@@ -20,18 +20,17 @@ export interface AddonCommand {
   run (): Promise<void>
 }
 
-export abstract class BaseAddonHook {
-  public context: AddonContext | undefined
+export abstract class BaseAddonHook<Addon> {
+  public context: AddonContext<Addon> | undefined
   public abstract run (...props: any[]): Promise<void>
 }
 
-export abstract class BaseAddonEvent {
-  public context: AddonContext | undefined
-  public abstract run (): Promise<void>
+export abstract class BaseAddonEvent<Addon> {
+  public context: AddonContext<Addon> | undefined
+  public abstract run (...props: any[]): Promise<void>
 }
 
-export abstract class BaseAddon {
-  private context: AddonContext | undefined
+export abstract class BaseAddon<Addon> {
   public abstract addonName: string
   public abstract registerCLI (): any[]
   public abstract registerEvents (): any[]
@@ -39,11 +38,6 @@ export abstract class BaseAddon {
   public abstract registerHooks (): any[]
   public abstract defineKeys (): string[]
 
-  public setContext (context: AddonContext) {
-    this.context = context
-  }
-
-  public getContext () {
-    return this.context
+  protected constructor (public context: AddonContext<Addon>) {
   }
 }

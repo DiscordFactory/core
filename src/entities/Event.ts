@@ -1,12 +1,12 @@
 import { ClientEvents } from 'discord.js'
 import { File } from 'fs-recursive'
 import Constructable from '../utils/Constructable'
-import Factory from '../Factory'
+import { AddonContext } from '../types'
 
 export function Event<K extends keyof ClientEvents> (identifier: K) {
   return (target: Function) => {
     return class Event extends EventEntity<K> {
-      constructor (context: Factory) {
+      constructor (context: any) {
         super(context, identifier, target.prototype.run, null)
       }
     } as any
@@ -17,7 +17,7 @@ export class EventEntity<K extends keyof ClientEvents> extends Constructable<any
   public static type: string = 'event'
 
   constructor (
-    public context: Factory,
+    public context: AddonContext<any> | undefined,
     public event: K,
     public run: (...args: Array<any>) => Promise<void>,
     public file: File | null

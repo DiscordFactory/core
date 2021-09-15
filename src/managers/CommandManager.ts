@@ -16,7 +16,7 @@ export default class CommandManager {
       files.map(async (item) => {
         const instance = new item.default()
         const command = new CommandEntity(
-          this.factory,
+          undefined,
           instance.scope,
           instance.roles,
           instance.ctx,

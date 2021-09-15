@@ -4,7 +4,6 @@ import { EventEntity } from '../entities/Event'
 import { CommandEntity } from '../entities/Command'
 import { HookEntity } from '../entities/Hook'
 import NodeEmitter from '../utils/NodeEmitter'
-import { AddonContext } from '../types'
 
 export default class AddonManager {
   constructor (public ignitor: Ignitor) {
@@ -14,9 +13,12 @@ export default class AddonManager {
     const addons: Function[] = await this.ignitor.kernel.registerAddons()
 
     addons.forEach((item: Function) => {
-      const addon: BaseAddon = item()
+      const addonWithoutInstance = item()
+      const addonContext = { ...this.ignitor.factory }
 
-      addon.setContext(this.ignitor.factory as unknown as AddonContext)
+      const addon: BaseAddon<any> = new addonWithoutInstance(this.ignitor.factory )
+
+      addonContext!['addon'] = addon
 
       const environmentKeys = this.ignitor.environment?.content[addon.addonName.toUpperCase()]
 
@@ -29,25 +31,25 @@ export default class AddonManager {
 
       const cli = addon.registerCLI()
       cli.forEach((item: any) => {
-        const command = new item(this.ignitor.factory)
+        const command = new item(addonContext)
         this.registerCLI(command as AddonCommand)
       })
 
       const events = addon.registerEvents()
       events.forEach((item: any) => {
-        const event = new item(this.ignitor.factory)
+        const event = new item(addonContext)
         this.registerEvent(event as EventEntity<any>)
       })
 
       const commands = addon.registerCommands()
       commands.forEach((item: any) => {
-        const command = new item(this.ignitor.factory)
+        const command = new item(addonContext)
         this.registerCommand(command as CommandEntity)
       })
 
       const hooks = addon.registerHooks()
       hooks.map(async (item: any) => {
-        const hook = new item(this.ignitor.factory)
+        const hook = new item(addonContext)
         this.registerHooks(hook as HookEntity)
       })
     })

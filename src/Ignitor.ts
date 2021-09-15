@@ -28,7 +28,7 @@ export default class Ignitor {
 
     await this.loadKernel()
 
-    this.factory = new Factory(this)
+    this.factory = Factory.getInstance(this)
     await this.factory.init()
 
     NodeEmitter.emit('application::starting')
@@ -39,6 +39,7 @@ export default class Ignitor {
   public async createCommand () {
     this.registerAlias()
 
+    await this.getEnvironnement()
     await this.loadKernel()
     await this.addonManager.registerAddons()
 

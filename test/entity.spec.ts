@@ -1,5 +1,0 @@
-import test from 'ava'
-import { Message } from 'discord.js'
-import { CommandEntity } from '../src/entities/Command'
-import { EventEntity } from '../src/entities/Event'
-import { HookEntity } from '../src/entities/Hook'
