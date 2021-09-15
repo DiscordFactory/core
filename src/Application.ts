@@ -23,4 +23,8 @@ export default class Application {
   public static getEnvironment (): { [p: string]: unknown } {
     return Factory.getInstance().ignitor.environment!.content
   }
+
+  public static getEnvironmentValue (key: string): any | undefined {
+    return Factory.getInstance().getEnvironment(key)
+  }
 }
