@@ -29,14 +29,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Setup
-        run: npm i -g pnpm @antfu/ni
-
       - name: Install
-        run: nci
+        run: npm install
 
       - name: Lint
-        run: nr lint --if-present
+        run: npm run lint --if-present
 
       - name: Test
-        run: nr test --if-present
+        run: npm run test --if-present
