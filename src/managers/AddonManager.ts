@@ -9,7 +9,7 @@ export default class AddonManager {
   constructor (public ignitor: Ignitor) {
   }
 
-  public async registerAddons () {
+  public async registerAddons (): Promise<void> {
     const addons: Function[] = await this.ignitor.kernel.registerAddons()
 
     addons.forEach((item: Function) => {

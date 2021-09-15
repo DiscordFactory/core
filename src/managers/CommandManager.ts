@@ -1,5 +1,5 @@
 import Factory from '../Factory'
-import { ApplicationCommand, ApplicationCommandData, Collection, Interaction } from 'discord.js'
+import { ApplicationCommand, ApplicationCommandData, Collection, Guild, Interaction } from 'discord.js'
 import { CommandEntity } from '../entities/Command'
 import NodeEmitter from '../utils/NodeEmitter'
 import { ProviderEntity } from '../entities/Provider'
@@ -8,9 +8,9 @@ export default class CommandManager {
   constructor (public factory: Factory) {
   }
 
-  public async register () {
+  public async register (): Promise<void> {
     const container = this.factory.ignitor.container.commands
-    const files = this.factory.ignitor.files.filter((file: any) => file.type === 'command')
+    const files = this.factory.ignitor.files.filter((file: { type: string }) => file.type === 'command')
 
     await Promise.all(
       files.map(async (item) => {
@@ -35,7 +35,7 @@ export default class CommandManager {
     await this.insertCommands()
   }
 
-  public async insertCommands () {
+  public async insertCommands (): Promise<void> {
     const container = this.factory.ignitor.container
 
     const globalCommands = container.commands
@@ -65,7 +65,7 @@ export default class CommandManager {
     })
 
     collection.map(async (commands: CommandEntity[], key: string) => {
-      const guild = this.factory.client!.guilds.cache.get(key)
+      const guild: Guild | undefined = this.factory.client!.guilds.cache.get(key)
 
       const cacheCommands = await guild?.commands.set(commands.map((command: CommandEntity) => ({
         ...command.ctx,

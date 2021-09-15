@@ -8,7 +8,7 @@ export default class HookManager {
   constructor (public factory: Factory) {
   }
 
-  public async register () {
+  public async register (): Promise<void> {
     const files = this.factory.ignitor.files.filter((file: any) => file.type === 'hook')
 
     await Promise.all(

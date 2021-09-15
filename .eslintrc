@@ -1,8 +1,21 @@
 {
   "env": {
-    "jest": true
+    "es2021": true,
+    "node": true
   },
-  "plugins": ["ava"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "ava"
+  ],
   "rules": {
     "@typescript-eslint/no-unused-vars": "off",
     "space-before-function-paren": "off",
@@ -11,6 +24,10 @@
     "curly": "off",
     "@typescript-eslint/no-inferrable-types": "off",
     "new-cap": "off",
-    "brace-style": "off"
+    "brace-style": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   }
 }

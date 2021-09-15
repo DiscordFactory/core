@@ -7,7 +7,7 @@ export function Hook (identifier: string) {
   return (target: Function) => {
     return class Hook extends HookEntity {
       constructor (context: any) {
-        super(context, identifier as HookType, target.prototype.run, null)
+        super(context, identifier as HookType, target.prototype.run, undefined)
       }
     } as any
   }
@@ -20,12 +20,12 @@ export class HookEntity extends Constructable<any> {
     public context: BaseAddon<any> | undefined,
     public type: HookType,
     public run: (...args: any[]) => Promise<void>,
-    public file: File | null,
+    public file: File | undefined,
   ) {
     super(file)
   }
 }
 
 export abstract class BaseHook {
-  public abstract run (...args: any): Promise<void>
+  public abstract run (...args: any[]): Promise<void>
 }

@@ -7,7 +7,7 @@ export function Event<K extends keyof ClientEvents> (identifier: K) {
   return (target: Function) => {
     return class Event extends EventEntity<K> {
       constructor (context: any) {
-        super(context, identifier, target.prototype.run, null)
+        super(context, identifier, target.prototype.run, undefined)
       }
     } as any
   }
@@ -20,12 +20,12 @@ export class EventEntity<K extends keyof ClientEvents> extends Constructable<any
     public context: AddonContext<any> | undefined,
     public event: K,
     public run: (...args: Array<any>) => Promise<void>,
-    public file: File | null
+    public file: File | undefined
   ) {
     super(file)
   }
 }
 
 export abstract class BaseEvent {
-  public abstract run (...args: any): Promise<void>
+  public abstract run (...args: any[]): Promise<void>
 }

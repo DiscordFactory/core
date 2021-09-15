@@ -7,7 +7,7 @@ export default class EventManager {
   constructor (public factory: Factory) {
   }
 
-  public async register () {
+  public async register (): Promise<void> {
     const files = this.factory.ignitor.files.filter((file: any) => file.type === 'event')
 
     await Promise.all(

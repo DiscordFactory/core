@@ -28,7 +28,7 @@ export class CommandEntity extends Constructable<any> {
     public roles: string[] = [],
     public ctx: SlashOption,
     public run: (...args: Array<any>) => Promise<void>,
-    public file?: File,
+    public file?: File | undefined,
   ) {
     super(file)
   }

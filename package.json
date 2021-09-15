@@ -15,6 +15,7 @@
     "test": "ava"
   },
   "devDependencies": {
+    "@babel/core": "^7.15.5",
     "@types/node": "^14.14.37",
     "ava": "^3.15.0",
     "eslint": "^7.23.0",
@@ -22,7 +23,10 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
+    "@babel/eslint-parser": "^7.15.4",
     "@leadcodedev/logger": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
     "cross-env": "^7.0.3",
     "discord.js": "^13.1.0",
     "fs-recursive": "^1.1.7",

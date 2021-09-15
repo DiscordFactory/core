@@ -21,6 +21,6 @@ export default class Application {
   }
 
   public static getEnvironment (): { [p: string]: unknown } {
-    return Factory.getInstance().ignitor.environment?.content!
+    return Factory.getInstance().ignitor.environment!.content
   }
 }

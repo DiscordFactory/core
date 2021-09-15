@@ -9,7 +9,7 @@ export class ProviderEntity extends Constructable<any> {
     public boot: () => Promise<void>,
     public load: (file: EntityResolvable) => Promise<void>,
     public ok: () => Promise<void>,
-    public file: File | null,
+    public file: File | undefined,
   ) {
     super(file)
   }

@@ -7,7 +7,7 @@ export default class ProviderManager {
   constructor (public factory: Factory) {
   }
 
-  public async register () {
+  public async register (): Promise<void> {
     const baseDir = path.join(process.cwd(), 'providers')
     const fetchedFiles = await fetch(
       baseDir,
