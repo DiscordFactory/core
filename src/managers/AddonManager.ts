@@ -4,6 +4,7 @@ import { EventEntity } from '../entities/Event'
 import { CommandEntity } from '../entities/Command'
 import { HookEntity } from '../entities/Hook'
 import NodeEmitter from '../utils/NodeEmitter'
+import Application from 'Application'
 
 export default class AddonManager {
   constructor (public ignitor: Ignitor) {
@@ -20,11 +21,11 @@ export default class AddonManager {
 
       addonContext!['addon'] = addon
 
-      const environmentKeys = this.ignitor.environment?.content[addon.addonName.toUpperCase()]
+      const addonSectionName = addon.addonName.toUpperCase()
 
       const keys = addon.defineKeys()
       keys.forEach((key: string) => {
-        if (!environmentKeys[key]) {
+        if (!this.ignitor.factory?.getEnvironment(`${addonSectionName}.${key}`)) {
           throw new Error(`The ${key} key is required in the ${addon.addonName} module environment.`)
         }
       })

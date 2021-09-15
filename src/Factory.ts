@@ -59,7 +59,13 @@ export default class Factory {
   }
 
   public getEnvironment (key: string): any | undefined {
-    return this.ignitor.environment?.content[key]
+    const pathChain = key.split('.')
+    if (pathChain.length > 1) {
+      let result = this.ignitor.environment?.content
+      pathChain.forEach(element => result = result?.[element])
+      return result
+    }
+    else return this.ignitor.environment?.content[key]
   }
 
   public getContainer (): Container {
