@@ -1,13 +1,10 @@
 import YAML from 'js-yaml'
-import { config } from 'dotenv'
 import { fetchSortedExpression, File } from 'fs-recursive'
 import {
   EnvironmentFactory,
   Environment,
   EnvironmentElement,
 } from 'types/Factory'
-
-config()
 
 export default class EnvironmentManager {
   public $env: Environment = {

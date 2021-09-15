@@ -1,40 +1,110 @@
 import Factory from '../Factory'
-import { QueueItem } from '../types'
-import { activeProvider } from '../helpers/Provider'
-import CommandEntity from '../entities/CommandEntity'
-import Guard from '../Guard'
-import Manager from './Manager'
+import { ApplicationCommand, ApplicationCommandData, Collection, Interaction } from 'discord.js'
+import { CommandEntity } from '../entities/Command'
+import NodeEmitter from '../utils/NodeEmitter'
+import { ProviderEntity } from '../entities/Provider'
 
-export default class CommandManager extends Manager {
-  public async register (item: QueueItem) {
-    const $container = Factory.getInstance().$container
+export default class CommandManager {
+  constructor (public factory: Factory) {
+  }
 
-    const { label, description, tag, usages, alias, roles, permissions, middlewares, run } = new item.default()
-    const command = new CommandEntity(label, description, tag, usages, alias, roles, permissions, middlewares, run, item.file as any)
+  public async register () {
+    const container = this.factory.ignitor.container.commands
+    const files = this.factory.ignitor.files.filter((file: any) => file.type === 'command')
 
-    $container?.commands.push(command)
-    $container!.commandAlias[command.tag] = command
+    await Promise.all(
+      files.map(async (item) => {
+        const instance = new item.default()
+        const command = new CommandEntity(
+          undefined,
+          instance.scope,
+          instance.roles,
+          instance.ctx,
+          instance.run,
+          item.file
+        )
 
-    command.alias.forEach((alias) => {
-      $container!.commandAlias[alias] = command
+        container.push(command)
+
+        this.factory.ignitor.container.providers.forEach((provider: ProviderEntity) => {
+          provider.load(command)
+        })
+      })
+    )
+
+    await this.insertCommands()
+  }
+
+  public async insertCommands () {
+    const container = this.factory.ignitor.container
+
+    const globalCommands = container.commands
+      .map((command: CommandEntity) => command.scope === 'GLOBAL' && {
+        ...command.context,
+        permissions: command.roles.map((role: string) => ({ id: role, type: 'ROLE', permission: true })),
+      })
+      .filter(a => a)
+
+    await this.factory.client?.application?.commands.set(globalCommands as unknown as ApplicationCommandData[])
+
+    const guildCommandEntities = container.commands
+      .map((command: CommandEntity) => command.scope !== 'GLOBAL' && command)
+      .filter(a => a) as CommandEntity[]
+
+    const collection = new Collection<string, CommandEntity[]>()
+    guildCommandEntities.forEach((command: CommandEntity) => {
+      const scopes = command.scope as string[]
+      scopes.forEach((scope: string) => {
+        const guild = collection.get(scope)
+        if (!guild) {
+          collection.set(scope, [command])
+          return
+        }
+        guild?.push(command)
+      })
     })
 
-    await this.activeProvider(command)
-  }
+    collection.map(async (commands: CommandEntity[], key: string) => {
+      const guild = this.factory.client!.guilds.cache.get(key)
 
-  public async activeProvider (commandEntity: CommandEntity) {
-    await activeProvider(
-      Factory.getInstance().$container!,
-      commandEntity,
-    )
-  }
+      const cacheCommands = await guild?.commands.set(commands.map((command: CommandEntity) => ({
+        ...command.ctx,
+        ...command.roles.length && { defaultPermission: false },
+      })))
 
-  public async initializeCommands () {
-    const container = Factory.getInstance().$container
-    const guard = new Guard()
+      await guild?.commands.permissions.set({
+        fullPermissions: await Promise.all(commands.map(async (command: CommandEntity) => {
+          const registeredCommand: ApplicationCommand | undefined = cacheCommands?.find((applicationCommand: ApplicationCommand) => (
+            applicationCommand.name === command.ctx.name
+          ))
 
-    container?.client.on('messageCreate', async (message) => {
-      await guard.protect(message)
+          return {
+            id: registeredCommand!.id,
+            permissions: command.roles.map((role: string) => ({
+              id: role,
+              type: 'ROLE' as any,
+              permission: true,
+            })),
+          }
+        })),
+      })
+
+      NodeEmitter.emit(
+        'application::commands::registered',
+        this.factory.ignitor.container.commands
+      )
+
+      commands.forEach((command: CommandEntity) => {
+        this.factory.client?.on('interactionCreate', async (interaction: Interaction) => {
+          if (!interaction.isCommand()) {
+            return
+          }
+
+          if (interaction.commandName.toLowerCase() === command.ctx.name.toLowerCase()) {
+            await command.run(interaction)
+          }
+        })
+      })
     })
   }
 }

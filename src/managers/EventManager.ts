@@ -1,28 +1,45 @@
-import EventEntity from '../entities/EventEntity'
 import Factory from '../Factory'
-import { QueueItem } from '../types'
-import { activeProvider } from '../helpers/Provider'
-import Manager from './Manager'
+import { EventEntity } from '../entities/Event'
+import NodeEmitter from '../utils/NodeEmitter'
+import { ProviderEntity } from '../entities/Provider'
 
-export default class EventManager extends Manager {
-  public async register (item: QueueItem) {
-    const $container = Factory.getInstance().$container
-
-    const instance = new item.default()
-    const event = new EventEntity(instance.event, instance.run, item.file)
-
-    $container?.events.push(event)
-    $container?.client.on(instance.event, async (...args: Array<any>) => {
-      await instance.run(...args)
-    })
-
-    await this.activeProvider(event)
+export default class EventManager {
+  constructor (public factory: Factory) {
   }
 
-  public async activeProvider (event: EventEntity<any>) {
-    await activeProvider(
-      Factory.getInstance().$container!,
-      event,
+  public async register () {
+    const files = this.factory.ignitor.files.filter((file: any) => file.type === 'event')
+
+    await Promise.all(
+      files.map(async (item: any) => {
+        const instance = new item.default()
+        const event = new EventEntity(
+          undefined,
+          instance.event,
+          instance.run,
+          item.file
+        )
+
+        this.emit(instance)
+
+        this.factory.ignitor.container.providers.forEach((provider: ProviderEntity) => {
+          provider.load(event)
+        })
+      })
+    )
+
+    NodeEmitter.emit(
+      'application::events::registered',
+      this.factory.ignitor.container.commands
+    )
+  }
+
+  private emit (instance) {
+    this.factory.client!.on(
+      instance.event,
+      async (...args: any[]) => {
+        await instance.run(...args)
+      }
     )
   }
 }

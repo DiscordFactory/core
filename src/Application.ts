@@ -1,60 +1,26 @@
-import { Client } from 'discord.js'
 import Factory from './Factory'
+import { Client, ClientEvents, Collection } from 'discord.js'
+import { CommandEntity } from './entities/Command'
+import { EventEntity } from './entities/Event'
 
 export default class Application {
-  public static getContainer () {
-    return Factory.getInstance().$container
-  }
-
-  public static getEnvironment (key: string) {
-    return Factory.getInstance().environmentManager.get(key)
-  }
-
-  /**
-   * Returns the instance
-   * of the Discord Client linked to the bot.
-   */
   public static getClient (): Client {
-    return Application.getContainer()!.client
+    return Factory.getInstance().client!
   }
 
-  /**
-   * Returns the set of commands registered
-   * within the application instance
-   */
-  public static getCommands () {
-    return Application.getContainer()!.commands
+  public static getCommands (): CommandEntity[] {
+    return Factory.getInstance().getContainer().commands
   }
 
-  /**
-   * Returns the set of events registered
-   * within the application instance
-   */
-  public static getEvents () {
-    return Application.getContainer()!.events
+  public static getEvents (): EventEntity<keyof ClientEvents>[] {
+    return Factory.getInstance().getContainer().events
   }
 
-  /**
-   * Returns the set of hooks registered
-   * within the application instance
-   */
-  public static getHooks () {
-    return Application.getContainer()!.hooks
+  public static getCliCommands (): Collection<string, any> {
+    return Factory.getInstance().getContainer().cli
   }
 
-  /**
-   * Returns the set of middlewares registered
-   * within the application instance
-   */
-  public static getMiddlewares () {
-    return Application.getContainer()!.middlewares
-  }
-
-  /**
-   * Returns the set of providers registered
-   * within the application instance
-   */
-  public static getProviders () {
-    return Application.getContainer()!.providers
+  public static getEnvironment (): { [p: string]: unknown } {
+    return Factory.getInstance().ignitor.environment?.content!
   }
 }
