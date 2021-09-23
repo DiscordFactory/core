@@ -12,19 +12,18 @@ export default class AddonManager {
   public async registerAddons (): Promise<{ [K in string]: any }> {
     const addons: Function[] = await this.ignitor.kernel.registerAddons()
       const registeredAddons = await Promise.all(
-        addons.map(async (item: Function) => {
-        const addonWithoutInstance = item()
+        addons.map(async (item: any) => {
         const addonContext = { ...this.ignitor }
 
-        const addon: BaseAddon<any> = await new addonWithoutInstance(this.ignitor).init()
-        addonContext!['addon'] = addon
+        const addon: BaseAddon<any> = await new item(this.ignitor).init()
+        addonContext['addon'] = addon
 
         const addonSectionName = addon.addonName.toUpperCase()
 
         const keys = addon.defineKeys()
         keys.forEach((key: string) => {
           if (!this.ignitor.getEnvironment(`${addonSectionName}.${key}`)) {
-            throw new Error(`The ${key} key is required in the ${addon.addonName} module environment.`)
+            throw new Error(`The "${key}" key is required in the "${addon.addonName.toUpperCase()}" module environment.`)
           }
         })
 

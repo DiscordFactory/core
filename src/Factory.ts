@@ -6,6 +6,9 @@ import HookManager from './managers/HookManager'
 import NodeEmitter from './utils/NodeEmitter'
 import ProviderManager from './managers/ProviderManager'
 import { ProviderEntity } from './entities/Provider'
+import { DiscordEventManager } from './managers/DiscordEventManager'
+import VoiceMemberJoin from './events/VoiceMemberJoin'
+import VoiceMemberLeave from './events/VoiceMemberLeave'
 
 export default class Factory {
   private static $instance: Factory
@@ -16,6 +19,7 @@ export default class Factory {
   public readonly commandManager: CommandManager = new CommandManager(this)
   public readonly hookManager: HookManager = new HookManager(this)
   public readonly providerManager: ProviderManager = new ProviderManager(this)
+  public readonly discordEventManager: DiscordEventManager = new DiscordEventManager(this)
 
   constructor (public ignitor: Ignitor) {
     this.client = new Client({
@@ -42,9 +46,15 @@ export default class Factory {
 
     await this.ignitor.addonManager.registerAddons()
 
+    await this.discordEventManager.register(
+      new VoiceMemberJoin(this),
+      new VoiceMemberLeave(this),
+    )
+
     await this.hookManager.register()
     await this.eventManager.register()
     await this.commandManager.register()
+
 
     this.ignitor.container.providers.forEach((provider: ProviderEntity) => provider.ok())
     NodeEmitter.emit('application::ok', this.client)

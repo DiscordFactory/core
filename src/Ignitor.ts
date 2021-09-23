@@ -31,6 +31,12 @@ export default class Ignitor {
     this.factory = Factory.getInstance(this)
     await this.factory.init()
 
+    this.factory.client?.on('voiceJoin', (p) => {
+      console.log(p)
+    })
+
+
+
     NodeEmitter.emit('application::starting')
 
     return this
