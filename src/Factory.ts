@@ -9,6 +9,8 @@ import { ProviderEntity } from './entities/Provider'
 import { DiscordEventManager } from './managers/DiscordEventManager'
 import VoiceMemberJoin from './events/VoiceMemberJoin'
 import VoiceMemberLeave from './events/VoiceMemberLeave'
+import GuildMemberAddBoost from './events/GuildMemberAddBoost'
+import GuildMemberRemoveBoost from './events/GuildMemberRemoveBoost'
 
 export default class Factory {
   private static $instance: Factory
@@ -49,6 +51,8 @@ export default class Factory {
     await this.discordEventManager.register(
       new VoiceMemberJoin(this),
       new VoiceMemberLeave(this),
+      new GuildMemberAddBoost(this),
+      new GuildMemberRemoveBoost(this),
     )
 
     await this.hookManager.register()
