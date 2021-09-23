@@ -49,14 +49,19 @@ export default class Ignitor {
   private async getEnvironnement () {
     const environments = await fetchSortedExpression(
       process.cwd(),
-      /^environment\.(json|yml|yaml)/,
+      process.env.NODE_ENV === 'production'
+        ? /^environment\.prod\.(json|yml|yaml)/
+        : /^environment\.dev\.(json|yml|yaml)/,
       ['json', 'yml', 'yaml'],
       'utf-8',
       ['node_modules']
     )
 
     if (!environments.length) {
-      throw new Error('Environment file is missing, please create one.')
+      throw new Error(`${process.env.NODE_ENV === 'production'
+        ? 'environment.prod.(json|yml|yaml)'
+        : 'environment.dev.(json|yml|yaml)'
+      } file is missing, please create one in the root project.`)
     }
 
     const environment = environments[0]
