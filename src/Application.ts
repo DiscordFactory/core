@@ -9,15 +9,15 @@ export default class Application {
   }
 
   public static getCommands (): CommandEntity[] {
-    return Factory.getInstance().getContainer().commands
+    return Factory.getInstance().ignitor.getContainer().commands
   }
 
   public static getEvents (): EventEntity<keyof ClientEvents>[] {
-    return Factory.getInstance().getContainer().events
+    return Factory.getInstance().ignitor.getContainer().events
   }
 
   public static getCliCommands (): Collection<string, any> {
-    return Factory.getInstance().getContainer().cli
+    return Factory.getInstance().ignitor.getContainer().cli
   }
 
   public static getEnvironment (): { [p: string]: unknown } {
@@ -25,6 +25,6 @@ export default class Application {
   }
 
   public static getEnvironmentValue (key: string): any | undefined {
-    return Factory.getInstance().getEnvironment(key)
+    return Factory.getInstance().ignitor.getEnvironment(key)
   }
 }

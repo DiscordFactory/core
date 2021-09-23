@@ -1,7 +1,7 @@
-import { File } from 'fs-recursive'
 import { AddonContext, ContainerType, Context, ScopeContext, SlashOption } from '../types'
 import Constructable from '../utils/Constructable'
 import { CommandInteraction } from 'discord.js'
+import EntityFile from '../utils/EntityFile'
 
 export function Command (ctx: Context) {
   return (target: Function) => {
@@ -28,7 +28,7 @@ export class CommandEntity extends Constructable<any> {
     public roles: string[] = [],
     public ctx: SlashOption,
     public run: (...args: Array<any>) => Promise<void>,
-    public file?: File | undefined,
+    public file?: EntityFile | undefined,
   ) {
     super(file)
   }

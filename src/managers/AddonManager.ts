@@ -4,56 +4,65 @@ import { EventEntity } from '../entities/Event'
 import { CommandEntity } from '../entities/Command'
 import { HookEntity } from '../entities/Hook'
 import NodeEmitter from '../utils/NodeEmitter'
-import Application from 'Application'
 
 export default class AddonManager {
   constructor (public ignitor: Ignitor) {
   }
 
-  public async registerAddons (): Promise<void> {
+  public async registerAddons (): Promise<{ [K in string]: any }> {
     const addons: Function[] = await this.ignitor.kernel.registerAddons()
+      const registeredAddons = await Promise.all(
+        addons.map(async (item: Function) => {
+        const addonWithoutInstance = item()
+        const addonContext = { ...this.ignitor }
 
-    addons.forEach((item: Function) => {
-      const addonWithoutInstance = item()
-      const addonContext = { ...this.ignitor.factory }
+        const addon: BaseAddon<any> = await new addonWithoutInstance(this.ignitor).init()
+        addonContext!['addon'] = addon
 
-      const addon: BaseAddon<any> = new addonWithoutInstance(this.ignitor.factory )
+        const addonSectionName = addon.addonName.toUpperCase()
 
-      addonContext!['addon'] = addon
+        const keys = addon.defineKeys()
+        keys.forEach((key: string) => {
+          if (!this.ignitor.getEnvironment(`${addonSectionName}.${key}`)) {
+            throw new Error(`The ${key} key is required in the ${addon.addonName} module environment.`)
+          }
+        })
 
-      const addonSectionName = addon.addonName.toUpperCase()
+        const cli = addon.registerCLI()
+        const registeredCliCommands = cli.map((item: any) => {
+          const command = new item(addonContext)
+          this.registerCLI(command as AddonCommand)
+          return command
+        })
 
-      const keys = addon.defineKeys()
-      keys.forEach((key: string) => {
-        if (!this.ignitor.factory?.getEnvironment(`${addonSectionName}.${key}`)) {
-          throw new Error(`The ${key} key is required in the ${addon.addonName} module environment.`)
+        const events = addon.registerEvents()
+        const registeredEvents = events.map((item: any) => {
+          const event = new item(addonContext)
+          this.registerEvent(event as EventEntity<any>)
+        })
+
+        const commands = addon.registerCommands()
+        commands.forEach((item: any) => {
+          const command = new item(addonContext)
+          this.registerCommand(command as CommandEntity)
+        })
+
+        const hooks = addon.registerHooks()
+        hooks.map(async (item: any) => {
+          const hook = new item(addonContext)
+          this.registerHooks(hook as HookEntity)
+        })
+
+        return {
+          events: registeredEvents,
+          cliCommands: registeredCliCommands
         }
       })
+    )
 
-      const cli = addon.registerCLI()
-      cli.forEach((item: any) => {
-        const command = new item(addonContext)
-        this.registerCLI(command as AddonCommand)
-      })
-
-      const events = addon.registerEvents()
-      events.forEach((item: any) => {
-        const event = new item(addonContext)
-        this.registerEvent(event as EventEntity<any>)
-      })
-
-      const commands = addon.registerCommands()
-      commands.forEach((item: any) => {
-        const command = new item(addonContext)
-        this.registerCommand(command as CommandEntity)
-      })
-
-      const hooks = addon.registerHooks()
-      hooks.map(async (item: any) => {
-        const hook = new item(addonContext)
-        this.registerHooks(hook as HookEntity)
-      })
-    })
+    return {
+      cliCommands: registeredAddons.flatMap((addon: { cliCommands: any[] }) => addon.cliCommands),
+    }
   }
 
   private registerCLI (Class: AddonCommand) {

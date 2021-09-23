@@ -1,7 +1,7 @@
-import { File } from 'fs-recursive'
 import Constructable from '../utils/Constructable'
 import { HookType } from '../types'
 import { BaseAddon } from './Addon'
+import EntityFile from '../utils/EntityFile'
 
 export function Hook (identifier: string) {
   return (target: Function) => {
@@ -20,7 +20,7 @@ export class HookEntity extends Constructable<any> {
     public context: BaseAddon<any> | undefined,
     public type: HookType,
     public run: (...args: any[]) => Promise<void>,
-    public file: File | undefined,
+    public file: EntityFile | undefined,
   ) {
     super(file)
   }

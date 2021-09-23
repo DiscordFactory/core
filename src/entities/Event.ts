@@ -1,7 +1,7 @@
 import { ClientEvents } from 'discord.js'
-import { File } from 'fs-recursive'
 import Constructable from '../utils/Constructable'
 import { AddonContext } from '../types'
+import EntityFile from '../utils/EntityFile'
 
 export function Event<K extends keyof ClientEvents> (identifier: K) {
   return (target: Function) => {
@@ -20,7 +20,7 @@ export class EventEntity<K extends keyof ClientEvents> extends Constructable<any
     public context: AddonContext<any> | undefined,
     public event: K,
     public run: (...args: Array<any>) => Promise<void>,
-    public file: File | undefined
+    public file: EntityFile | undefined
   ) {
     super(file)
   }

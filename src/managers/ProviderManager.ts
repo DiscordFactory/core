@@ -2,6 +2,7 @@ import Factory from '../Factory'
 import path from 'path'
 import { fetch } from 'fs-recursive'
 import { ProviderEntity } from '../entities/Provider'
+import EntityFile from '../utils/EntityFile'
 
 export default class ProviderManager {
   constructor (public factory: Factory) {
@@ -22,12 +23,13 @@ export default class ProviderManager {
       files.map(async (item: any) => {
         const Class = await import(item.path)
         const instance = new Class.default()
+        const entityFile = new EntityFile(item.path)
 
         const provider = new ProviderEntity(
           instance.boot,
           instance.load,
           instance.ok,
-          item,
+          entityFile,
         )
 
         this.factory.ignitor.container.providers.push(provider)

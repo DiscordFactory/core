@@ -41,9 +41,9 @@ export default class Ignitor {
 
     await this.getEnvironnement()
     await this.loadKernel()
-    await this.addonManager.registerAddons()
+    const { cliCommands } = await this.addonManager.registerAddons()
 
-    return this
+    return cliCommands
   }
 
   private async getEnvironnement () {
@@ -115,5 +115,32 @@ export default class Ignitor {
     ModuleAlias.addAlias('ioc:factory/Core/Command', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
     ModuleAlias.addAlias('ioc:factory/Core/Hook', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
     ModuleAlias.addAlias('ioc:factory/Core/Container', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
+  }
+
+  public getModuleEnvironment (module: string, key: string) {
+    const element = this.getEnvironment(module.toUpperCase())
+    return element[key]
+  }
+
+  public getEnvironment (key: string): any | undefined {
+    const pathChain = key.split('.')
+    if (pathChain.length > 1) {
+      let result = this.environment?.content
+      pathChain.forEach(element => result = result?.[element])
+      return result
+    }
+    else return this.environment?.content[key]
+  }
+
+  public getContainer (): Container {
+    return this.container
+  }
+
+  public getFiles (): Collection<string, unknown> {
+    return this.files
+  }
+
+  public getSelectEnvironment (): EnvironmentType {
+    return this.environment!.type
   }
 }

@@ -3,6 +3,7 @@ import { ApplicationCommand, ApplicationCommandData, Collection, Guild, Interact
 import { CommandEntity } from '../entities/Command'
 import NodeEmitter from '../utils/NodeEmitter'
 import { ProviderEntity } from '../entities/Provider'
+import EntityFile from '../utils/EntityFile'
 
 export default class CommandManager {
   constructor (public factory: Factory) {
@@ -15,13 +16,15 @@ export default class CommandManager {
     await Promise.all(
       files.map(async (item) => {
         const instance = new item.default()
+        const entityFile = new EntityFile(item.file.path)
+
         const command = new CommandEntity(
           undefined,
           instance.scope,
           instance.roles,
           instance.ctx,
           instance.run,
-          item.file
+          entityFile
         )
 
         container.push(command)

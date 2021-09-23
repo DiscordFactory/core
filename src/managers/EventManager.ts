@@ -2,6 +2,7 @@ import Factory from '../Factory'
 import { EventEntity } from '../entities/Event'
 import NodeEmitter from '../utils/NodeEmitter'
 import { ProviderEntity } from '../entities/Provider'
+import EntityFile from '../utils/EntityFile'
 
 export default class EventManager {
   constructor (public factory: Factory) {
@@ -13,11 +14,13 @@ export default class EventManager {
     await Promise.all(
       files.map(async (item: any) => {
         const instance = new item.default()
+        const entityFile = new EntityFile(item.file.path)
+
         const event = new EventEntity(
           undefined,
           instance.event,
           instance.run,
-          item.file
+          entityFile
         )
 
         this.emit(instance)

@@ -2,9 +2,17 @@ import { AddonContext } from '../types'
 
 export function CLICommand (options: { name: string, prefix: string, usages: string[] }) {
   return (target: Function) => {
-    target.prototype.name = options.name
-    target.prototype.prefix = options.prefix
-    target.prototype.usages = options.usages
+    return class Command extends CliCommandEntity {
+      constructor (context: any) {
+        super(
+          context,
+          options.name,
+          options.prefix,
+          options.usages,
+          target.prototype.run
+        )
+      }
+    } as any
   }
 }
 
@@ -18,6 +26,17 @@ export interface AddonCommand {
   prefix: string
   params: string
   run (): Promise<void>
+}
+
+export class CliCommandEntity {
+  constructor (
+    public context: AddonContext<any> | undefined,
+    public name: string,
+    public prefix: string,
+    public usages: string[],
+    public run: (...args: Array<any>) => Promise<void>,
+  ) {
+  }
 }
 
 export abstract class BaseAddonHook<Addon> {

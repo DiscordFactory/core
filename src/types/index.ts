@@ -57,3 +57,7 @@ export interface AddonContext<Addon> {
   getContainer (): Container
   getFiles (): Collection<string, unknown>
 }
+
+export interface EntityFile extends File {
+  relativePath: string
+}
