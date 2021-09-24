@@ -114,6 +114,11 @@ export default class Ignitor {
   }
 
   private registerAlias () {
+    ModuleAlias.addAliases({
+      App: process.env.NODE_ENV === 'production'
+        ? path.join(process.cwd(), 'build', 'src')
+        : path.join(process.cwd(), 'src'),
+    })
     ModuleAlias.addAlias('ioc:factory/Core', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
     ModuleAlias.addAlias('ioc:factory/Core/Provider', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
     ModuleAlias.addAlias('ioc:factory/Core/Event', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
