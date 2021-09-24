@@ -13,7 +13,7 @@ export default class GuildMemberRemoveBoost {
         return
       }
 
-      if (member?.premiumSince! && payload.premium_since) {
+      if (member!.premiumSince! && payload.premium_since) {
         this.factory.client?.emit('guildMemberRemoveBoost', member)
       }
     })

@@ -13,7 +13,7 @@ export default class GuildMemberAddBoost {
         return
       }
 
-      if (member?.premiumSince! < new Date(payload.premium_since)) {
+      if (member!.premiumSince! < new Date(payload.premium_since)) {
         this.factory.client?.emit('guildMemberAddBoost', member)
       }
     })
