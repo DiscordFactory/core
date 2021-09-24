@@ -1,5 +1,5 @@
 import EventManager from './managers/EventManager'
-import { Client } from 'discord.js'
+import { Client, RateLimitData } from 'discord.js'
 import Ignitor from './Ignitor'
 import CommandManager from './managers/CommandManager'
 import HookManager from './managers/HookManager'
@@ -11,6 +11,7 @@ import VoiceMemberJoin from './events/VoiceMemberJoin'
 import VoiceMemberLeave from './events/VoiceMemberLeave'
 import GuildMemberAddBoost from './events/GuildMemberAddBoost'
 import GuildMemberRemoveBoost from './events/GuildMemberRemoveBoost'
+import Logger from '@leadcodedev/logger'
 
 export default class Factory {
   private static $instance: Factory
@@ -45,6 +46,10 @@ export default class Factory {
 
     await this.client?.login(this.ignitor.environment?.content.APP_TOKEN)
     NodeEmitter.emit('application::client::login')
+
+    this.client?.on('rateLimit', (rateLimit: RateLimitData) => {
+      Logger.send('info', `The application has been rate limited, please try again in ${rateLimit.timeout / 1000} seconds`)
+    })
 
     await this.ignitor.addonManager.registerAddons()
 

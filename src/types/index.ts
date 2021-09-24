@@ -1,4 +1,10 @@
-import { ApplicationCommandOption, Client, ClientEvents, Collection } from 'discord.js'
+import {
+  ApplicationCommandOption,
+  Client,
+  ClientEvents,
+  Collection,
+  GuildMember, StageChannel, VoiceChannel
+} from 'discord.js'
 import { EventEntity } from '../entities/Event'
 import { File } from 'fs-recursive'
 import { CommandEntity } from '../entities/Command'
@@ -15,7 +21,7 @@ export type HookType = 'application::starting'
   | 'application::events::registered'
   | 'application::hooks::registered'
 
-export type Constructable<K extends keyof ClientEvents> = {
+export type Constructable<K extends keyof Events> = {
   type: ContainerType
   default: any
   instance: HookEntity | EventEntity<K> | CommandEntity
@@ -33,6 +39,7 @@ export type SlashOption = {
 export type Context = {
   scope: ScopeContext
   roles?: string[]
+  cooldown?: Cooldown,
   options: SlashOption
 }
 
@@ -58,6 +65,16 @@ export interface AddonContext<Addon> {
   getFiles (): Collection<string, unknown>
 }
 
-export interface EntityFile extends File {
-  relativePath: string
+export type Cooldown = {
+  time?: number
+  count?: number
+  message?: string
+}
+
+export interface Events extends ClientEvents {
+  guildMemberAddBoost: [member: GuildMember]
+  guildMemberRemoveBoost: [member: GuildMember]
+  voiceMemberJoin: [member: GuildMember, channel: VoiceChannel | StageChannel]
+  voiceMemberLeave: [member: GuildMember, channel: VoiceChannel | StageChannel]
+  websocketDebug: [payload: any]
 }

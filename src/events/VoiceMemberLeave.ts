@@ -13,9 +13,9 @@ export default class VoiceMemberLeave {
         return
       }
 
-      const newMember = guild?.members.cache.get(payload.member.user.id)
+      const member = guild?.members.cache.get(payload.member.user.id)
 
-      this.factory.client?.emit('voiceMemberLeave', newMember, oldMember?.voice.channel)
+      this.factory.client?.emit('voiceMemberLeave', member, oldMember?.voice.channel)
     })
   }
 }

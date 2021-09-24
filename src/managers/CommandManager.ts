@@ -22,6 +22,7 @@ export default class CommandManager {
           undefined,
           instance.scope,
           instance.roles,
+          instance.cooldown,
           instance.ctx,
           instance.run,
           entityFile
@@ -104,6 +105,14 @@ export default class CommandManager {
           }
 
           if (interaction.commandName.toLowerCase() === command.ctx.name.toLowerCase()) {
+            command.cooldown?.setInteraction(interaction)
+
+            if (command.cooldown) {
+              const canExecute = await command.cooldown?.verify()
+              if (!canExecute) {
+                return
+              }
+            }
             await command.run(interaction)
           }
         })

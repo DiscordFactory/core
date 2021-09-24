@@ -12,7 +12,7 @@ export default class VoiceMemberJoin {
       const guild = this.factory!.client!.guilds.cache.get(payload.guild_id)
       const member = guild?.members.cache.get(payload.member.user.id)
 
-      this.factory?.client?.emit('voiceMemberJoin', member)
+      this.factory?.client?.emit('voiceMemberJoin', member, member?.voice.channel)
     })
   }
 }

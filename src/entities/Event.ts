@@ -1,9 +1,8 @@
-import { ClientEvents } from 'discord.js'
 import Constructable from '../utils/Constructable'
-import { AddonContext } from '../types'
+import { AddonContext, Events } from '../types'
 import EntityFile from '../utils/EntityFile'
 
-export function Event<K extends keyof ClientEvents> (identifier: K) {
+export function Event<K extends keyof Events> (identifier: K) {
   return (target: Function) => {
     return class Event extends EventEntity<K> {
       constructor (context: any) {
@@ -13,7 +12,7 @@ export function Event<K extends keyof ClientEvents> (identifier: K) {
   }
 }
 
-export class EventEntity<K extends keyof ClientEvents> extends Constructable<any> {
+export class EventEntity<K extends keyof Events> extends Constructable<any> {
   public static type: string = 'event'
 
   constructor (
