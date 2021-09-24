@@ -3,6 +3,8 @@ import { EventEntity } from '../entities/Event'
 import NodeEmitter from '../utils/NodeEmitter'
 import { ProviderEntity } from '../entities/Provider'
 import EntityFile from '../utils/EntityFile'
+import { ClientEvents } from 'discord.js'
+import { Events } from '../types'
 
 export default class EventManager {
   constructor (public factory: Factory) {
@@ -23,7 +25,7 @@ export default class EventManager {
           entityFile
         )
 
-        this.emit(instance)
+        await this.emit(event)
 
         this.factory.ignitor.container.providers.forEach((provider: ProviderEntity) => {
           provider.load(event)
@@ -37,12 +39,14 @@ export default class EventManager {
     )
   }
 
-  private emit (instance) {
-    this.factory.client!.on(
-      instance.event,
-      async (...args: any[]) => {
-        await instance.run(...args)
-      }
-    )
+  private async emit (instance: EventEntity<keyof Events>) {
+    if (!this.factory.shardManager?.shards.size) {
+      this.factory.client!.on(
+        instance.event as keyof ClientEvents,
+        async (...args: any[]) => {
+          await instance.run(...args)
+        }
+      )
+    }
   }
 }

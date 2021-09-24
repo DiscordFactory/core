@@ -1,20 +1,19 @@
 import Factory from './Factory'
-import { fetch, fetchSortedExpression } from 'fs-recursive'
+import { fetch } from 'fs-recursive'
 import { Collection } from 'discord.js'
 import AddonManager from './managers/AddonManager'
 import Container from './Container'
 import path from 'path'
 import ModuleAlias from 'module-alias'
 import NodeEmitter from './utils/NodeEmitter'
-import YAML from 'js-yaml'
-import Environment from './Environment'
 import { EnvironmentType } from './types'
+import EnvironmentBuilder from './EnvironmentBuilder'
 
 export default class Ignitor {
   public files: Collection<string, any> = new Collection()
   public factory: Factory | undefined
   public kernel: any | undefined
-  public environment: Environment | undefined
+  public environmentBuilder: EnvironmentBuilder = new EnvironmentBuilder()
 
   public readonly container: Container = new Container()
   public readonly addonManager: AddonManager = new AddonManager(this)
@@ -47,40 +46,7 @@ export default class Ignitor {
   }
 
   private async getEnvironnement () {
-    const environments = await fetchSortedExpression(
-      process.cwd(),
-      process.env.NODE_ENV === 'production'
-        ? /^environment\.prod\.(json|yml|yaml)/
-        : /^environment\.dev\.(json|yml|yaml)/,
-      ['json', 'yml', 'yaml'],
-      'utf-8',
-      ['node_modules']
-    )
-
-    if (!environments.length) {
-      throw new Error(`${process.env.NODE_ENV === 'production'
-        ? 'environment.prod.(json|yml|yaml)'
-        : 'environment.dev.(json|yml|yaml)'
-      } file is missing, please create one in the root project.`)
-    }
-
-    const environment = environments[0]
-    let environmentContent = {}
-
-    if (environment.extension === 'json') {
-      const file = await environment.getContent('utf-8')
-      environmentContent = JSON.parse(file!.toString())
-    }
-
-    if (environment.extension === 'yaml' || environment.extension === 'yml') {
-      const file = await environment.getContent('utf-8')
-      environmentContent = YAML.load(file, 'utf8')
-    }
-
-    this.environment = new Environment(
-      environment.extension as EnvironmentType,
-      environmentContent
-    )
+    await this.environmentBuilder.fetch()
   }
 
   private async loadFiles (dir) {
@@ -135,11 +101,11 @@ export default class Ignitor {
   public getEnvironment (key: string): any | undefined {
     const pathChain = key.split('.')
     if (pathChain.length > 1) {
-      let result = this.environment?.content
+      let result = this.environmentBuilder.environment?.content
       pathChain.forEach(element => result = result?.[element])
       return result
     }
-    else return this.environment?.content[key]
+    else return this.environmentBuilder.environment?.content[key]
   }
 
   public getContainer (): Container {
@@ -151,6 +117,6 @@ export default class Ignitor {
   }
 
   public getSelectEnvironment (): EnvironmentType {
-    return this.environment!.type
+    return this.environmentBuilder.environment!.type
   }
 }

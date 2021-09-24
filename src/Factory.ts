@@ -1,5 +1,5 @@
 import EventManager from './managers/EventManager'
-import { Client, RateLimitData } from 'discord.js'
+import { Client, RateLimitData, ShardingManager } from 'discord.js'
 import Ignitor from './Ignitor'
 import CommandManager from './managers/CommandManager'
 import HookManager from './managers/HookManager'
@@ -17,6 +17,7 @@ export default class Factory {
   private static $instance: Factory
 
   public client: Client | undefined
+  public shardManager: ShardingManager | undefined
 
   public readonly eventManager: EventManager = new EventManager(this)
   public readonly commandManager: CommandManager = new CommandManager(this)
@@ -25,11 +26,35 @@ export default class Factory {
   public readonly discordEventManager: DiscordEventManager = new DiscordEventManager(this)
 
   constructor (public ignitor: Ignitor) {
-    this.client = new Client({
-      intents: this.ignitor.environment?.content.INTENTS,
-      partials: this.ignitor.environment?.content.PARTIALS
-    })
   }
+
+  public async createClient () {
+    const environment = this.ignitor.environmentBuilder.environment!.content
+    const SHARDS = environment.SHARDS
+
+    this.client = new Client({
+      intents: this.ignitor.environmentBuilder.environment?.content.INTENTS,
+      partials: this.ignitor.environmentBuilder.environment?.content.PARTIALS,
+      ...SHARDS && SHARDS.MODE === 'AUTO' && { shards: 'auto' }
+    })
+
+    await this.client?.login(this.ignitor.environmentBuilder.environment?.content.APP_TOKEN)
+    NodeEmitter.emit('application::client::login')
+  }
+
+  // public async createShards () {
+  //   const environment = this.ignitor.environmentBuilder.environment!.content
+  //   const TOKEN = environment.APP_TOKEN
+  //   const SHARDS = environment.SHARDS
+  //
+  //   const manager = new ShardingManager(path.join(__dirname, 'DiscordClient.js'), {
+  //     token: TOKEN,
+  //     respawn: SHARDS.RESPAWN || true
+  //   })
+  //   await manager.spawn()
+  //
+  //   this.shardManager = manager
+  // }
 
   public static getInstance (ignitor?: Ignitor) {
     if (!this.$instance) {
@@ -41,11 +66,15 @@ export default class Factory {
   }
 
   public async init () {
+    const environment = this.ignitor.environmentBuilder.environment!.content
+    const SHARDS = environment.SHARDS
+
+    if (!SHARDS || SHARDS.MODE !== 'FILE') {
+      await this.createClient()
+    }
+
     await this.providerManager.register()
     this.ignitor.container.providers.forEach((provider: ProviderEntity) => provider.boot())
-
-    await this.client?.login(this.ignitor.environment?.content.APP_TOKEN)
-    NodeEmitter.emit('application::client::login')
 
     this.client?.on('rateLimit', (rateLimit: RateLimitData) => {
       Logger.send('info', `The application has been rate limited, please try again in ${rateLimit.timeout / 1000} seconds`)
