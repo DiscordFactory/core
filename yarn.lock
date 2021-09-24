@@ -224,6 +224,21 @@
   dependencies:
     arrify "^1.0.1"
 
+"@discord-factory/core-next@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@discord-factory/core-next/-/core-next-1.4.1.tgz#914565f5d0c0aa4b6c9a5197f96ee2b25313e97c"
+  integrity sha512-RdxDwIZ2Z7Q/2nepa6YMWFndbkfOu95Fqr2bLM1kD6z2VUl1N/VAEe9vrl+cPfWfczDi48FoI6MB8BXvY+ASUg==
+  dependencies:
+    "@babel/eslint-parser" "^7.15.4"
+    "@leadcodedev/logger" "^1.0.0"
+    "@typescript-eslint/eslint-plugin" "^4.31.1"
+    "@typescript-eslint/parser" "^4.31.1"
+    cross-env "^7.0.3"
+    discord.js "^13.1.0"
+    fs-recursive "^1.1.7"
+    js-yaml "^4.1.0"
+    module-alias "^2.2.2"
+
 "@discordjs/builders@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@discordjs/builders/-/builders-0.5.0.tgz#646cbea9cc67f68639e6fb70ed1278b26dacdb14"
