@@ -1,16 +1,11 @@
-import { Cooldown as CooldownInterface } from '../types'
+import { Cooldown as CooldownInterface, CooldownActions } from '../types'
 import { Collection, CommandInteraction, Snowflake } from 'discord.js'
-
-type CooldownActions = {
-  timeout: any,
-  count: number
-}
 
 export default class Cooldown {
   private interaction!: CommandInteraction
-  public time: number
-  public count: number
-  public message?: string
+  public readonly time: number
+  public readonly count: number
+  public readonly message?: string | null
   public memberMap: Collection<Snowflake, CooldownActions> = new Collection()
 
   constructor (options: CooldownInterface,) {
@@ -50,7 +45,7 @@ export default class Cooldown {
       return this.count >= 1
     }
 
-    if (this.count && targetMember.count >= this.count) {
+    if (this.count && targetMember.count >= this.count && this.message !== null) {
       await this.interaction.reply({
         content: this.message || `You have reached maximum usage, please try again later.`,
         ephemeral: true,

@@ -68,7 +68,7 @@ export interface AddonContext<Addon> {
 export type Cooldown = {
   time?: number
   count?: number
-  message?: string
+  message?: string | null
 }
 
 export interface Events extends ClientEvents {
@@ -77,4 +77,9 @@ export interface Events extends ClientEvents {
   voiceMemberJoin: [member: GuildMember, channel: VoiceChannel | StageChannel]
   voiceMemberLeave: [member: GuildMember, channel: VoiceChannel | StageChannel]
   websocketDebug: [payload: any]
+}
+
+export type CooldownActions = {
+  timeout: any,
+  count: number
 }
