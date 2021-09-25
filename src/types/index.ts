@@ -1,5 +1,5 @@
 import {
-  ApplicationCommandOption,
+  ApplicationCommandOption, ApplicationCommandType,
   Client,
   ClientEvents,
   Collection,
@@ -33,6 +33,7 @@ export type ScopeContext = 'GLOBAL' | string[]
 export type SlashOption = {
   name: string
   description: string
+  type: ApplicationCommandType,
   options: ApplicationCommandOption[]
 }
 
