@@ -12,6 +12,7 @@ import VoiceMemberLeave from './events/VoiceMemberLeave'
 import GuildMemberAddBoost from './events/GuildMemberAddBoost'
 import GuildMemberRemoveBoost from './events/GuildMemberRemoveBoost'
 import Logger from '@leadcodedev/logger'
+import ContextMenuManager from './managers/ContextMenuManager'
 
 export default class Factory {
   private static $instance: Factory
@@ -21,6 +22,7 @@ export default class Factory {
 
   public readonly eventManager: EventManager = new EventManager(this)
   public readonly commandManager: CommandManager = new CommandManager(this)
+  public readonly contextMenuManager: ContextMenuManager = new ContextMenuManager(this)
   public readonly hookManager: HookManager = new HookManager(this)
   public readonly providerManager: ProviderManager = new ProviderManager(this)
   public readonly discordEventManager: DiscordEventManager = new DiscordEventManager(this)
@@ -29,8 +31,7 @@ export default class Factory {
   }
 
   public async createClient () {
-    const environment = this.ignitor.environmentBuilder.environment!.content
-    const SHARDS = environment.SHARDS
+    const SHARDS = this.ignitor.environmentBuilder.environment!.content.SHARDS
 
     this.client = new Client({
       intents: this.ignitor.environmentBuilder.environment?.content.INTENTS,
@@ -66,8 +67,7 @@ export default class Factory {
   }
 
   public async init () {
-    const environment = this.ignitor.environmentBuilder.environment!.content
-    const SHARDS = environment.SHARDS
+    const SHARDS = this.ignitor.environmentBuilder.environment!.content.SHARDS
 
     if (!SHARDS || SHARDS.MODE !== 'FILE') {
       await this.createClient()
@@ -92,6 +92,7 @@ export default class Factory {
     await this.hookManager.register()
     await this.eventManager.register()
     await this.commandManager.register()
+    await this.contextMenuManager.register()
 
 
     this.ignitor.container.providers.forEach((provider: ProviderEntity) => provider.ok())

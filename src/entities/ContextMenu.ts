@@ -1,12 +1,12 @@
-import { AddonContext, CommandContext, ContainerType, CommandGlobalContext, ScopeContext } from '../types'
+import { AddonContext, ApplicationContextOption, ContainerType, ApplicationGlobalContext, ScopeContext } from '../types'
 import Constructable from '../utils/Constructable'
-import { CommandInteraction } from 'discord.js'
+import { ContextMenuInteraction } from 'discord.js'
 import EntityFile from '../utils/EntityFile'
 import Cooldown from '../utils/Cooldown'
 
-export function Command (ctx: CommandGlobalContext) {
+export function ContextMenu (ctx: ApplicationGlobalContext) {
   return (target: Function) => {
-    return class SlashCommand extends CommandEntity {
+    return class ContextMenu extends ContextMenuEntity {
       constructor (context: any) {
         super(
           context,
@@ -15,7 +15,7 @@ export function Command (ctx: CommandGlobalContext) {
           ctx.cooldown?.count || ctx.cooldown?.time
             ? new Cooldown(ctx.cooldown)
             : undefined,
-          { ...ctx.options, name: ctx.options.name.toLowerCase() },
+          { ...ctx.options, type: ctx.options.type as any },
           target.prototype.run,
         )
       }
@@ -23,15 +23,15 @@ export function Command (ctx: CommandGlobalContext) {
   }
 }
 
-export class CommandEntity extends Constructable<any> {
-  public static type: ContainerType = 'command'
+export class ContextMenuEntity extends Constructable<any> {
+  public static type: ContainerType = 'context-menu'
 
   constructor (
     public context: AddonContext<any> | undefined,
     public scope: ScopeContext,
     public roles: string[] = [],
     public cooldown: Cooldown | undefined,
-    public ctx: CommandContext,
+    public ctx: ApplicationContextOption,
     public run: (...args: any[]) => Promise<void>,
     public file?: EntityFile | undefined,
   ) {
@@ -39,6 +39,6 @@ export class CommandEntity extends Constructable<any> {
   }
 }
 
-export abstract class BaseCommand {
-  public abstract run (interaction: CommandInteraction): Promise<void>
+export abstract class BaseContextMenu {
+  public abstract run (interaction: ContextMenuInteraction): Promise<void>
 }

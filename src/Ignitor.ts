@@ -89,6 +89,7 @@ export default class Ignitor {
     ModuleAlias.addAlias('ioc:factory/Core/Provider', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
     ModuleAlias.addAlias('ioc:factory/Core/Event', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
     ModuleAlias.addAlias('ioc:factory/Core/Command', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
+    ModuleAlias.addAlias('ioc:factory/Core/ContextMenu', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
     ModuleAlias.addAlias('ioc:factory/Core/Hook', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
     ModuleAlias.addAlias('ioc:factory/Core/Container', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
   }
@@ -99,6 +100,7 @@ export default class Ignitor {
   }
 
   public getEnvironment (key: string): any | undefined {
+    console.log(this.environmentBuilder.environment)
     const pathChain = key.split('.')
     if (pathChain.length > 1) {
       let result = this.environmentBuilder.environment?.content

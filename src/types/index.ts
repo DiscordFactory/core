@@ -1,5 +1,5 @@
 import {
-  ApplicationCommandOption, ApplicationCommandType,
+  ApplicationCommandOption,
   Client,
   ClientEvents,
   Collection,
@@ -11,8 +11,9 @@ import { CommandEntity } from '../entities/Command'
 import { HookEntity } from '../entities/Hook'
 import { ProviderEntity } from '../entities/Provider'
 import Container from '../Container'
+import { ContextMenuEntity } from '../entities/ContextMenu'
 
-export type ContainerType = 'event' | 'command' | 'hook' | 'middleware'
+export type ContainerType = 'event' | 'command' | 'hook' | 'middleware' | 'context-menu'
 
 export type HookType = 'application::starting'
   | 'application::ok'
@@ -30,18 +31,29 @@ export type Constructable<K extends keyof Events> = {
 
 export type ScopeContext = 'GLOBAL' | string[]
 
-export type SlashOption = {
+export type CommandContext = {
   name: string
   description: string
-  type: ApplicationCommandType,
   options: ApplicationCommandOption[]
 }
 
-export type Context = {
+export type ApplicationContextOption = {
+  name: string
+  type: 'USER' | 'MESSAGE'
+}
+
+export type CommandGlobalContext = {
   scope: ScopeContext
   roles?: string[]
   cooldown?: Cooldown,
-  options: SlashOption
+  options: CommandContext
+}
+
+export type ApplicationGlobalContext = {
+  scope: ScopeContext
+  roles?: string[]
+  cooldown?: Cooldown,
+  options: ApplicationContextOption
 }
 
 export type CommandContainer = CommandEntity[]
@@ -52,7 +64,7 @@ export type HookContainer = HookEntity[]
 
 export type ProviderContainer = ProviderEntity[]
 
-export type EntityResolvable = EventEntity<keyof ClientEvents> | CommandEntity | HookEntity
+export type EntityResolvable = EventEntity<keyof ClientEvents> | CommandEntity | ContextMenuEntity | HookEntity
 
 export type EnvironmentType = 'yaml' | 'yml' | 'json'
 
