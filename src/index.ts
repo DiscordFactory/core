@@ -1,6 +1,7 @@
 import Ignitor from './Ignitor'
 import Factory from './Factory'
 import NodeEmitter from './utils/NodeEmitter'
+import { emptyReply } from './utils'
 import { AddonCommand, BaseAddonCommand, BaseAddon, CLICommand, BaseAddonHook, BaseAddonEvent } from './entities/Addon'
 import { Event, BaseEvent, EventEntity } from './entities/Event'
 import { Command, BaseCommand, CommandEntity } from './entities/Command'
@@ -49,5 +50,7 @@ export {
 
   BaseAddonHook,
   BaseAddonEvent,
-  AddonContext
+  AddonContext,
+
+  emptyReply
 }

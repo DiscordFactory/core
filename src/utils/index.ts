@@ -1,4 +1,5 @@
 import Logger from '@leadcodedev/logger'
+import { MessageComponentInteraction } from 'discord.js'
 
 export const catchPromise = (error) => {
   console.log(error)
@@ -77,4 +78,15 @@ export const isEquivalent = (a: any, b: any): boolean => {
   }
 
   return a === b
+}
+
+export function emptyReply (interaction: MessageComponentInteraction) {
+  (interaction.client as any).api.interactions(interaction.id, interaction.token).callback.post({
+    data: {
+      type: 6,
+      data: {
+        flags: null,
+      }
+    }
+  })
 }
