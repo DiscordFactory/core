@@ -5,10 +5,8 @@ export class DiscordEventManager {
   }
 
   public async register (...events: any[]) {
-    await Promise.all(
-      events.map(async (event) => {
-        await event.handle()
-      })
-    )
+    events.map(async (event) => {
+      await event.handle()
+    })
   }
 }

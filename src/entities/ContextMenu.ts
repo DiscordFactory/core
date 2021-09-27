@@ -1,6 +1,6 @@
 import { AddonContext, ApplicationContextOption, ContainerType, ApplicationGlobalContext, ScopeContext } from '../types'
 import Constructable from '../utils/Constructable'
-import { ContextMenuInteraction } from 'discord.js'
+import { ApplicationCommandPermissionData, ContextMenuInteraction } from 'discord.js'
 import EntityFile from '../utils/EntityFile'
 import Cooldown from '../utils/Cooldown'
 
@@ -11,7 +11,7 @@ export function ContextMenu (ctx: ApplicationGlobalContext) {
         super(
           context,
           ctx.scope,
-          ctx.roles,
+          ctx.permissions,
           ctx.cooldown?.count || ctx.cooldown?.time
             ? new Cooldown(ctx.cooldown)
             : undefined,
@@ -29,7 +29,7 @@ export class ContextMenuEntity extends Constructable<any> {
   constructor (
     public context: AddonContext<any> | undefined,
     public scope: ScopeContext,
-    public roles: string[] = [],
+    public permissions: ApplicationCommandPermissionData[] = [],
     public cooldown: Cooldown | undefined,
     public ctx: ApplicationContextOption,
     public run: (...args: any[]) => Promise<void>,

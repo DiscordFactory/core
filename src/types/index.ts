@@ -1,9 +1,15 @@
 import {
   ApplicationCommandOption,
+  ApplicationCommandPermissionData,
+  ApplicationCommandPermissions,
+  ApplicationCommandPermissionsManager,
   Client,
   ClientEvents,
   Collection,
-  GuildMember, StageChannel, VoiceChannel
+  GuildMember,
+  Snowflake,
+  StageChannel,
+  VoiceChannel
 } from 'discord.js'
 import { EventEntity } from '../entities/Event'
 import { File } from 'fs-recursive'
@@ -29,30 +35,32 @@ export type Constructable<K extends keyof Events> = {
   file: File
 }
 
-export type ScopeContext = 'GLOBAL' | string[]
+export type ScopeContext = 'GLOBAL' | 'GUILDS' | Snowflake[]
 
 export type CommandContext = {
   name: string
   description: string
-  options: ApplicationCommandOption[]
+  options: ApplicationCommandOption[],
+  defaultPermission?: boolean,
 }
 
 export type ApplicationContextOption = {
   name: string
   type: 'USER' | 'MESSAGE'
+  defaultPermission?: boolean,
 }
 
 export type CommandGlobalContext = {
   scope: ScopeContext
-  roles?: string[]
   cooldown?: Cooldown,
+  permissions?: ApplicationCommandPermissionData[]
   options: CommandContext
 }
 
 export type ApplicationGlobalContext = {
   scope: ScopeContext
-  roles?: string[]
   cooldown?: Cooldown,
+  permissions?: ApplicationCommandPermissionData[]
   options: ApplicationContextOption
 }
 
@@ -95,4 +103,13 @@ export interface Events extends ClientEvents {
 export type CooldownActions = {
   timeout: any,
   count: number
+}
+
+export interface AddApplicationCommandPermissionsOptions {
+  command: Snowflake
+  permissions: {id: Snowflake, type: 'ROLE' | 'USER', permission: boolean }[]
+}
+
+export interface PermissionManagerResolvable extends ApplicationCommandPermissionsManager<any, any, any, any, any> {
+  add (options: AddApplicationCommandPermissionsOptions): Promise<ApplicationCommandPermissions[]>
 }

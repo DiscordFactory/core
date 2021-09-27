@@ -25,7 +25,7 @@ export default class EventManager {
           entityFile
         )
 
-        await this.emit(event)
+        this.emit(event)
 
         this.factory.ignitor.container.providers.forEach((provider: ProviderEntity) => {
           provider.load(event)
@@ -39,7 +39,7 @@ export default class EventManager {
     )
   }
 
-  private async emit (instance: EventEntity<keyof Events>) {
+  private emit (instance: EventEntity<keyof Events>) {
     if (!this.factory.shardManager?.shards.size) {
       this.factory.client!.on(
         instance.event as keyof ClientEvents,
