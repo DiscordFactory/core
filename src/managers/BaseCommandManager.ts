@@ -1,9 +1,11 @@
 import SlashCommandManager from './commands/SlashCommandManager'
 import ContextMenuCommandManager from './commands/ContextMenuCommandManager'
 import Factory from '../Factory'
-import { ApplicationCommand, ApplicationCommandData, Snowflake } from 'discord.js'
+import { Guild } from 'discord.js'
 import { CommandEntity } from '../entities/Command'
 import Logger from '@leadcodedev/logger'
+import { ContextMenuEntity } from '../entities/ContextMenu'
+import { catchPromise } from '../utils'
 
 export default class BaseCommandManager {
   public readonly commandManager: SlashCommandManager = new SlashCommandManager(this)
@@ -19,25 +21,30 @@ export default class BaseCommandManager {
     ])
   }
 
-  public add (guildId: Snowflake) {
-    const guild = this.factory.client?.guilds.cache.get(guildId)
-    this.factory.ignitor.container.commands.forEach((command: CommandEntity) => {
-      guild?.commands
-        .create(command as unknown as ApplicationCommandData)
-        .catch((error) => {
-          Logger.send('error', error.message)
-          process.exit(1)
-        })
-    })
-  }
+  public async add (guild: Guild) {
+    try {
+      await guild.commands.fetch()
+    } catch (error: any) {
+      if (error.httpStatus === 403) {
+        Logger.send('warn', `The guild "${guild.name}" (${guild.id}) does not accept command applications (scope : applications.commands).`)
+        return
+      }
+      catchPromise(error)
+    }
 
-  public remove (guildId: Snowflake) {
-    const guild = this.factory.client?.guilds.cache.get(guildId)
-    guild?.commands.cache.forEach((command: ApplicationCommand) => {
-      command.delete().catch((error) => {
-        Logger.send('error', error.message)
-        process.exit(1)
+    const container = this.factory.ignitor.container
+    const commands = [
+      ...container.commands,
+      ...container.contextMenu,
+    ]
+
+    const guildCommandsFilter = (command: CommandEntity | ContextMenuEntity) => command.scope === 'GUILDS' || (Array.isArray(command.scope) && command.scope.includes(guild.id))
+    commands
+      .filter(guildCommandsFilter)
+      .forEach((command: CommandEntity | ContextMenuEntity ) => {
+        guild.commands
+          .create(command.ctx)
+          .catch(catchPromise)
       })
-    })
   }
 }

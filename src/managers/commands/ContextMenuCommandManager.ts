@@ -14,6 +14,7 @@ import EntityFile from '../../utils/EntityFile'
 import BaseCommandManager from '../BaseCommandManager'
 import { catchPromise, isEquivalent } from '../../utils'
 import { ContextMenuEntity } from '../../entities/ContextMenu'
+import Logger from '@leadcodedev/logger'
 
 export default class SlashCommandManager {
   constructor (public commandManager: BaseCommandManager) {
@@ -198,7 +199,13 @@ export default class SlashCommandManager {
         .then((commands: Collection<Snowflake, ApplicationCommand>) => {
           this.treatment(guild.commands, commands.filter((command: ApplicationCommand) => command.type !== 'CHAT_INPUT'), guildCommandContainer)
         })
-        .catch(catchPromise)
+        .catch((error) => {
+          if (error.httpStatus === 403) {
+            Logger.send('warn', `The guild "${guild.name}" (${guild.id}) does not accept command applications (scope : applications.commands).`)
+            return
+          }
+          catchPromise(error)
+        })
     })
 
     this.commandManager.factory.client?.on('interactionCreate', async (interaction: Interaction) => {

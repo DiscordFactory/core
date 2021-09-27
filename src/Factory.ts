@@ -1,5 +1,5 @@
 import EventManager from './managers/EventManager'
-import { Client, Collection, OAuth2Guild, RateLimitData, ShardingManager, Snowflake } from 'discord.js'
+import { Client, Collection, Guild, OAuth2Guild, RateLimitData, ShardingManager, Snowflake } from 'discord.js'
 import Ignitor from './Ignitor'
 import HookManager from './managers/HookManager'
 import NodeEmitter from './utils/NodeEmitter'
@@ -22,7 +22,7 @@ export default class Factory {
 
   public readonly eventManager: EventManager = new EventManager(this)
   public readonly hookManager: HookManager = new HookManager(this)
-  public readonly commandManager: BaseCommandManager = new BaseCommandManager(this)
+  public readonly baseCommandManager: BaseCommandManager = new BaseCommandManager(this)
   public readonly providerManager: ProviderManager = new ProviderManager(this)
   public readonly discordEventManager: DiscordEventManager = new DiscordEventManager(this)
 
@@ -35,26 +35,12 @@ export default class Factory {
     this.client = new Client({
       intents: this.ignitor.environmentBuilder.environment?.content.INTENTS,
       partials: this.ignitor.environmentBuilder.environment?.content.PARTIALS,
-      ...SHARDS && SHARDS.MODE === 'AUTO' && { shards: 'auto' }
+      ...SHARDS && SHARDS.MODE === 'AUTO' && { shards: 'auto' },
     })
 
     await this.client?.login(this.ignitor.environmentBuilder.environment?.content.APP_TOKEN)
-    NodeEmitter.emit('application::client::login')
+    NodeEmitter.emit('application::client::login', this.client)
   }
-
-  // public async createShards () {
-  //   const environment = this.ignitor.environmentBuilder.environment!.content
-  //   const TOKEN = environment.APP_TOKEN
-  //   const SHARDS = environment.SHARDS
-  //
-  //   const manager = new ShardingManager(path.join(__dirname, 'DiscordClient.js'), {
-  //     token: TOKEN,
-  //     respawn: SHARDS.RESPAWN || true
-  //   })
-  //   await manager.spawn()
-  //
-  //   this.shardManager = manager
-  // }
 
   public static getInstance (ignitor?: Ignitor) {
     if (!this.$instance) {
@@ -82,28 +68,25 @@ export default class Factory {
       Logger.send('info', `method: ${rateLimit.method} | path: ${rateLimit.path}`)
     })
 
-    // this.client?.on('guildCreate', async (guild: Guild) => {
-    //   this.guildIds.push(guild.id)
-    //   // this.commandManager.add(guild.id)
-    //   // await this.contextMenuManager.add()
-    // })
-    //
-    // this.client?.on('guildDelete', async (guild: Guild) => {
-    //   const index = this.guildIds.findIndex((id: Snowflake) => id === guild.id)
-    //   this.guildIds.splice(index, 1)
-    //   this.commandManager.remove(guild.id)
-    //   // await this.contextMenuManager.remove(guild.id)
-    // })
+    this.client?.on('guildCreate', async (guild: Guild) => {
+      this.guildIds.push(guild.id)
+      await this.baseCommandManager.add(guild)
+    })
+
+    this.client?.on('guildDelete', async (guild: Guild) => {
+      const index = this.guildIds.findIndex((id: Snowflake) => id === guild.id)
+      this.guildIds.splice(index, 1)
+    })
 
     await this.ignitor.addonManager.registerAddons()
     await this.hookManager.register()
 
     await Promise.all([
       this.eventManager.register(),
-      this.commandManager.setup(),
+      this.baseCommandManager.setup(),
       this.discordEventManager.register(
-        new VoiceMemberJoin(this),
         new VoiceMemberLeave(this),
+        new VoiceMemberJoin(this),
         new GuildMemberAddBoost(this),
         new GuildMemberRemoveBoost(this),
       ),
