@@ -60,5 +60,3 @@ You can set only the `time` key if you wish to limit the use of the command for 
 ::: warning
 The `count` key cannot be used if `time` is not set.
 :::
-
-See more about ApplicationCommandOption [here](https://discord.js.org/#/docs/main/stable/typedef/ApplicationCommandOption)
