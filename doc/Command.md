@@ -1,4 +1,4 @@
-# ⚙ Commands
+# Commands
 The [version 13 update](https://github.com/discordjs/discord.js/blob/main/CHANGELOG.md#1300-2021-08-06) of [discord.js](https://discord.js.org) marks the arrival of Slash Commands.
 This new feature provides real support for developers who want to create commands on their bots.
 Discord has announced that it will gradually replace the old ordering system we all knew, based on a prefix as the first character of a message, with this new ordering system.
@@ -41,7 +41,7 @@ export default class FooCommand implements BaseCommand {
 A file will be created in the specified location otherwise in the root of your project with the following structure :
 
 ```ts
-export interface SlashCommandInterface {
+export interface CommandGlobalContext {
   scope: 'GLOBAL' | 'GUILDS' | Snowflake[], 👈 // Or 'GLOBAL' if you want to register globally
   permissions?: ApplicationCommandPermissionData[],
   cooldown?: {
