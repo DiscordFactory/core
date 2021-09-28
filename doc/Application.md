@@ -2,7 +2,7 @@
 
 When you develop your application, you will have to import and operate your [discord client](https://discord.js.org/#/docs/main/stable/class/Client).
 
-For performance reasons, the `client' instance is not transferred to the instance of your files such as events, commands, hooks, etc.
+For performance reasons, the `client` instance is not transferred to the instance of your files such as events, commands, hooks, etc.
 
 However, you can still access it via an `entry` class as below :
 ```ts
