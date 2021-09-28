@@ -23,17 +23,17 @@ import { BaseCommand, Command } from 'ioc:factory/Core/Command'
 import { CommandInteraction } from 'discord.js'
 
 @Command({
-	scope: ['your guild id'], 👈 // Or 'GLOBAL' or 'GUILDS
-	options: {
-		name: 'foo',
-		description: 'Your foo command description',
-		options: [],
-	},
+  scope: ['your guild id'], 👈 // Or 'GLOBAL' or 'GUILDS
+  options: {
+    name: 'foo',
+    description: 'Your foo command description',
+    options: [],
+  },
 })
 export default class FooCommand implements BaseCommand {
-	public async run(interaction: CommandInteraction): Promise<void> {
-		// Your code here
-	}
+  public async run(interaction: CommandInteraction): Promise<void> {
+    // Your code here
+  }
 }
 
 ```
@@ -42,17 +42,17 @@ A file will be created in the specified location otherwise in the root of your p
 
 ```ts
 export interface SlashCommandInterface {
-	scope: 'GLOBAL' | 'GUILDS' | Snowflake[], 👈 // Or 'GLOBAL' if you want to register globally
-	permissions?: ApplicationCommandPermissionData[],
-	cooldown?: {
-	  time: number 👈 // Measured in milliseconds
-		count: number 👈 // Cannot be used without time
-	}
-	options: {
-		name: string,
-		description: string,
-		options: ApplicationCommandOption[],
-	}
+  scope: 'GLOBAL' | 'GUILDS' | Snowflake[], 👈 // Or 'GLOBAL' if you want to register globally
+  permissions?: ApplicationCommandPermissionData[],
+  cooldown?: {
+    time: number 👈 // Measured in milliseconds
+    count: number 👈 // Cannot be used without time
+  }
+  options: {
+    name: string,
+    description: string,
+    options: ApplicationCommandOption[],
+  }
 }
 ```
 The `cooldown` key allows you to define a maximum number of uses during a defined time period for the user who will execute the associated command.
