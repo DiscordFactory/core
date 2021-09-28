@@ -9,7 +9,6 @@ Open a new terminal in your project and write the following command :
 yarn factory make:event <filename>
 ```
 ::: info
-Choose to create a command and then answer the questions you will be asked.
 It is important to note that when you define the file name, you can `place` the file in folders by specifying a path directory in addition to the file name as in the following example.
 :::
 
