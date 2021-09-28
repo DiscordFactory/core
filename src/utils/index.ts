@@ -54,7 +54,7 @@ const isObjectEquivalent = (a: Object, b: Object): boolean => {
   }
 
   for (let i = 0; i < aProps.length; i++) {
-    let propName = aProps[i]
+    const propName = aProps[i]
 
     if (!compareValue(a, b, propName)) {
       return false
