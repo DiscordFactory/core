@@ -2,7 +2,7 @@
 The design of a discord bot spends most of the time developing commands. The purpose of these commands is to execute certain actions by the moderation or the community.
 Creating an event with the framework is very simple.
 
-## Create new command from CLI
+## Create new event from CLI
 Open a new terminal in your project and write the following command :
 
 ```bash
@@ -13,7 +13,7 @@ Choose to create a command and then answer the questions you will be asked.
 It is important to note that when you define the file name, you can `place` the file in folders by specifying a path directory in addition to the file name as in the following example.
 :::
 
-## Default command file
+## Default event file
 A file will be created in the specified location otherwise in the root of your project with the following structure :
 
 ```ts

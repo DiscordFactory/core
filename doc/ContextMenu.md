@@ -3,7 +3,7 @@ The [version 13 update](https://github.com/discordjs/discord.js/blob/main/CHANGE
 This new feature provides real support for developers who want to create commands on their bots.
 Discord has announced that it will gradually replace the old ordering system we all knew, based on a prefix as the first character of a message, with this new ordering system.
 
-## Create new command from CLI
+## Create new context menu from CLI
 Open a new terminal in your project and write the following command :
 
 ```bash
