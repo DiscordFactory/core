@@ -27,7 +27,7 @@ interface environment {
 ```
 
 ### If you have chosen YAML
-##### environment.(dev|prod).yaml
+###### environment.(dev|prod).yaml
 ```yaml
 APP_TOKEN: Your token here
 PARTIALS:
@@ -55,7 +55,7 @@ INTENTS:
 ```
 
 ### If you have chosen JSON
-##### environment.(dev|prod).json
+###### environment.(dev|prod).json
 ```json
 {
   "APP_TOKEN": "Your token here",
