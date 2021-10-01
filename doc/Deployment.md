@@ -30,6 +30,7 @@ yarn global add pm2
 
 Create a root file named `ecosystem.config.js`.
 
+###### ecosystem.config.js
 ```ts
 module.exports = {
   apps : [{
@@ -41,7 +42,12 @@ module.exports = {
 ```
 
 ::: info
-The index.ts file in the start folder is the entry point for your application.
+Vous pouvez générer le fichier `ecosystem.config.js` en utilisant la commande suivante :
+```bash
+yarn factory pm2:ecosystem
+# or
+npm run factory pm2:ecosystem
+```
 :::
 
 Then open a terminal in the root folder of your application and run the following command :
