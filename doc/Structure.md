@@ -83,8 +83,6 @@ You can learn more here.
 These files are read first, even before the recovery of the command files, events...
 It can be very interesting to use them to record a default behaviour before the application is ready to run.
 
-See more exemple [here](exemples/PresenceProvider.md)
-
 ## Src
 The `src/` folder is the base folder for your project.
 This is where you will work.Please consider this folder as the root of your application.
