@@ -1,15 +1,15 @@
 # Structure
 The framework offers a very modular way of structuring your files within your application, the only restriction is that they must be included in the src/ folder as this represents level 0 of your application (also called root directory).
 ```
-|- node_modules
-|- contracts
-|- provider
-  |- AppProvider.ts
-|- src
-|- start
-  |- index.ts
-  |- Kernel.ts
-|- test
+├─ node_modules
+├─ contracts
+├─ provider
+    └ AppProvider.ts
+├─ src
+├─ start
+    ├─ index.ts
+    └ Kernel.ts
+├─ test
 environment.dev.(yaml|json)
 environment.prod.(yaml|json)
 .eslintignore
