@@ -42,7 +42,7 @@ module.exports = {
 ```
 
 ::: info
-Vous pouvez générer le fichier `ecosystem.config.js` en utilisant la commande suivante :
+You can generate the `ecosystem.config.js` file using the following command:
 ```bash
 yarn factory pm2:ecosystem
 # or
