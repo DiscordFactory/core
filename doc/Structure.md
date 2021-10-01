@@ -21,7 +21,9 @@ package.json
 tsconfig.json
 ```
 
-## Folder start
+## Start
+
+### Index
 This folder contains the files needed to start the application.
 You will find the index, the `entry point` of the application which initializes the application.
 
@@ -36,7 +38,20 @@ ignitor.createFactory()
 The index.ts file in the start folder is the entry point for your application.
 :::
 
-## Folder provider
+### Kernel
+The `Kernel.ts` file is essential to the use of the framework,
+this file is initialized in the first ones and allows to inject modules, commands, events or database drivers, etc
+```ts
+import CoreCommands from '@discord-factory/core-commands' 👈 // Import your module from NPM node_modules
+
+export default class Kernel {
+  public registerAddons () {
+    return [CoreCommands] 👈 // Use your module here, do not instanciate it.
+  }
+}
+```
+
+## Provider
 Providers are files that have certain methods defined in advance.
 You can create them at will as long as they are built in the following way :
 
@@ -108,7 +123,7 @@ export default class AppProvider implements Provider {
 
 The context object collects the various file types in your application
 
-## Folder application
+## Src
 The `src/` folder is the base folder for your project.
 This is where you will work.Please consider this folder as the root of your application.
 
