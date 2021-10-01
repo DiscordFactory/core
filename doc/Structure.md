@@ -4,11 +4,11 @@ The framework offers a very modular way of structuring your files within your ap
 ├─ node_modules
 ├─ contracts
 ├─ provider
-    └ AppProvider.ts
+  └ AppProvider.ts
 ├─ src
 ├─ start
-    ├─ index.ts
-    └ Kernel.ts
+  ├─ index.ts
+  └ Kernel.ts
 ├─ test
 environment.dev.(yaml|json)
 environment.prod.(yaml|json)
