@@ -3,9 +3,9 @@
 A concrete example would be the console display of the files instantiated in your application :
 
 ```bash
-npm run factory make:command PingPong
+npm run factory make:command ButtonCommand
 # or
-yarn factory make:command PingPong
+yarn factory make:command ButtonCommand
 ```
 
 ```ts
@@ -20,7 +20,7 @@ import { CommandInteraction, MessageActionRow, MessageButton } from 'discord.js'
     options: [],
   },
 })
-export default class PingCommand implements BaseCommand {
+export default class ButtonCommand implements BaseCommand {
   public async run (interaction: CommandInteraction): Promise<void> {
     const button = new MessageButton()
       .setStyle('SUCCESS')
