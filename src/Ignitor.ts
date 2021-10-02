@@ -50,7 +50,10 @@ export default class Ignitor {
   }
 
   private async loadFiles (dir) {
-    const baseDir = path.join(process.cwd(), dir)
+    const baseDir = process.env.NODE_ENV === 'production'
+      ? path.join(process.cwd(), 'build', dir)
+      : path.join(process.cwd(), dir)
+
     const fetchedFiles = await fetch(
       baseDir,
       [process.env.NODE_ENV === 'production' ? 'js' : 'ts'],
@@ -74,7 +77,10 @@ export default class Ignitor {
   }
 
   private async loadKernel () {
-    const kernelPath = path.join(process.cwd(), 'start', 'Kernel.ts')
+    const kernelPath = process.env.NODE_ENV === 'production'
+      ? path.join(process.cwd(), 'build', 'start', 'Kernel.js')
+      : path.join(process.cwd(), 'start', 'Kernel.ts')
+
     const item = await import(kernelPath)
     this.kernel = new item.default()
   }
@@ -100,7 +106,6 @@ export default class Ignitor {
   }
 
   public getEnvironment (key: string): any | undefined {
-    console.log(this.environmentBuilder.environment)
     const pathChain = key.split('.')
     if (pathChain.length > 1) {
       let result = this.environmentBuilder.environment?.content

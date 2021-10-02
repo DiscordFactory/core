@@ -6,8 +6,8 @@ import NodeEmitter from './utils/NodeEmitter'
 import ProviderManager from './managers/ProviderManager'
 import { ProviderEntity } from './entities/Provider'
 import { DiscordEventManager } from './managers/DiscordEventManager'
-import VoiceMemberJoin from './events/VoiceMemberJoin'
-import VoiceMemberLeave from './events/VoiceMemberLeave'
+import VoiceJoin from './events/VoiceJoin'
+import VoiceLeave from './events/VoiceLeave'
 import GuildMemberAddBoost from './events/GuildMemberAddBoost'
 import GuildMemberRemoveBoost from './events/GuildMemberRemoveBoost'
 import Logger from '@leadcodedev/logger'
@@ -85,8 +85,8 @@ export default class Factory {
       this.eventManager.register(),
       this.baseCommandManager.setup(),
       this.discordEventManager.register(
-        new VoiceMemberLeave(this),
-        new VoiceMemberJoin(this),
+        new VoiceLeave(this),
+        new VoiceJoin(this),
         new GuildMemberAddBoost(this),
         new GuildMemberRemoveBoost(this),
       ),

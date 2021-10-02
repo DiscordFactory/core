@@ -9,7 +9,10 @@ export default class ProviderManager {
   }
 
   public async register (): Promise<void> {
-    const baseDir = path.join(process.cwd(), 'providers')
+    const baseDir = process.env.NODE_ENV === 'production'
+      ? path.join(process.cwd(), 'build', 'providers')
+      : path.join(process.cwd(), 'providers')
+
     const fetchedFiles = await fetch(
       baseDir,
       [process.env.NODE_ENV === 'production' ? 'js' : 'ts'],
