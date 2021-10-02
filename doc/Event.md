@@ -48,11 +48,11 @@ The `voiceMemberJoin` event is emitted when a member joins a voice channel.
 
 ```ts
 import { Event, BaseEvent } from 'ioc:factory/Core/Event'
-import { Message, StageChannel, VoiceChannel } from 'discord.js'
+import { VoiceState } from 'discord.js'
 
-@Event('voiceMemberJoin')
+@Event('voiceJoin')
 export default class FooEvent implements BaseEvent {
-  public async run (member: GuildMember, channel: VoiceChannel | StageChannel): Promise<void> {
+  public async run (state: VoiceState): Promise<void> {
     // Your code here
   }
 }
@@ -63,11 +63,11 @@ The `voiceMemberLeave` event is emitted when a member leaves a voice channel.
 
 ```ts
 import { Event, BaseEvent } from 'ioc:factory/Core/Event'
-import { Message, StageChannel, VoiceChannel } from 'discord.js'
+import { VoiceState } from 'discord.js'
 
-@Event('voiceMemberJoin')
+@Event('voiceLeave')
 export default class FooEvent implements BaseEvent {
-  public async run (member: GuildMember, channel: VoiceChannel | StageChannel): Promise<void> {
+  public async run (state: VoiceState): Promise<void> {
     // Your code here
   }
 }
