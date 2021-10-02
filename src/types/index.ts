@@ -8,8 +8,7 @@ import {
   Collection,
   GuildMember,
   Snowflake,
-  StageChannel,
-  VoiceChannel
+  VoiceState
 } from 'discord.js'
 import { EventEntity } from '../entities/Event'
 import { File } from 'fs-recursive'
@@ -95,8 +94,8 @@ export type Cooldown = {
 export interface Events extends ClientEvents {
   guildMemberAddBoost: [member: GuildMember]
   guildMemberRemoveBoost: [member: GuildMember]
-  voiceMemberJoin: [member: GuildMember, channel: VoiceChannel | StageChannel]
-  voiceMemberLeave: [member: GuildMember, channel: VoiceChannel | StageChannel]
+  voiceJoin: [state: VoiceState]
+  voiceLeave: [state: VoiceState]
   websocketDebug: [payload: any]
 }
 
