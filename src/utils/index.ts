@@ -2,7 +2,6 @@ import Logger from '@leadcodedev/logger'
 import { MessageComponentInteraction } from 'discord.js'
 
 export const catchPromise = (error) => {
-  console.log(error)
   Logger.send('error', error.message)
   process.exit(1)
 }
