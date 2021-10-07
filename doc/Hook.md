@@ -6,6 +6,8 @@ This is a real problem that is solved by using hooks. Creating a hook with the f
 Open a new terminal in your project and write the following command :
 
 ```bash
+npm run factory make:hook <filename>
+# or
 yarn factory make:hook <filename>
 ```
 ::: info
