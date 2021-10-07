@@ -6,6 +6,8 @@ Creating an event with the framework is very simple.
 Open a new terminal in your project and write the following command :
 
 ```bash
+npm run factory make:event <filename>
+# or
 yarn factory make:event <filename>
 ```
 ::: info

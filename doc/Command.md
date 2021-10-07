@@ -7,6 +7,8 @@ Discord has announced that it will gradually replace the old ordering system we 
 Open a new terminal in your project and write the following command :
 
 ```bash
+npm run factory make:command <filename>
+# or
 yarn factory make:command <filename>
 ```
 ::: info
