@@ -94,20 +94,31 @@ Using the `registerCLI()` function, you can inject CLI commands into the Factory
 To do this, you just have to create a new file like below, then import it __without instantiating it__ into the reto array
 
 ```ts
-import { CLICommand, BaseAddonCommand } from '@discord-factory/core-next'
+import { CLI, BaseCli, CliContextRuntime } from '@discord-factory/core-next'
 import Addon from '../index'
 import Logger from '@leadcodedev/logger'
-import { MigrationEntity } from '../entities/Migration'
 
-@CLICommand({
-  name: 'Label',
-  prefix: 'action:sub-action',
-  usages: []
+@CLI({
+  prefix: 'prefix',
+  description: 'Your command escription',
+  alias: ['--help', '-h'],
 })
-export default class MyCLICommand extends BaseAddonCommand<Addon> {
-  public async run (): Promise<void> {
+export default class MyCLICommand extends BaseCli<Addon> {
+  public async run (context: CliContextRuntime): Promise<void> {
     // Your code here
   }
+}
+```
+
+### CliContextRuntime
+```ts
+type NativeResolvable = { [K: string]: string | number | boolean | NativeResolvable }
+
+export type CliContextRuntime = {
+  options: NativeResolvable,
+  args: NativeResolvable,
+  cli: CAC,
+  ignitor: Ignitor
 }
 ```
 
