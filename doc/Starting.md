@@ -6,7 +6,7 @@ In order to design your first `Discord Factory` project, please use the followin
 ```bash
 npm init factory-app <projectName> <yaml|json>
 # or
-yarn factory-app <projectName> <yaml|json>
+yarn create factory-app <projectName> <yaml|json>
 ```
 
 That's it !
