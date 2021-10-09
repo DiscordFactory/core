@@ -1,5 +1,6 @@
 import Logger from '@leadcodedev/logger'
 import { MessageComponentInteraction } from 'discord.js'
+import CliTable from 'cli-table2'
 
 export const catchPromise = (error) => {
   Logger.send('error', error.message)
@@ -88,4 +89,22 @@ export function emptyReply (interaction: MessageComponentInteraction) {
       }
     }
   })
+}
+
+export const table = new CliTable({
+  chars: {
+    'top-left': '╭',
+    'top-right': '╮',
+    'bottom-left': '╰',
+    'bottom-right': '╯',
+    top: '─',
+    bottom: '─',
+    left: '│',
+    right: '│',
+  },
+  rowAligns: ['center', 'center'],
+})
+
+export function isUsingYarn () {
+  return (process.env.npm_config_user_agent || '').indexOf('yarn') === 0;
 }

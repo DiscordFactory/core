@@ -28,6 +28,8 @@
     "@leadcodedev/logger": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
+    "cac": "^6.7.8",
+    "cli-table2": "^0.2.0",
     "cross-env": "^7.0.3",
     "discord.js": "^13.1.0",
     "fs-recursive": "^1.1.7",

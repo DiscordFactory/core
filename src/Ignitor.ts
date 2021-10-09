@@ -8,6 +8,10 @@ import ModuleAlias from 'module-alias'
 import NodeEmitter from './utils/NodeEmitter'
 import { EnvironmentType } from './types'
 import EnvironmentBuilder from './EnvironmentBuilder'
+import CliManager from './managers/CliManager'
+import Help from './cli/help'
+import Version from './cli/version'
+import { Command } from 'cac'
 
 export default class Ignitor {
   public files: Collection<string, any> = new Collection()
@@ -17,6 +21,7 @@ export default class Ignitor {
 
   public readonly container: Container = new Container()
   public readonly addonManager: AddonManager = new AddonManager(this)
+  public readonly cliManager: CliManager = new CliManager(this)
 
   public async createFactory () {
     this.registerAlias()
@@ -40,9 +45,12 @@ export default class Ignitor {
 
     await this.getEnvironnement()
     await this.loadKernel()
-    const { cliCommands } = await this.addonManager.registerAddons()
-
-    return cliCommands
+    await this.addonManager.registerAddons()
+    this.cliManager.register(
+      new (Version as any)(),
+      new (Help as any)(),
+    )
+    return this.cliManager.cli
   }
 
   private async getEnvironnement () {
@@ -125,5 +133,27 @@ export default class Ignitor {
 
   public getSelectEnvironment (): EnvironmentType {
     return this.environmentBuilder.environment!.type
+  }
+
+  public async exec () {
+    const cli = await this.createCommand()
+    const commands: Collection<string, Command> = new Collection()
+
+    cli.commands.forEach((command) => {
+      command.aliasNames.forEach((alias: string) => {
+        commands.set(alias, command)
+      })
+    })
+
+    if (!process.argv[2]) {
+      process.argv[2] = 'help'
+    }
+
+    const command = cli.commands.find((command: Command) => command.aliasNames.includes(process.argv[2]))
+    if (command) {
+      process.argv[2] = command.name
+    }
+
+    cli.parse()
   }
 }
