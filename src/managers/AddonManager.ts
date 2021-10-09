@@ -1,17 +1,18 @@
-import { AddonCommand, BaseAddon } from '../entities/Addon'
+import { BaseAddon } from '../entities/Addon'
 import Ignitor from '../Ignitor'
 import { EventEntity } from '../entities/Event'
 import { CommandEntity } from '../entities/Command'
 import { HookEntity } from '../entities/Hook'
 import NodeEmitter from '../utils/NodeEmitter'
+import { BaseCli } from '../entities/Cli'
 
 export default class AddonManager {
   constructor (public ignitor: Ignitor) {
   }
 
-  public async registerAddons (): Promise<{ [K in string]: any }> {
+  public async registerAddons (): Promise<void> {
     const addons: Function[] = await this.ignitor.kernel.registerAddons()
-      const registeredAddons = await Promise.all(
+      await Promise.all(
         addons.map(async (item: any) => {
         const addonContext = { ...this.ignitor }
 
@@ -30,9 +31,10 @@ export default class AddonManager {
         const cli = addon.registerCLI()
         const registeredCliCommands = cli.map((item: any) => {
           const command = new item(addonContext)
-          this.registerCLI(command as AddonCommand)
+          this.registerCLI(command as BaseCli<unknown>)
           return command
         })
+
 
         const events = addon.registerEvents()
         const registeredEvents = events.map((item: any) => {
@@ -58,14 +60,11 @@ export default class AddonManager {
         }
       })
     )
-
-    return {
-      cliCommands: registeredAddons.flatMap((addon: { cliCommands: any[] }) => addon.cliCommands),
-    }
   }
 
-  private registerCLI (Class: AddonCommand) {
-    this.ignitor.container.cli.set(Class.prefix, Class)
+  private registerCLI (Class: BaseCli<unknown>) {
+    // this.ignitor.container.cli.set(Class.prefix, Class)
+    this.ignitor.cliManager.register(Class)
   }
 
   private registerEvent (Class: EventEntity<any>) {

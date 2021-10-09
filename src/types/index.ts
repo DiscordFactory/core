@@ -17,6 +17,8 @@ import { HookEntity } from '../entities/Hook'
 import { ProviderEntity } from '../entities/Provider'
 import Container from '../Container'
 import { ContextMenuEntity } from '../entities/ContextMenu'
+import { CAC } from 'cac'
+import Ignitor from '../Ignitor'
 
 export type ContainerType = 'event' | 'command' | 'hook' | 'middleware' | 'context-menu'
 
@@ -54,6 +56,37 @@ export type CommandGlobalContext = {
   cooldown?: Cooldown,
   permissions?: ApplicationCommandPermissionData[]
   options: CommandContext
+}
+
+type NativeResolvable = { [K: string]: string | number | boolean | NativeResolvable }
+
+export type CliContextRuntime = {
+  options: NativeResolvable,
+  args: NativeResolvable,
+  cli: CAC,
+  ignitor: Ignitor
+}
+
+export type CliOption = {
+  name: string
+  description: string
+  config?: {
+    default?: any,
+    type?: any[]
+  }
+}
+
+export type CliCommandContext = {
+  prefix: string,
+  description: string
+  args?: string[],
+  config?: {
+    allowUnknownOptions?: boolean,
+    ignoreOptionDefaultValue?: boolean
+  }
+  options?: CliOption[]
+  alias?: string[],
+  exemple?: string
 }
 
 export type ApplicationGlobalContext = {
