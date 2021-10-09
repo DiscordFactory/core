@@ -21,7 +21,7 @@ export default class Version extends BaseCli<unknown> {
         const packageName = key
           .replace(new RegExp(discriminator, ''), '')
           .replace(/-/g, ' ')
-        return `• ${packageName.charAt(0).toUpperCase() + packageName.slice(1, packageName.length)} : ${version}\n`
+        return `• ${packageName.charAt(0).toUpperCase() + packageName.slice(1, packageName.length)} : ${version}`
       }
     }).filter((a) => a)
 
