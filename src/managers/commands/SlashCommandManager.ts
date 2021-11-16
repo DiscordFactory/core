@@ -38,7 +38,7 @@ export default class SlashCommandManager {
         : false,
       choices: options.choices || undefined,
       options: Array.isArray(options.options)
-        ? options.options.map(this.serializeOptions)
+        ? options.options.map(value => this.serializeOptions(value))
         : undefined
     }
   }
