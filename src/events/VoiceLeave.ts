@@ -10,7 +10,10 @@ export default class VoiceLeave {
         return
       }
 
-      const guild = this.factory.client?.guilds.resolve(payload.guild_id)!
+      const guild = this.factory.client?.guilds.resolve(payload.guild_id)
+      if (!guild) {
+        throw Error('Unable to resolve guild.')
+      }
       const oldMember = guild.members.cache.get(payload.member.user.id)
 
       if (!oldMember?.voice.channel || oldMember?.voice.channel?.id === payload.channel_id) {
