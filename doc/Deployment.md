@@ -10,7 +10,7 @@ npm install
 yarn install
 ```
 
-In the second ti me, you should to build your application because the production mode cannot read and execute the typescript natively.
+In the second time, you should build your application because the production mode cannot read and execute the typescript natively.
 
 ```bash
 npm run build
