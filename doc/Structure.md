@@ -1,5 +1,5 @@
 # Structure
-The framework offers a very modular way of structuring your files within your application, the only restriction is that they must be included in the src/ folder as this represents level 0 of your application (also called root directory).
+The framework offers a very modular way of structuring your files within your application, the only restriction is that they must be included in the `src/` folder as this represents level 0 of your application (also called root directory).
 ```
 ├─ node_modules
 ├─ contracts
@@ -100,10 +100,10 @@ It can be interesting to look at design patterns, here are some of them :
 
 Please use the factory make:file command to create a file quickly
 
-Import with alias
+## Import with alias
 The `src/` folder is the base folder for your project.
 To simplify the import of your files, the alias `App/` is available.
-This alias refers to the root folder src/.
+This alias refers to the root folder `src/`.
 
 ```ts
 - import Foo from '../../../Foo'
@@ -131,7 +131,7 @@ test('foo', (t) => {
 })
 ```
 
-Then you can use the followed command to run your tests :
+Then you can use the following command to run your tests :
 
 ```bash
 npm install
