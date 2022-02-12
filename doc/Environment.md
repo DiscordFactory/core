@@ -1,7 +1,7 @@
 # 🌲 Environment
 
 The environment file has an extremely important place in the framework, in fact you can have two different environments, one for development and the other for production.
-Each of these two environments is represented by a file on your disk, at the root of your project and can take the exetensions `json` or `yaml`.
+Each of these two environments is represented by a file on your disk, at the root of your project and can take the extensions `json` or `yaml`.
 
 ## Development
 This mode is used when you are designing your application, it is called `environment.dev.(json|yaml)`
@@ -9,11 +9,11 @@ This mode is used when you are designing your application, it is called `environ
 The structure of the file will be detailed below.
 
 ## Production
-This mode is used when you are designing your application, it is called `environment.prod.(json|yaml)`
+This mode is used when you are deploying your application, it is called `environment.prod.(json|yaml)`
 
 The structure of the file will be detailed below.
 
-## Structure minimale
+## Minimal structure
 Whatever extension of your environment you choose, you must respect the following interface
 ```ts
 type Json = { [K in string]: string }
