@@ -1,6 +1,6 @@
 import { AddonContext, CommandContext, ContainerType, CommandGlobalContext, ScopeContext } from '../types'
 import Constructable from '../utils/Constructable'
-import { ApplicationCommandPermissionData, CommandInteraction } from 'discord.js'
+import { ApplicationCommandPermissionData, CacheType, CommandInteraction } from 'discord.js'
 import EntityFile from '../utils/EntityFile'
 import Cooldown from '../utils/Cooldown'
 
@@ -40,5 +40,5 @@ export class CommandEntity extends Constructable<any> {
 }
 
 export abstract class BaseCommand {
-  public abstract run (interaction: CommandInteraction): Promise<void>
+  public abstract run (interaction: CommandInteraction<CacheType>): Promise<void>
 }

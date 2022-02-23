@@ -1,5 +1,5 @@
 import {
-  ApplicationCommandOption,
+  ApplicationCommandOption, ApplicationCommandOptionData,
   ApplicationCommandPermissionData,
   ApplicationCommandPermissions,
   ApplicationCommandPermissionsManager,
@@ -41,7 +41,7 @@ export type ScopeContext = 'GLOBAL' | 'GUILDS' | Snowflake[]
 export type CommandContext = {
   name: string
   description: string
-  options: ApplicationCommandOption[],
+  options: ApplicationCommandOptionData[],
   defaultPermission?: boolean,
 }
 

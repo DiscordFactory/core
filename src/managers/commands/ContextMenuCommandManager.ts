@@ -208,7 +208,7 @@ export default class SlashCommandManager {
         })
     })
 
-    this.commandManager.factory.client?.on('interactionCreate', async (interaction: Interaction) => {
+    this.commandManager.factory.client?.on('interactionCreate', async (interaction: any) => {
       if (!interaction.isContextMenu()) {
         return
       }
