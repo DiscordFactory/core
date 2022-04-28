@@ -24,7 +24,7 @@ export default class SlashCommandManager {
     return {
       name: command.name,
       description: command.description,
-      options: command.options.map(this.serializeOptions),
+      options: command.options.map(value => this.serializeOptions(value)),
     }
   }
 
