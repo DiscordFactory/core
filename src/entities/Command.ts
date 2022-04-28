@@ -1,6 +1,6 @@
 import { AddonContext, CommandContext, ContainerType, CommandGlobalContext, ScopeContext } from '../types'
 import Constructable from '../utils/Constructable'
-import { ApplicationCommandPermissionData, CacheType, CommandInteraction } from 'discord.js'
+import { ApplicationCommandPermissionData, CommandInteraction } from 'discord.js'
 import EntityFile from '../utils/EntityFile'
 import Cooldown from '../utils/Cooldown'
 
@@ -11,7 +11,6 @@ export function Command (ctx: CommandGlobalContext) {
         super(
           context,
           ctx.scope,
-          ctx.permissions,
           ctx.cooldown?.count || ctx.cooldown?.time
             ? new Cooldown(ctx.cooldown)
             : undefined,
@@ -29,7 +28,6 @@ export class CommandEntity extends Constructable<any> {
   constructor (
     public context: AddonContext<any> | undefined,
     public scope: ScopeContext,
-    public permissions: ApplicationCommandPermissionData[] = [],
     public cooldown: Cooldown | undefined,
     public ctx: CommandContext,
     public run: (...args: any[]) => Promise<void>,
@@ -40,5 +38,5 @@ export class CommandEntity extends Constructable<any> {
 }
 
 export abstract class BaseCommand {
-  public abstract run (interaction: CommandInteraction<CacheType>): Promise<void>
+  public abstract run (interaction: CommandInteraction): Promise<void>
 }
