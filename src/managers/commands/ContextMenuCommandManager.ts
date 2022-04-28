@@ -38,7 +38,6 @@ export default class SlashCommandManager {
         const command = new ContextMenuEntity(
           undefined,
           instance.scope,
-          instance.permissions,
           instance.cooldown,
           instance.ctx,
           instance.run,
@@ -89,7 +88,6 @@ export default class SlashCommandManager {
         manager
           .edit(command.id, {
             ...commandEntity.ctx,
-            defaultPermission: commandEntity.permissions.length === 0
           })
           .catch(catchPromise)
       }
@@ -97,39 +95,16 @@ export default class SlashCommandManager {
       const definePermission = () => {
         const permissions = {
           command: command.id,
-          permissions: commandEntity.permissions,
         }
         manager
           .edit(command.id, {
             ...commandEntity.ctx,
-            defaultPermission: commandEntity.permissions.length === 0
           })
           .catch(catchPromise)
 
-        if (manager instanceof GuildApplicationCommandManager) {
-          manager.permissions.set(permissions).catch(catchPromise)
-        } else {
-          this.commandManager.factory.guildIds.forEach((guildId: Snowflake) => {
-            manager.permissions.set({
-              ...permissions,
-              guild: guildId
-            }).catch(catchPromise)
-          })
-        }
       }
 
-      command.permissions
-        .fetch({ command: command.id })
-        .then((commandPermissions: ApplicationCommandPermissions[]) => {
-          if (!isEquivalent(commandEntity.permissions, commandPermissions)) {
-            definePermission()
-          }
-        })
-        .catch((error) => {
-          if (error.httpStatus === 404) {
-            definePermission()
-          }
-        })
+
     })
 
     /**
@@ -141,32 +116,13 @@ export default class SlashCommandManager {
           manager
             .create({
               ...commandEntity.ctx,
-              defaultPermission: commandEntity.permissions.length === 0
-            })
-            .then((command: ApplicationCommand) => {
-              manager.permissions.set({
-                command: command.id,
-                permissions: commandEntity.permissions,
-              }).catch(catchPromise)
-            })
-            .catch(catchPromise)
+            }).catch(catchPromise)
         }
       } else {
         manager
           .create({
             ...commandEntity.ctx,
-            defaultPermission: commandEntity.permissions.length === 0
-          })
-          .then((command: ApplicationCommand) => {
-            this.commandManager.factory.guildIds.forEach((guildId: Snowflake) => {
-              manager.permissions.set({
-                command: command.id,
-                permissions: commandEntity.permissions,
-                guild: guildId
-              }).catch(catchPromise)
-            })
-          })
-          .catch(catchPromise)
+          }).catch(catchPromise)
       }
     })
 
