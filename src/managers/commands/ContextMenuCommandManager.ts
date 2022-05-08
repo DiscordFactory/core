@@ -97,14 +97,9 @@ export default class SlashCommandManager {
           command: command.id,
         }
         manager
-          .edit(command.id, {
-            ...commandEntity.ctx,
-          })
+          .edit(command.id, commandEntity.ctx)
           .catch(catchPromise)
-
       }
-
-
     })
 
     /**
@@ -114,15 +109,13 @@ export default class SlashCommandManager {
       if (manager instanceof GuildApplicationCommandManager) {
         if (commandEntity.scope === 'GUILDS' || commandEntity.scope.includes(manager.guild.id)) {
           manager
-            .create({
-              ...commandEntity.ctx,
-            }).catch(catchPromise)
+            .create(commandEntity.ctx)
+            .catch(catchPromise)
         }
       } else {
         manager
-          .create({
-            ...commandEntity.ctx,
-          }).catch(catchPromise)
+          .create(commandEntity.ctx)
+          .catch(catchPromise)
       }
     })
 
