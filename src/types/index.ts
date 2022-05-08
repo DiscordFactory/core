@@ -54,7 +54,6 @@ export type ApplicationContextOption = {
 export type CommandGlobalContext = {
   scope: ScopeContext
   cooldown?: Cooldown,
-  permissions?: ApplicationCommandPermissionData[]
   options: CommandContext
 }
 
