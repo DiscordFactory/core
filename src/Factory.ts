@@ -43,10 +43,8 @@ export default class Factory {
   }
 
   public static getInstance (ignitor?: Ignitor) {
-    if (!this.$instance) {
-      if (ignitor) {
-        this.$instance = new Factory(ignitor)
-      }
+    if (!this.$instance && ignitor) {
+      this.$instance = new Factory(ignitor)
     }
     return this.$instance
   }

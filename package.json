@@ -1,51 +1,50 @@
 {
-  "name": "@discord-factory/core-next",
-  "version": "4.0.0",
-  "description": "",
-  "author": "Baptiste Parmantier <baptiste.parmantier.pro@gmail.com>",
-  "license": "MIT",
-  "repository": "git@github.com:DiscordFactory/Core.git",
-  "keywords": [],
-  "main": "./build/index.js",
-  "scripts": {
-    "dev": "tsc --watch",
-    "build": "tsc",
-    "lint": "eslint \"{src,test}/**/*.ts\"",
-    "lint:fix": "npm run lint -- --fix",
-    "test": "ava"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.15.5",
-    "@types/node": "^14.14.37",
-    "ava": "^3.15.0",
-    "eslint": "^7.23.0",
-    "eslint-plugin-ava": "^12.0.0",
-    "typescript": "^4.2.3"
-  },
-  "dependencies": {
-    "@babel/eslint-parser": "^7.15.4",
-    "@discord-factory/core-next": "^1.4.1",
-    "@leadcodedev/logger": "^1.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.31.1",
-    "@typescript-eslint/parser": "^4.31.1",
-    "cac": "^6.7.8",
-    "cli-table2": "^0.2.0",
-    "cross-env": "^7.0.3",
-    "discord.js": "^13.6.0",
-    "fs-recursive": "^1.1.7",
-    "js-yaml": "^4.1.0",
-    "module-alias": "^2.2.2"
-  },
-  "ava": {
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "files": [
-      "test/**/*.spec.ts"
-    ],
-    "verbose": true
-  }
+    "name": "@discord-factory/core-next",
+    "version": "3.0.0",
+    "description": "",
+    "author": "Baptiste Parmantier <baptiste.parmantier.pro@gmail.com>",
+    "license": "MIT",
+    "repository": "git@github.com:DiscordFactory/Core.git",
+    "keywords": [],
+    "main": "./build/index.js",
+    "scripts": {
+        "dev": "tsc --watch",
+        "build": "tsc",
+        "lint": "eslint \"{src,test}/**/*.ts\"",
+        "lint:fix": "npm run lint -- --fix",
+        "test": "ava"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.15.5",
+        "@types/node": "^14.14.37",
+        "ava": "^3.15.0",
+        "eslint": "^7.23.0",
+        "eslint-plugin-ava": "^12.0.0",
+        "typescript": "^4.2.3"
+    },
+    "dependencies": {
+        "@babel/eslint-parser": "^7.15.4",
+        "@leadcodedev/logger": "^1.0.0",
+        "@typescript-eslint/eslint-plugin": "^4.31.1",
+        "@typescript-eslint/parser": "^4.31.1",
+        "cac": "^6.7.8",
+        "cli-table2": "^0.2.0",
+        "cross-env": "^7.0.3",
+        "discord.js": "^13.6.0",
+        "fs-recursive": "^1.1.7",
+        "js-yaml": "^4.1.0",
+        "module-alias": "^2.2.2"
+    },
+    "ava": {
+        "extensions": [
+            "ts"
+        ],
+        "require": [
+            "ts-node/register"
+        ],
+        "files": [
+            "test/**/*.spec.ts"
+        ],
+        "verbose": true
+    }
 }
