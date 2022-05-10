@@ -108,6 +108,8 @@ export default class Ignitor {
     ModuleAlias.addAlias('ioc:factory/Core/Container', () => path.join(process.cwd(), 'node_modules', '@discord-factory', 'core-next'))
   }
 
+  
+
   public getModuleEnvironment (module: string, key: string) {
     const element = this.getEnvironment(module.toUpperCase())
     return element[key]

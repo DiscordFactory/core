@@ -60,29 +60,36 @@ export default class SlashCommandManager {
           instance.run,
           entityFile
         )
-        this.commandManager.factory.ignitor.container.commands.push(command)
 
+        
+        this.commandManager.factory.ignitor.container.commands.push(command)
+        
+        
         this.commandManager.factory.ignitor.container.providers.forEach((provider: ProviderEntity) => {
           provider.load(command)
         })
       })
+      
 
     )
+    const commands = this.commandManager.factory.ignitor.container.commands.map((item) => item.ctx)
+
+    this.commandManager.factory.client?.guilds.cache.forEach( (guild: Guild) => {
+      guild.commands.set(commands)
+    })
+
     this.commandManager.factory.client?.on('interactionCreate', async (command) => {
     
       if (command.isCommand()) {
         const commandEntity = this.commandManager.factory.ignitor.container.commands.find((commandEntity) => command.commandName === commandEntity.ctx.name)
+        
         if (!commandEntity) {
           return
         }
         await commandEntity?.run(command)
       }
     })
-    const commands = this.commandManager.factory.ignitor.container.commands.map((item) => item.ctx)
-    if (!commands) return
-    this.commandManager.factory.client?.on('guildCreate', async (guild: Guild) => {
-      await guild.commands.set(commands)
-    })
+   
   }
 
 
