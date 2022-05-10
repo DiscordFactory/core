@@ -40,15 +40,11 @@ export default class Factory {
 
     await this.client?.login(this.ignitor.environmentBuilder.environment?.content.APP_TOKEN)
     NodeEmitter.emit('application::client::login', this.client)
-
-    
   }
 
   public static getInstance (ignitor?: Ignitor) {
-    if (!this.$instance) {
-      if (ignitor) {
-        this.$instance = new Factory(ignitor)
-      }
+    if (!this.$instance && ignitor) {
+      this.$instance = new Factory(ignitor)
     }
     return this.$instance
   }

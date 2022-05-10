@@ -46,54 +46,43 @@ export default class SlashCommandManager {
 
   public async register (): Promise<void> {
     const files = this.commandManager.factory.ignitor.files.filter((file: { type: string }) => file.type === 'command')
+    const container = this.commandManager.factory.ignitor.container
+    
+    files.forEach((item) => {
+      const instance = new item.default()
+      const entityFile = new EntityFile(item.file.path)
 
-    await Promise.all(
-      files.map(async (item) => {
-        const instance = new item.default()
-        const entityFile = new EntityFile(item.file.path)
+      const command = new CommandEntity(
+        undefined,
+        instance.scope,
+        instance.cooldown,
+        instance.ctx,
+        instance.run,
+        entityFile
+      )
 
-        const command = new CommandEntity(
-          undefined,
-          instance.scope,
-          instance.cooldown,
-          instance.ctx,
-          instance.run,
-          entityFile
-        )
-
-        
-        this.commandManager.factory.ignitor.container.commands.push(command)
-        
-        
-        this.commandManager.factory.ignitor.container.providers.forEach((provider: ProviderEntity) => {
-          provider.load(command)
-        })
+      container.commands.push(command)
+      container.providers.forEach((provider: ProviderEntity) => {
+        provider.load(command)
       })
-      
-
-    )
-    const commands = this.commandManager.factory.ignitor.container.commands.map((item) => item.ctx)
-
-    this.commandManager.factory.client?.guilds.cache.forEach( (guild: Guild) => {
-      guild.commands.set(commands)
     })
 
-    this.commandManager.factory.client?.on('interactionCreate', async (command) => {
+    const commands = container.commands.map((item) => item.ctx)
+    await Promise.all(
+      this.commandManager.factory.client!.guilds.cache.map(async (guild: Guild) => {
+        return guild.commands.set(commands)
+      })
+    )
     
+    this.commandManager.factory.client?.on('interactionCreate', async (command) => {
       if (command.isCommand()) {
-        const commandEntity = this.commandManager.factory.ignitor.container.commands.find((commandEntity) => command.commandName === commandEntity.ctx.name)
+        const commandEntity = container.commands.find((commandEntity) => command.commandName === commandEntity.ctx.name)
         
         if (!commandEntity) {
           return
         }
         await commandEntity?.run(command)
       }
-    })
-   
+    })   
   }
-
-
-
-
-
 }
