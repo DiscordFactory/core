@@ -1,6 +1,6 @@
 {
     "name": "@discord-factory/core-next",
-    "version": "4.0.1",
+    "version": "4.1.0",
     "description": "",
     "author": "Baptiste Parmantier <baptiste.parmantier.pro@gmail.com>",
     "license": "MIT",
@@ -30,7 +30,7 @@
         "cac": "^6.7.8",
         "cli-table2": "^0.2.0",
         "cross-env": "^7.0.3",
-        "discord.js": "^13.6.0",
+        "discord.js": "^13.9.0",
         "fs-recursive": "^1.1.7",
         "js-yaml": "^4.1.0",
         "module-alias": "^2.2.2"
