@@ -44,7 +44,6 @@ A file will be created in the specified location otherwise in the root of your p
 ```ts
 export interface CommandGlobalContext {
   scope: 'GLOBAL' | 'GUILDS' | Snowflake[], 👈 // Or 'GLOBAL' if you want to register globally
-  permissions?: ApplicationCommandPermissionData[],
   cooldown?: {
     time: number 👈 // Measured in milliseconds
     count: number 👈 // Cannot be used without time
@@ -52,7 +51,6 @@ export interface CommandGlobalContext {
   options: {
     name: string,
     description: string,
-    options: ApplicationCommandOption[],
   }
 }
 ```
